@@ -1,0 +1,592 @@
+@import "tailwindcss";
+
+/* ======================================================
+   🌍 BASE THEME VARIABLES (LIGHT – DEFAULT)
+   ====================================================== */
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --card: #ffffff;
+}
+
+/* ======================================================
+   🧩 TAILWIND VARIABLE MAPPING
+   ====================================================== */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-card: var(--card);
+}
+
+/* ======================================================
+   🌙 DARK – PROFESSIONAL / UNIVERSAL
+   ====================================================== */
+html[data-theme="dark"] {
+  --background: #020617;
+  --foreground: #e5e7eb;
+  --accent: #38bdf8;
+  --accent-hover: #0ea5e9;
+  --muted: #94a3b8;
+  --border: #1e293b;
+  --card: #0f172a;
+}
+
+/* ======================================================
+   ⚡ CYBER NEON – GAMING / ANIME / TECH
+   ====================================================== */
+html[data-theme="cyber"] {
+  --background: #000814;
+  --foreground: #e0faff;
+  --accent: #00f5ff;
+  --accent-hover: #06b6d4;
+  --muted: #7dd3fc;
+  --border: #022c3a;
+  --card: #001d3d;
+}
+
+/* ======================================================
+   🌸 SAKURA – SOFT / ROMANTIC / UI HEAVY
+   ====================================================== */
+html[data-theme="sakura"] {
+  --background: #fff1f2;
+  --foreground: #3f0d1d;
+  --accent: #fb7185;
+  --accent-hover: #f43f5e;
+  --muted: #9f1239;
+  --border: #fecdd3;
+  --card: #ffe4e6;
+}
+
+/* ======================================================
+   🔥 INFERNO – ACTION / AGGRESSIVE
+   ====================================================== */
+html[data-theme="inferno"] {
+  --background: #0a0a0a;
+  --foreground: #fff7ed;
+  --accent: #f97316;
+  --accent-hover: #ea580c;
+  --muted: #fdba74;
+  --border: #431407;
+  --card: #1c0a00;
+}
+
+/* ======================================================
+   🌲 FOREST – NATURE / CALM / FINANCE
+   ====================================================== */
+html[data-theme="forest"] {
+  --background: #f0fdf4;
+  --foreground: #052e16;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --muted: #166534;
+  --border: #bbf7d0;
+  --card: #dcfce7;
+}
+
+/* ======================================================
+   🌌 VOID PURPLE – MYSTIC / PREMIUM
+   ====================================================== */
+html[data-theme="void"] {
+  --background: #070014;
+  --foreground: #ede9fe;
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --muted: #a78bfa;
+  --border: #2e1065;
+  --card: #12002e;
+}
+
+/* ======================================================
+   🕹️ RETRO ARCADE – FUN / GAMING
+   ====================================================== */
+html[data-theme="retro"] {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --accent: #ff0080;
+  --accent-hover: #db2777;
+  --muted: #22d3ee;
+  --border: #1e293b;
+  --card: #020617;
+}
+
+/* ======================================================
+   🧊 GLASS – MODERN SAAS / PREMIUM
+   ====================================================== */
+html[data-theme="glass"] {
+  --background: #0b1220;
+  --foreground: #e5e7eb;
+  --accent: #5eead4;
+  --accent-hover: #2dd4bf;
+  --muted: #94a3b8;
+  --border: rgba(255,255,255,0.12);
+  --card: rgba(255,255,255,0.06);
+}
+
+/* ======================================================
+   🩸 CRIMSON NOIR – DARK / SEINEN
+   ====================================================== */
+html[data-theme="crimson"] {
+  --background: #050000;
+  --foreground: #fee2e2;
+  --accent: #dc2626;
+  --accent-hover: #991b1b;
+  --muted: #b91c1c;
+  --border: #3f0a0a;
+  --card: #120000;
+}
+
+/* ======================================================
+   🌊 AQUA WAVE – FRESH / MODERN UI
+   ====================================================== */
+html[data-theme="aqua"] {
+  --background: #ecfeff;
+  --foreground: #083344;
+  --accent: #06b6d4;
+  --accent-hover: #0891b2;
+  --muted: #155e75;
+  --border: #a5f3fc;
+  --card: #cffafe;
+}
+
+/* ======================================================
+   🟡 SOLAR GOLD – LUXURY / FINTECH
+   ====================================================== */
+html[data-theme="solar"] {
+  --background: #0c0a09;
+  --foreground: #fff7ed;
+  --accent: #facc15;
+  --accent-hover: #eab308;
+  --muted: #fde68a;
+  --border: #78350f;
+  --card: #1c1917;
+}
+
+/* ======================================================
+   🪐 OBSIDIAN – ULTRA DARK / PRO UI
+   ====================================================== */
+html[data-theme="obsidian"] {
+  --background: #000000;
+  --foreground: #d4d4d8;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --muted: #71717a;
+  --border: #18181b;
+  --card: #09090b;
+}
+
+/* ======================================================
+   🧠 SLATE PRO – ADMIN / DASHBOARD
+   ====================================================== */
+html[data-theme="slate"] {
+  --background: #0f172a;
+  --foreground: #e5e7eb;
+  --accent: #64748b;
+  --accent-hover: #475569;
+  --muted: #94a3b8;
+  --border: #1e293b;
+  --card: #020617;
+}
+
+/* ======================================================
+   🪙 FINANCE EMERALD – BANKING / CRYPTO
+   ====================================================== */
+html[data-theme="emerald"] {
+  --background: #020617;
+  --foreground: #ecfdf5;
+  --accent: #10b981;
+  --accent-hover: #059669;
+  --muted: #6ee7b7;
+  --border: #064e3b;
+  --card: #022c22;
+}
+
+/* ======================================================
+   🌅 SUNSET GRADIENT – CREATOR / MARKETING
+   ====================================================== */
+html[data-theme="sunset"] {
+  --background: #0f0c29;
+  --foreground: #fff7ed;
+  --accent: #fb923c;
+  --accent-hover: #f97316;
+  --muted: #fdba74;
+  --border: #431407;
+  --card: #1c0a00;
+}
+
+/* ======================================================
+   ❄️ FROST – CLEAN / ACCESSIBLE / GOV
+   ====================================================== */
+html[data-theme="frost"] {
+  --background: #f8fafc;
+  --foreground: #020617;
+  --accent: #0ea5e9;
+  --accent-hover: #0284c7;
+  --muted: #475569;
+  --border: #cbd5f5;
+  --card: #ffffff;
+}
+
+/* ======================================================
+   🌈 PRISM – DESIGN TOOLS / PORTFOLIO
+   ====================================================== */
+html[data-theme="prism"] {
+  --background: #0b0f1a;
+  --foreground: #f8fafc;
+  --accent: #22d3ee;
+  --accent-hover: #06b6d4;
+  --muted: #c084fc;
+  --border: #1e1b4b;
+  --card: #111827;
+}
+
+/* ======================================================
+   🧬 MATRIX – HACKER / TERMINAL
+   ====================================================== */
+html[data-theme="matrix"] {
+  --background: #000000;
+  --foreground: #d1fae5;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --muted: #4ade80;
+  --border: #052e16;
+  --card: #020617;
+}
+
+/* ======================================================
+   🍂 AUTUMN – BLOG / CONTENT / STORY
+   ====================================================== */
+html[data-theme="autumn"] {
+  --background: #fffbeb;
+  --foreground: #3f2d1d;
+  --accent: #d97706;
+  --accent-hover: #b45309;
+  --muted: #92400e;
+  --border: #fde68a;
+  --card: #fef3c7;
+}
+
+/* ======================================================
+   🌙 MIDNIGHT BLUE – ENTERPRISE SAAS
+   ====================================================== */
+html[data-theme="midnight"] {
+  --background: #020617;
+  --foreground: #e2e8f0;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --muted: #a5b4fc;
+  --border: #1e293b;
+  --card: #0f172a;
+}
+
+/* ======================================================
+   🧿 NEON LIME – TRENDY / YOUTH
+   ====================================================== */
+html[data-theme="neonlime"] {
+  --background: #020617;
+  --foreground: #f7fee7;
+  --accent: #84cc16;
+  --accent-hover: #65a30d;
+  --muted: #bef264;
+  --border: #365314;
+  --card: #1a2e05;
+}
+/* ================= GIRLY / CUTE THEMES ================= */
+
+/* 🌹 Rose Blush */
+html[data-theme="rose"] {
+  --background: #fff1f2;
+  --foreground: #3f0d1d;
+  --accent: #fb7185;
+  --accent-hover: #f43f5e;
+  --muted: #9f1239;
+  --border: #fecdd3;
+  --card: #ffe4e6;
+}
+
+/* 💜 Lavender Dream */
+html[data-theme="lavender"] {
+  --background: #f5f3ff;
+  --foreground: #2e1065;
+  --accent: #a78bfa;
+  --accent-hover: #8b5cf6;
+  --muted: #7c3aed;
+  --border: #ddd6fe;
+  --card: #ede9fe;
+}
+
+/* 🍑 Peach Glow */
+html[data-theme="peach"] {
+  --background: #fff7ed;
+  --foreground: #7c2d12;
+  --accent: #fb923c;
+  --accent-hover: #f97316;
+  --muted: #ea580c;
+  --border: #fed7aa;
+  --card: #ffedd5;
+}
+
+/* 🍬 Cotton Candy */
+html[data-theme="cotton"] {
+  --background: #fdf2f8;
+  --foreground: #831843;
+  --accent: #f472b6;
+  --accent-hover: #ec4899;
+  --muted: #db2777;
+  --border: #fbcfe8;
+  --card: #fce7f3;
+}
+
+/* 🎀 Bubblegum Pop */
+html[data-theme="bubblegum"] {
+  --background: #fff0f6;
+  --foreground: #701a75;
+  --accent: #e879f9;
+  --accent-hover: #d946ef;
+  --muted: #c026d3;
+  --border: #f5d0fe;
+  --card: #fae8ff;
+}
+
+/* 🍒 Cherry Kiss */
+html[data-theme="cherry"] {
+  --background: #fff1f2;
+  --foreground: #7f1d1d;
+  --accent: #ef4444;
+  --accent-hover: #dc2626;
+  --muted: #f87171;
+  --border: #fecaca;
+  --card: #fee2e2;
+}
+
+/* 🍦 Vanilla Cream */
+html[data-theme="vanilla"] {
+  --background: #fffbeb;
+  --foreground: #78350f;
+  --accent: #facc15;
+  --accent-hover: #eab308;
+  --muted: #ca8a04;
+  --border: #fde68a;
+  --card: #fef3c7;
+}
+/* ================= MANLY / STRONG THEMES ================= */
+
+/* 🔩 Steel Gray */
+html[data-theme="steel"] {
+  --background: #0f172a;
+  --foreground: #e5e7eb;
+  --accent: #94a3b8;
+  --accent-hover: #64748b;
+  --muted: #cbd5f5;
+  --border: #1e293b;
+  --card: #020617;
+}
+
+/* 🛠️ Gunmetal */
+html[data-theme="gunmetal"] {
+  --background: #09090b;
+  --foreground: #e4e4e7;
+  --accent: #71717a;
+  --accent-hover: #52525b;
+  --muted: #a1a1aa;
+  --border: #18181b;
+  --card: #0f0f12;
+}
+
+/* 🖤 Midnight Black */
+html[data-theme="midnightblack"] {
+  --background: #000000;
+  --foreground: #fafafa;
+  --accent: #3f3f46;
+  --accent-hover: #27272a;
+  --muted: #71717a;
+  --border: #18181b;
+  --card: #09090b;
+}
+
+/* 👑 Royal Blue */
+html[data-theme="royalblue"] {
+  --background: #020617;
+  --foreground: #e0e7ff;
+  --accent: #4338ca;
+  --accent-hover: #3730a3;
+  --muted: #a5b4fc;
+  --border: #1e1b4b;
+  --card: #0b0f3f;
+}
+
+/* 🩸 Blood Iron */
+html[data-theme="bloodiron"] {
+  --background: #0a0000;
+  --foreground: #fee2e2;
+  --accent: #991b1b;
+  --accent-hover: #7f1d1d;
+  --muted: #fca5a5;
+  --border: #450a0a;
+  --card: #140000;
+}
+
+/* ⚔️ War Zone */
+html[data-theme="warzone"] {
+  --background: #0b0b0b;
+  --foreground: #fefce8;
+  --accent: #f97316;
+  --accent-hover: #ea580c;
+  --muted: #fdba74;
+  --border: #3f1d0b;
+  --card: #1c0a00;
+}
+
+/* 🏴 Carbon Fiber */
+html[data-theme="carbon"] {
+  --background: #050505;
+  --foreground: #e5e7eb;
+  --accent: #52525b;
+  --accent-hover: #3f3f46;
+  --muted: #a1a1aa;
+  --border: #18181b;
+  --card: #0a0a0a;
+}
+
+
+
+/* ======================================================
+   ✨ GLOBAL STYLES
+   ====================================================== */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Poppins", system-ui, sans-serif;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Links */
+a {
+  color: var(--accent);
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+/* Glass enhancement */
+html[data-theme="glass"] .card {
+  backdrop-filter: blur(14px);
+}
+
+/* Glow utility */
+.glow {
+  text-shadow: 0 0 12px var(--accent);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+
+
+
+
+
+
+
+/* Random shaking / popping / wiggle animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  60% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+/* Animation controller */
+.animated-letter {
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  display: inline-block;
+}
+
+/* Each letter animates differently */
+.animated-letter:nth-child(1) {
+  animation-name: shake, pop;
+  animation-delay: 0.3s;
+}
+
+.animated-letter:nth-child(2) {
+  animation-name: floatUp, shake;
+  animation-delay: 1s;
+}
+/* FALL ANIMATION */
+@keyframes fallDown {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  40% {
+    transform: translateY(120px) rotate(25deg);
+  }
+  60% {
+    transform: translateY(180px) rotate(-10deg);
+  }
+  80% {
+    transform: translateY(210px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(230px) rotate(0deg);
+  }
+}
+
+/* When clicked */
+.falling-b.fall {
+  animation: fallDown 1s ease-in forwards;
+  cursor: default;
+}
+
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
