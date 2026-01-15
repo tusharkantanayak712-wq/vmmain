@@ -95,7 +95,7 @@ export default function BlueBuffSingularityLoader() {
                 textShadow: "0 2px 14px rgba(0,0,0,.7)",
               }}
             >
-              yJ
+              V
             </span>
           </div>
         </div>

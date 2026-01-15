@@ -28,7 +28,8 @@ export default function GamesPage() {
     "Honor Of Kings",
     "TEST 1",
     "Wuthering of Waves",
-    "Where Winds Meet"
+    "Where Winds Meet",
+    "mlbb-russia953"
   ];
 
   const isOutOfStock = (name) => outOfStockGames.includes(name);
