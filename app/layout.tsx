@@ -4,6 +4,7 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import SocialFloat from "@/components/SocialFloat/SocialFloat";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export const metadata: Metadata = {
   title: "Vamp – MLBB Diamond Top Up | Instant & Secure",
@@ -19,10 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black text-white">
+                        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+
         <Header />
         <main className="pt-20">{children}</main>
         <Footer/>
               <SocialFloat />
+        </GoogleOAuthProvider>
 
       </body>
        <GoogleAnalytics gaId="G-7MQ5K05HZQ" />
