@@ -37,10 +37,10 @@ export default function DashboardCard({
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === "Enter" && onClick()}
-      className={`group p-5 rounded-2xl cursor-pointer
-                  border transition-all duration-300
-                  shadow-sm hover:shadow-lg
+      className={`group p-5 rounded-2xl cursor-pointer border
+                  transition-all duration-300
                   active:scale-[0.98]
+                  shadow-sm hover:shadow-lg
         ${
           isActive
             ? "border-[var(--accent)] bg-[var(--card)]"
@@ -67,7 +67,7 @@ export default function DashboardCard({
 
       {/* ================= VALUE ================= */}
       <h2 className="text-2xl font-bold mt-3 tracking-tight">
-        {tab.value}
+        {/* {tab.value} */}
       </h2>
 
       {/* ================= ACTIVE INDICATOR ================= */}
