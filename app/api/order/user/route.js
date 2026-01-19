@@ -22,7 +22,7 @@ export async function POST(req) {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (err) {
+    } catch {
       return Response.json(
         { success: false, message: "Invalid or expired token" },
         { status: 401 }
@@ -32,14 +32,14 @@ export async function POST(req) {
     /* ================= USER ================= */
     const user = await User.findById(decoded.userId).lean();
 
-    if (!user) {
+    if (!user || !user.email) {
       return Response.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "User email not found" },
         { status: 404 }
       );
     }
 
-    /* ================= BODY PARAMS (SAFE DEFAULTS) ================= */
+    /* ================= BODY PARAMS ================= */
     const body = await req.json().catch(() => ({}));
 
     const page = Math.max(1, Number(body.page) || 1);
@@ -48,23 +48,10 @@ export async function POST(req) {
 
     const skip = (page - 1) * limit;
 
-    /* ================= STRICT USER FILTER ================= */
-    let userFilter = {};
+    /* ================= EMAIL-ONLY FILTER ================= */
+    const userFilter = { email: user.email };
 
-    if (user.email && user.phone) {
-      userFilter = { email: user.email, phone: user.phone };
-    } else if (user.email) {
-      userFilter = { email: user.email };
-    } else if (user.phone) {
-      userFilter = { phone: user.phone };
-    } else {
-      return Response.json(
-        { success: false, message: "User has no identifiers" },
-        { status: 400 }
-      );
-    }
-
-    /* ================= SEARCH FILTER (OPTIONAL) ================= */
+    /* ================= SEARCH FILTER ================= */
     let finalFilter = userFilter;
 
     if (search) {

@@ -104,10 +104,17 @@ export async function GET() {
     };
 
     /* ================= FILTER GAMES ================= */
-    const filteredGames =
-      data?.data?.games
-        ?.filter((game: any) => game.gameSlug !== "test-1637")
-        ?.map(normalizeGame) || [];
+const excludedGameSlugs = [
+  "test-1637",
+  "mobile-legends-backup826",
+];
+
+const filteredGames =
+  data?.data?.games
+    ?.filter(
+      (game: any) => !excludedGameSlugs.includes(game.gameSlug)
+    )
+    ?.map(normalizeGame) || [];
 
     /* ================= FILTER CATEGORY GAMES ================= */
     const filteredCategories =
