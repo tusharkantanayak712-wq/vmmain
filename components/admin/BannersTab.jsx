@@ -20,7 +20,8 @@ export default function BannersTab({ banners, onRefresh }) {
       ? sessionStorage.getItem("token")
       : null;
 
-  /* ================= ADD / UPDATE (UNCHANGED LOGIC) ================= */
+  /* ================= ADD / UPDATE ================= */
+
   const addBanner = async () => {
     if (!form.bannerImage || !form.bannerTitle || !form.bannerSlug) {
       alert("Image URL, Title & Slug are required");
@@ -121,144 +122,181 @@ export default function BannersTab({ banners, onRefresh }) {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
 
       {/* ================= FORM ================= */}
       <div
-        className={`rounded-2xl border p-6 space-y-5
-        ${editingId ? "border-[var(--accent)]" : "border-[var(--border)]"}
-        bg-[var(--card)]`}
+        className={`
+          rounded-xl border bg-[var(--card)]
+          ${editingId ? "border-[var(--accent)]" : "border-[var(--border)]"}
+        `}
       >
-        <h3 className="text-lg font-bold flex items-center gap-2">
-          {editingId ? "✏️ Edit Banner" : "➕ Add New Banner"}
-        </h3>
-
-        {/* Image preview */}
-        {form.bannerImage && (
-          <img
-            src={form.bannerImage}
-            alt="Banner Preview"
-            className="w-full h-40 object-cover rounded-xl border"
-          />
-        )}
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <input
-            placeholder="Banner Image URL"
-            value={form.bannerImage}
-            onChange={(e) =>
-              setForm({ ...form, bannerImage: e.target.value })
-            }
-            className="input"
-          />
-
-          <input
-            placeholder="Banner Title"
-            value={form.bannerTitle}
-            onChange={(e) =>
-              setForm({ ...form, bannerTitle: e.target.value })
-            }
-            className="input"
-          />
-
-          <input
-            placeholder="Banner Slug (unique)"
-            value={form.bannerSlug}
-            onChange={(e) =>
-              setForm({ ...form, bannerSlug: e.target.value })
-            }
-            disabled={!!editingId}
-            className="input disabled:opacity-60"
-          />
-
-          <input
-            placeholder="Banner Link"
-            value={form.bannerLink}
-            onChange={(e) =>
-              setForm({ ...form, bannerLink: e.target.value })
-            }
-            className="input"
-          />
+        {/* Header */}
+        <div className="px-5 py-4 border-b border-[var(--border)]">
+          <h3 className="text-base font-bold">
+            {editingId ? "Edit Banner" : "Add New Banner"}
+          </h3>
+          <p className="text-xs text-[var(--muted)]">
+            Banner metadata & visibility settings
+          </p>
         </div>
 
-        <input
-          placeholder="Game IDs (comma separated)"
-          value={form.gameId}
-          onChange={(e) =>
-            setForm({ ...form, gameId: e.target.value })
-          }
-          className="input"
-        />
+        {/* Body */}
+        <div className="p-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <textarea
-          placeholder="Banner Summary"
-          value={form.bannerSummary}
-          onChange={(e) =>
-            setForm({ ...form, bannerSummary: e.target.value })
-          }
-          className="input min-h-[80px]"
-        />
+          {/* LEFT – FORM */}
+          <div className="lg:col-span-2 space-y-4">
 
-        {/* Visibility */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">Visibility</span>
+            <div>
+              <label className="label">Banner Image URL</label>
+              <input
+                value={form.bannerImage}
+                onChange={(e) =>
+                  setForm({ ...form, bannerImage: e.target.value })
+                }
+                className="input"
+                placeholder="https://example.com/banner.jpg"
+              />
+            </div>
 
-          <button
-            onClick={() =>
-              setForm({ ...form, isShow: true })
-            }
-            className={`px-3 py-1 rounded-full text-sm font-semibold
-              ${form.isShow
-                ? "bg-green-500/20 text-green-500"
-                : "border"}`}
-          >
-            Visible
-          </button>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Banner Title</label>
+                <input
+                  value={form.bannerTitle}
+                  onChange={(e) =>
+                    setForm({ ...form, bannerTitle: e.target.value })
+                  }
+                  className="input"
+                />
+              </div>
 
-          <button
-            onClick={() =>
-              setForm({ ...form, isShow: false })
-            }
-            className={`px-3 py-1 rounded-full text-sm font-semibold
-              ${!form.isShow
-                ? "bg-red-500/20 text-red-500"
-                : "border"}`}
-          >
-            Hidden
-          </button>
-        </div>
+              <div>
+                <label className="label">Banner Slug</label>
+                <input
+                  value={form.bannerSlug}
+                  onChange={(e) =>
+                    setForm({ ...form, bannerSlug: e.target.value })
+                  }
+                  disabled={!!editingId}
+                  className="input disabled:opacity-60"
+                />
+              </div>
+            </div>
 
-        {/* Actions */}
-        <div className="flex gap-3">
-          <button
-            onClick={editingId ? updateBanner : addBanner}
-            className="px-5 py-2 rounded-xl bg-[var(--accent)]
-                       text-black font-semibold"
-          >
-            {editingId ? "Update Banner" : "Add Banner"}
-          </button>
+            <div>
+              <label className="label">Banner Link</label>
+              <input
+                value={form.bannerLink}
+                onChange={(e) =>
+                  setForm({ ...form, bannerLink: e.target.value })
+                }
+                className="input"
+              />
+            </div>
 
-          {editingId && (
-            <button
-              onClick={resetForm}
-              className="px-5 py-2 rounded-xl border"
-            >
-              Cancel
-            </button>
-          )}
+            <div>
+              <label className="label">Game IDs</label>
+              <input
+                value={form.gameId}
+                onChange={(e) =>
+                  setForm({ ...form, gameId: e.target.value })
+                }
+                className="input"
+                placeholder="mlbb, bgmi, codm"
+              />
+            </div>
+
+            <div>
+              <label className="label">Banner Summary</label>
+              <textarea
+                value={form.bannerSummary}
+                onChange={(e) =>
+                  setForm({ ...form, bannerSummary: e.target.value })
+                }
+                className="input min-h-[100px]"
+              />
+            </div>
+
+            {/* Visibility */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setForm({ ...form, isShow: true })}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold
+                  ${
+                    form.isShow
+                      ? "bg-green-500/20 text-green-500"
+                      : "border"
+                  }`}
+              >
+                Visible
+              </button>
+
+              <button
+                onClick={() => setForm({ ...form, isShow: false })}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold
+                  ${
+                    !form.isShow
+                      ? "bg-red-500/20 text-red-500"
+                      : "border"
+                  }`}
+              >
+                Hidden
+              </button>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-3 pt-2">
+              {editingId && (
+                <button
+                  onClick={resetForm}
+                  className="px-5 py-2 rounded-lg border"
+                >
+                  Cancel
+                </button>
+              )}
+
+              <button
+                onClick={editingId ? updateBanner : addBanner}
+                className="px-5 py-2 rounded-lg bg-[var(--accent)] text-black font-semibold"
+              >
+                {editingId ? "Update Banner" : "Add Banner"}
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT – IMAGE PREVIEW */}
+          <div className="hidden lg:block">
+            <p className="text-xs font-medium mb-2 text-[var(--muted)]">
+              Preview
+            </p>
+
+            {form.bannerImage ? (
+              <img
+                src={form.bannerImage}
+                alt="Preview"
+                className="w-full h-56 object-cover rounded-lg border"
+              />
+            ) : (
+              <div className="h-56 flex items-center justify-center rounded-lg border text-xs text-[var(--muted)]">
+                Image preview
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* ================= LIST ================= */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-bold">All Banners</h3>
+      <div className="space-y-3">
+        <h3 className="text-base font-bold">All Banners</h3>
 
         {banners.map((b) => (
           <div
             key={b._id}
-            className="flex flex-col md:flex-row md:items-center
-                       gap-4 border border-[var(--border)]
-                       rounded-xl p-4 bg-[var(--card)]"
+            className="
+              rounded-xl border bg-[var(--card)]
+              p-4 flex flex-col md:flex-row gap-4
+            "
           >
             <img
               src={b.bannerImage}
@@ -267,7 +305,7 @@ export default function BannersTab({ banners, onRefresh }) {
             />
 
             <div className="flex-1">
-              <p className="font-semibold">{b.bannerTitle}</p>
+              <p className="font-semibold text-sm">{b.bannerTitle}</p>
               <p className="text-xs text-[var(--muted)]">
                 {b.bannerSlug}
               </p>

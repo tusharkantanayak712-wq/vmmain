@@ -1,23 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function OrdersTab({ orders = [], onUpdateStatus }) {
-  const STATUS = ["pending", "success", "failed"];
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   return (
-    <>
-      {/* ================= DESKTOP TABLE ================= */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
+    <div className="space-y-6">
+
+      {/* ================= HEADER ================= */}
+      <div>
+        <h2 className="text-xl font-extrabold tracking-tight">
+          Orders
+        </h2>
+        <p className="text-sm text-[var(--muted)]">
+          Review, verify, and manage customer orders.
+        </p>
+      </div>
+
+      {/* ================= DESKTOP ================= */}
+      <div className="hidden md:block rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-black/20 border-b border-[var(--border)]">
-            <tr className="text-left text-[var(--muted)]">
-              <th className="py-3 px-4">Game</th>
-              <th className="px-4">Date</th>
-              <th className="px-4">Item</th>
-              <th className="px-4">Price</th>
-              <th className="px-4">Status</th>
+          <thead className="bg-black/5">
+            <tr className="text-xs uppercase tracking-wide text-[var(--muted)]">
+              <th className="px-5 py-3 text-left">Game</th>
+              <th className="px-5 py-3 text-left">Date</th>
+              <th className="px-5 py-3 text-left">Item</th>
+              <th className="px-5 py-3 text-right">Amount</th>
+              <th className="px-5 py-3 text-left">Status</th>
             </tr>
           </thead>
 
@@ -26,219 +36,217 @@ export default function OrdersTab({ orders = [], onUpdateStatus }) {
               <tr
                 key={o._id}
                 onClick={() => setSelectedOrder(o)}
-                className="border-t border-[var(--border)]
-                           cursor-pointer hover:bg-white/5 transition"
+                className="border-t border-[var(--border)] hover:bg-black/5 cursor-pointer transition"
               >
-                <td className="py-3 px-4 font-medium">
+                <td className="px-5 py-4 font-medium capitalize">
                   {o.gameSlug}
                 </td>
 
-                <td className="px-4 text-xs text-[var(--muted)]">
+                <td className="px-5 py-4 text-xs text-[var(--muted)]">
                   {new Date(o.createdAt).toLocaleString()}
                 </td>
 
-                <td className="px-4 truncate max-w-xs">
+                <td className="px-5 py-4 max-w-sm truncate text-[var(--muted)]">
                   {o.itemName}
                 </td>
 
-                <td className="px-4 font-semibold">
+                <td className="px-5 py-4 text-right font-bold text-green-400">
                   ₹{o.price}
                 </td>
 
                 <td
-                  className="px-4"
+                  className="px-5 py-4"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <select
+                  <StatusSelect
                     value={o.status}
-                    disabled={o.status === "success"}
-                    onChange={(e) =>
-                      onUpdateStatus(o.orderId, e.target.value)
+                    onChange={(v) =>
+                      onUpdateStatus(o.orderId, v)
                     }
-                    className={`px-3 py-1 rounded-lg text-xs border
-                      ${
-                        o.status === "success"
-                          ? "bg-green-500/10 border-green-500 text-green-500 cursor-not-allowed"
-                          : "bg-[var(--card)] border-[var(--border)]"
-                      }`}
-                  >
-                    {STATUS.map((s) => (
-                      <option key={s} value={s}>
-                        {s.toUpperCase()}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </td>
               </tr>
             ))}
-
-            {!orders.length && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="py-8 text-center text-[var(--muted)]"
-                >
-                  No orders found
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>
 
-      {/* ================= MOBILE CARDS ================= */}
-      <div className="md:hidden space-y-3 overflow-x-hidden">
+      {/* ================= MOBILE ================= */}
+      <div className="md:hidden space-y-3">
         {orders.map((o) => (
           <div
             key={o._id}
             onClick={() => setSelectedOrder(o)}
-            className="rounded-2xl border border-[var(--border)]
-                       bg-[var(--card)] p-4
-                       cursor-pointer active:scale-[0.98]
-                       transition overflow-hidden"
+            className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 space-y-2 cursor-pointer"
           >
-            <div className="flex justify-between items-start mb-2 min-w-0">
-              <div className="font-semibold truncate max-w-[70%]">
+            <div className="flex justify-between">
+              <span className="font-semibold capitalize">
                 {o.gameSlug}
-              </div>
-
-              <span className="text-xs text-[var(--muted)] shrink-0">
+              </span>
+              <span className="text-xs text-[var(--muted)]">
                 {new Date(o.createdAt).toLocaleDateString()}
               </span>
             </div>
 
-            <div className="text-sm break-words line-clamp-2">
+            <p className="text-sm text-[var(--muted)] line-clamp-2">
               {o.itemName}
-            </div>
+            </p>
 
-            <div className="flex justify-between items-center mt-2">
-              <span className="font-semibold text-green-400">
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-bold text-green-400">
                 ₹{o.price}
               </span>
 
               <div onClick={(e) => e.stopPropagation()}>
-                <select
+                <StatusSelect
                   value={o.status}
-                  disabled={o.status === "success"}
-                  onChange={(e) =>
-                    onUpdateStatus(o.orderId, e.target.value)
+                  onChange={(v) =>
+                    onUpdateStatus(o.orderId, v)
                   }
-                  className={`px-3 py-1 rounded-lg text-xs border
-                    ${
-                      o.status === "success"
-                        ? "bg-green-500/10 border-green-500 text-green-500 cursor-not-allowed"
-                        : "bg-[var(--background)] border-[var(--border)]"
-                    }`}
-                >
-                  {STATUS.map((s) => (
-                    <option key={s} value={s}>
-                      {s.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
           </div>
         ))}
-
-        {!orders.length && (
-          <p className="text-center text-[var(--muted)] py-8">
-            No orders found
-          </p>
-        )}
       </div>
 
-      {/* ================= MODAL (UNCHANGED) ================= */}
+      {/* ================= DRAWER ================= */}
       {selectedOrder && (
-        <OrderModal
+        <OrderDrawer
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onUpdateStatus={onUpdateStatus}
         />
       )}
-    </>
+    </div>
   );
 }
 
-/* ================= MODAL COMPONENT ================= */
+/* ================= DRAWER ================= */
 
-function OrderModal({ order, onClose, onUpdateStatus }) {
-  const STATUS = ["pending", "success", "failed"];
+function OrderDrawer({ order, onClose, onUpdateStatus }) {
+  useEffect(() => {
+    const esc = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  }, [onClose]);
+
+  const handleStatusChange = (newStatus) => {
+    onUpdateStatus(order.orderId, newStatus);
+    onClose(); // ✅ CLOSE MODAL AFTER CHANGE
+  };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
-      <div className="bg-[var(--card)] border border-[var(--border)]
-                      rounded-2xl w-full max-w-lg p-6 relative">
+    <div className="fixed inset-0 z-50 flex">
+      <div
+        onClick={onClose}
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      />
 
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-sm text-[var(--muted)] hover:text-red-500"
-        >
-          ✕
-        </button>
+      <div className="relative ml-auto w-full max-w-md h-full bg-[var(--card)] border-l border-[var(--border)] shadow-2xl animate-slide-in">
 
-        <h3 className="text-lg font-bold mb-4">
-          Order Details
-        </h3>
+        {/* ===== HEADER ===== */}
+        <div className="px-6 py-5 border-b border-[var(--border)] relative space-y-3">
 
-        <div className="space-y-3 text-sm">
-          <Detail label="Order ID" value={order.orderId} mono />
-          <Detail label="Game" value={order.gameSlug} />
-          <Detail label="Item Slug" value={order.itemSlug} />
-          <Detail label="Item Name" value={order.itemName} />
-          <Detail label="Player ID" value={order.playerId} />
-          <Detail label="Zone ID" value={order.zoneId} />
-          <Detail label="Payment" value={order.paymentMethod} />
-          <Detail label="Email" value={order.email} />
-          <Detail label="Phone" value={order.phone} />
-          <Detail label="Payment Status" value={order.paymentStatus} />
-          <Detail label="Topup Status" value={order.topupStatus} />
-          <Detail label="Price" value={`₹${order.price}`} />
-          <Detail
-            label="Created"
-            value={new Date(order.createdAt).toLocaleString()}
-          />
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 h-8 w-8 rounded-full flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-black/10"
+          >
+            ✕
+          </button>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
-            <span className="font-medium">Status</span>
+          <p className="text-xs text-[var(--muted)]">
+            Order Amount
+          </p>
 
-            <select
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-extrabold text-green-400">
+              ₹{order.price}
+            </span>
+
+            {/* STATUS IN HEADER */}
+            <StatusSelect
               value={order.status}
-              disabled={order.status === "success"}
-              onChange={(e) =>
-                onUpdateStatus(order.orderId, e.target.value)
-              }
-              className={`px-3 py-1 rounded-lg text-xs border
-                ${
-                  order.status === "success"
-                    ? "bg-green-500/10 border-green-500 text-green-500 cursor-not-allowed"
-                    : "bg-[var(--background)] border-[var(--border)]"
-                }`}
-            >
-              {STATUS.map((s) => (
-                <option key={s} value={s}>
-                  {s.toUpperCase()}
-                </option>
-              ))}
-            </select>
+              onChange={handleStatusChange}
+            />
           </div>
+
+          <p className="text-xs text-[var(--muted)] break-all">
+            {order.orderId}
+          </p>
+        </div>
+
+        {/* ===== CONTENT ===== */}
+        <div className="p-6 space-y-6 overflow-y-auto h-[calc(100%-120px)] text-sm">
+          <Section title="Game & Item">
+            <Detail label="Game" value={order.gameSlug} />
+            <Detail label="Item" value={order.itemName} />
+            <Detail label="Slug" value={order.itemSlug} />
+          </Section>
+
+          <Section title="Player">
+            <Detail label="Player ID" value={order.playerId} />
+            <Detail label="Zone ID" value={order.zoneId} />
+          </Section>
+
+          <Section title="Payment">
+            <Detail label="Method" value={order.paymentMethod} />
+            <Detail label="Payment Status" value={order.paymentStatus} />
+            <Detail label="Topup Status" value={order.topupStatus} />
+          </Section>
+
+          <Section title="User">
+            <Detail label="Email" value={order.email || "—"} />
+            <Detail label="Phone" value={order.phone || "—"} />
+            <Detail
+              label="Created"
+              value={new Date(order.createdAt).toLocaleString()}
+            />
+          </Section>
         </div>
       </div>
     </div>
   );
 }
 
-/* ================= HELPER ================= */
+/* ================= UI HELPERS ================= */
 
-function Detail({ label, value, mono }) {
+function StatusSelect({ value, onChange }) {
+  const styles = {
+    pending: "bg-yellow-500/15 border-yellow-500 text-yellow-400",
+    success: "bg-green-500/15 border-green-500 text-green-400",
+    failed: "bg-red-500/15 border-red-500 text-red-400",
+  };
+
   return (
-    <div className="flex justify-between gap-4 min-w-0">
-      <span className="text-[var(--muted)]">{label}</span>
-      <span
-        className={`${
-          mono ? "font-mono text-xs" : "font-medium"
-        } break-words max-w-[60%] text-right`}
-      >
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={`h-8 px-3 rounded-lg text-xs font-semibold border ${styles[value]}`}
+    >
+      <option value="pending">PENDING</option>
+      <option value="success">SUCCESS</option>
+      <option value="failed">FAILED</option>
+    </select>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <div>
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)] mb-3">
+        {title}
+      </h4>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function Detail({ label, value }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <span className="text-xs text-[var(--muted)]">{label}</span>
+      <span className="font-medium break-words max-w-[60%] text-right">
         {value}
       </span>
     </div>

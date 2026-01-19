@@ -1,23 +1,29 @@
 "use client";
 
 export default function UsersTab({
-  users,
+  users = [],
   updatingUserId,
   onChangeRole,
+  page = 1,
+  limit = 10,
 }) {
+  const getIndex = (i) => (page - 1) * limit + i + 1;
+
   return (
     <div className="w-full space-y-4">
-      {/* ===== Mobile View ===== */}
+
+      {/* ================= MOBILE ================= */}
       <div className="md:hidden space-y-3">
         {users.map((u, i) => (
           <div
             key={u._id}
             className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-4 shadow-sm"
           >
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-3">
               <span className="text-xs text-[var(--muted)]">
-                #{i + 1}
+                #{getIndex(i)}
               </span>
+
               {updatingUserId === u.userId && (
                 <span className="text-xs text-[var(--muted)]">
                   Updating…
@@ -25,9 +31,20 @@ export default function UsersTab({
               )}
             </div>
 
-            <p className="font-medium">{u.name}</p>
-            <p className="text-sm text-[var(--muted)]">{u.email}</p>
-            <p className="text-sm text-[var(--muted)]">
+            <div className="flex items-center gap-3">
+              <Avatar user={u} />
+
+              <div className="min-w-0">
+                <p className="font-medium truncate">
+                  {u.name}
+                </p>
+                <p className="text-xs text-[var(--muted)] truncate">
+                  {u.email}
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-2 text-sm text-[var(--muted)]">
               📞 {u.phone || "N/A"}
             </p>
 
@@ -43,15 +60,15 @@ export default function UsersTab({
                   onChangeRole(u.userId, e.target.value)
                 }
                 className="
-                  bg-[var(--background)]
+                  h-8 px-3 rounded-lg
                   border border-[var(--border)]
-                  rounded-lg px-3 py-1 text-sm
+                  bg-[var(--background)]
+                  text-sm
                 "
               >
                 <option value="user">User</option>
+                <option value="member">Member</option>
                 <option value="admin">Admin</option>
-               <option value="member">Member</option>
-
                 {u.userType === "owner" && (
                   <option value="owner">Owner</option>
                 )}
@@ -61,17 +78,16 @@ export default function UsersTab({
         ))}
       </div>
 
-      {/* ===== Desktop Table View ===== */}
-      <div className="hidden md:block overflow-x-auto">
+      {/* ================= DESKTOP ================= */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--card)]">
         <table className="w-full text-sm">
-          <thead className="border-b border-[var(--border)] text-left">
-            <tr className="text-[var(--muted)]">
-              <th className="py-3 px-2">#</th>
-              <th className="py-3 px-2">Name</th>
-              <th className="py-3 px-2">Email</th>
-              <th className="py-3 px-2">Phone</th>
-              <th className="py-3 px-2">Orders</th>
-              <th className="py-3 px-2">Role</th>
+          <thead className="bg-black/10">
+            <tr className="text-xs uppercase tracking-wide text-[var(--muted)]">
+              <th className="px-4 py-3 text-left">#</th>
+              <th className="px-4 py-3 text-left">User</th>
+              <th className="px-4 py-3 text-left">Email</th>
+              <th className="px-4 py-3 text-left">Phone</th>
+              <th className="px-4 py-3 text-left">Role</th>
             </tr>
           </thead>
 
@@ -79,50 +95,103 @@ export default function UsersTab({
             {users.map((u, i) => (
               <tr
                 key={u._id}
-                className="border-b border-[var(--border)] hover:bg-[var(--hover)] transition"
+                className="border-t border-[var(--border)] hover:bg-black/5 transition"
               >
-                <td className="py-3 px-2">{i + 1}</td>
-                <td className="py-3 px-2 font-medium">
-                  {u.name}
+                <td className="px-4 py-3 text-xs text-[var(--muted)]">
+                  {getIndex(i)}
                 </td>
-                <td className="py-3 px-2">{u.email}</td>
-                <td className="py-3 px-2">
+
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar user={u} />
+
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">
+                        {u.name}
+                      </p>
+                      <p className="text-xs text-[var(--muted)] truncate">
+                        {u.userId}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+
+                <td className="px-4 py-3 text-xs break-all">
+                  {u.email}
+                </td>
+
+                <td className="px-4 py-3 text-xs">
                   {u.phone || "—"}
                 </td>
-                <td className="py-3 px-2">{u.order}</td>
-                <td className="py-3 px-2 flex items-center gap-2">
-                  <select
-                    value={u.userType}
-                    disabled={u.userType === "owner"}
-                    onChange={(e) =>
-                      onChangeRole(u.userId, e.target.value)
-                    }
-                    className="
-                      bg-[var(--background)]
-                      border border-[var(--border)]
-                      rounded-lg px-2 py-1
-                    "
-                  >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                     <option value="member">Member</option>
 
-                    {u.userType === "owner" && (
-                      <option value="owner">Owner</option>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={u.userType}
+                      disabled={u.userType === "owner"}
+                      onChange={(e) =>
+                        onChangeRole(u.userId, e.target.value)
+                      }
+                      className="
+                        h-8 px-3 rounded-lg
+                        border border-[var(--border)]
+                        bg-[var(--background)]
+                        text-sm
+                      "
+                    >
+                      <option value="user">User</option>
+                      <option value="member">Member</option>
+                      <option value="admin">Admin</option>
+                      {u.userType === "owner" && (
+                        <option value="owner">Owner</option>
+                      )}
+                    </select>
+
+                    {updatingUserId === u.userId && (
+                      <span className="text-xs text-[var(--muted)]">
+                        Updating…
+                      </span>
                     )}
-                  </select>
-
-                  {updatingUserId === u.userId && (
-                    <span className="text-xs text-[var(--muted)]">
-                      Updating…
-                    </span>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+/* ================= AVATAR ================= */
+
+function Avatar({ user }) {
+  if (user.avatar) {
+    return (
+      <img
+        src={user.avatar}
+        alt={user.name}
+        className="h-9 w-9 rounded-full object-cover border border-[var(--border)]"
+      />
+    );
+  }
+
+  // Fallback initials from userId
+  const initials = user.userId
+    ?.replace(/[^A-Za-z]/g, "")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <div
+      className="
+        h-9 w-9 rounded-full
+        flex items-center justify-center
+        text-xs font-bold text-white
+        bg-gradient-to-br from-[var(--accent)] to-purple-500
+      "
+    >
+      {initials || "U"}
     </div>
   );
 }

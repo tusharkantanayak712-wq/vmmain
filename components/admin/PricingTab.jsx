@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+const API_BASE = "https://game-off-ten.vercel.app/api/v1";
+
 export default function PricingTab({
   pricingType,
   setPricingType,
@@ -10,13 +14,74 @@ export default function PricingTab({
   savingPricing,
   onSave,
 }) {
+  /* ================= API STATE ================= */
+
+  const [games, setGames] = useState([]);
+  const [itemsByGame, setItemsByGame] = useState({});
+
+  /* ================= FETCH GAMES ================= */
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/games/list`);
+        const json = await res.json();
+        if (json.success) setGames(json.data.games);
+      } catch (err) {
+        console.error("Failed to fetch games", err);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
+  /* ================= FETCH ITEMS ================= */
+
+  const fetchItemsForGame = async (gameSlug) => {
+    if (!gameSlug || itemsByGame[gameSlug]) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/games/${gameSlug}/items`);
+      const json = await res.json();
+      if (json.success) {
+        setItemsByGame((prev) => ({
+          ...prev,
+          [gameSlug]: json.data.items,
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to fetch items", err);
+    }
+  };
+
+  /* ================= VALIDATION ================= */
+
+  const isValidSlabs = slabs.every(
+    (s) =>
+      s.min >= 0 &&
+      s.max >= 0 &&
+      s.percent >= 0 &&
+      Number.isFinite(s.min) &&
+      Number.isFinite(s.max) &&
+      Number.isFinite(s.percent) &&
+      s.max >= s.min
+  );
+
+  const isValidOverrides = overrides.every(
+    (o) => o.fixedPrice >= 0 && Number.isFinite(o.fixedPrice)
+  );
+
   const canSave =
-    !savingPricing && (slabs.length > 0 || overrides.length > 0);
+    !savingPricing &&
+    (slabs.length > 0 || overrides.length > 0) &&
+    isValidSlabs &&
+    isValidOverrides;
 
   /* ================= SLABS ================= */
+
   const updateSlab = (i, key, value) => {
     const next = [...slabs];
-    next[i][key] = Number(value);
+    next[i][key] = Math.max(0, Number(value) || 0);
     setSlabs(next);
   };
 
@@ -25,14 +90,15 @@ export default function PricingTab({
   };
 
   const deleteSlab = (i) => {
-    const next = slabs.filter((_, index) => index !== i);
-    setSlabs(next.length ? next : []);
+    setSlabs(slabs.filter((_, index) => index !== i));
   };
 
   /* ================= FIXED PRICES ================= */
+
   const updateOverride = (i, key, value) => {
     const next = [...overrides];
-    next[i][key] = key === "fixedPrice" ? Number(value) : value;
+    next[i][key] =
+      key === "fixedPrice" ? Math.max(0, Number(value) || 0) : value;
     setOverrides(next);
   };
 
@@ -48,26 +114,41 @@ export default function PricingTab({
   };
 
   return (
-    <div className="max-w-5xl space-y-12">
-
+    <div className="max-w-6xl space-y-10">
       {/* ================= HEADER ================= */}
-      <div>
-        <h2 className="text-xl font-bold">Pricing Rules</h2>
-        <p className="text-sm text-[var(--muted)]">
-          Configure separate pricing for each user role.
+      <div className="space-y-2">
+        <h2 className="text-2xl font-black tracking-tight">Pricing Rules</h2>
+        <p className="text-sm text-gray/60 max-w-xl">
+          Configure dynamic pricing logic with range-based markups and item-level overrides.
         </p>
       </div>
 
+      {/* ================= INFO ================= */}
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5 text-sm shadow-lg">
+        <p className="font-semibold mb-3 text-gray">How pricing is calculated</p>
+        <ul className="list-disc pl-5 space-y-2 text-gray/60">
+          <li>
+            <b>Price Range Markup</b> adds a percentage based on base price.
+          </li>
+          <li>
+            <b>Fixed Item Price</b> overrides slab pricing.
+          </li>
+          <li>Fixed price always takes priority.</li>
+          <li>Negative prices are not allowed.</li>
+        </ul>
+      </div>
+
       {/* ================= USER TYPE ================= */}
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm font-semibold">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <span className="text-sm font-semibold text-gray/80">
           Apply pricing for
         </span>
-
         <select
           value={pricingType}
           onChange={(e) => setPricingType(e.target.value)}
-          className="px-4 py-2 rounded-lg border bg-[var(--background)]"
+          className="h-10 px-4 rounded-full border border-white/10 bg-black/40
+                     text-sm font-semibold backdrop-blur
+                     focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40 transition"
         >
           <option value="user">Normal Users</option>
           <option value="member">Members</option>
@@ -76,97 +157,55 @@ export default function PricingTab({
       </div>
 
       {/* ================= SLAB PRICING ================= */}
-      <section className="space-y-4">
-        <h3 className="text-lg font-semibold">Price Range Markup</h3>
-        <p className="text-sm text-[var(--muted)]">
-          Add percentage markup based on base price range.
-        </p>
-
-        {/* Mobile */}
-        <div className="md:hidden space-y-3">
-          {slabs.map((s, i) => (
-            <div key={i} className="border rounded-xl p-4 space-y-3">
-              <input
-                type="number"
-                placeholder="Minimum Price (₹)"
-                value={s.min}
-                onChange={(e) => updateSlab(i, "min", e.target.value)}
-                className="input"
-              />
-              <input
-                type="number"
-                placeholder="Maximum Price (₹)"
-                value={s.max}
-                onChange={(e) => updateSlab(i, "max", e.target.value)}
-                className="input"
-              />
-              <input
-                type="number"
-                placeholder="Extra Charge (%)"
-                value={s.percent}
-                onChange={(e) =>
-                  updateSlab(i, "percent", e.target.value)
-                }
-                className="input"
-              />
-              <button
-                onClick={() => deleteSlab(i)}
-                className="text-sm text-red-400"
-              >
-                Remove Range
-              </button>
-            </div>
-          ))}
+      <section className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl overflow-hidden shadow-lg">
+        <div className="px-6 py-4 border-b border-white/10">
+          <h3 className="font-semibold">Price Range Markup</h3>
+          <p className="text-sm text-gray/60">Example: ₹200 + 10% → ₹220</p>
         </div>
 
-        {/* Desktop */}
-        <div className="hidden md:block border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-black/20">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[520px] text-sm">
+            <thead className="bg-white/[0.04] text-gray/70">
               <tr>
-                <th className="px-4 py-3">Min ₹</th>
-                <th className="px-4 py-3">Max ₹</th>
-                <th className="px-4 py-3">Extra %</th>
-                <th className="px-4 py-3 text-right">Action</th>
+                <th className="px-6 py-3 text-left">From (₹)</th>
+                <th className="px-6 py-3 text-left">To (₹)</th>
+                <th className="px-6 py-3 text-left">Extra %</th>
+                <th className="px-6 py-3 text-right" />
               </tr>
             </thead>
             <tbody>
               {slabs.map((s, i) => (
-                <tr key={i} className="border-t">
-                  <td className="px-4 py-2">
+                <tr key={i} className="border-t border-white/10">
+                  <td className="px-6 py-3">
                     <input
                       type="number"
                       value={s.min}
-                      onChange={(e) =>
-                        updateSlab(i, "min", e.target.value)
-                      }
-                      className="input"
+                      onChange={(e) => updateSlab(i, "min", e.target.value)}
+                      className="input h-10 md:h-9 text-base md:text-sm"
                     />
                   </td>
-                  <td className="px-4 py-2">
+                  <td className="px-6 py-3">
                     <input
                       type="number"
                       value={s.max}
-                      onChange={(e) =>
-                        updateSlab(i, "max", e.target.value)
-                      }
-                      className="input"
+                      onChange={(e) => updateSlab(i, "max", e.target.value)}
+                      className="input h-10 md:h-9 text-base md:text-sm"
                     />
                   </td>
-                  <td className="px-4 py-2">
+                  <td className="px-6 py-3">
                     <input
                       type="number"
                       value={s.percent}
                       onChange={(e) =>
                         updateSlab(i, "percent", e.target.value)
                       }
-                      className="input"
+                      className="input h-10 md:h-9 text-base md:text-sm"
                     />
                   </td>
-                  <td className="px-4 py-2 text-right">
+                  <td className="px-6 py-3 text-right">
                     <button
                       onClick={() => deleteSlab(i)}
-                      className="text-xs text-red-400"
+                      className="text-xs text-red-400 hover:text-red-300"
                     >
                       Delete
                     </button>
@@ -177,68 +216,100 @@ export default function PricingTab({
           </table>
         </div>
 
-        <button
-          onClick={addSlab}
-          className="text-sm font-semibold text-[var(--accent)]"
-        >
-          + Add Price Range
-        </button>
+        <div className="px-6 py-4">
+          <button
+            onClick={addSlab}
+            className="text-sm font-semibold text-[var(--accent)]"
+          >
+            + Add Price Range
+          </button>
+        </div>
       </section>
 
       {/* ================= FIXED PRICING ================= */}
-      <section className="space-y-4">
-        <h3 className="text-lg font-semibold">Fixed Item Price</h3>
-        <p className="text-sm text-[var(--muted)]">
-          Overrides slab pricing for specific items.
-        </p>
+      <section className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-lg">
+        <div className="px-6 py-4 border-b border-white/10">
+          <h3 className="font-semibold">Fixed Item Pricing</h3>
+        </div>
 
-        <div className="space-y-3">
+        <div className="p-4 sm:p-6 space-y-4">
           {overrides.map((o, i) => (
             <div
               key={i}
-              className="border rounded-xl p-4 grid gap-3 md:grid-cols-4"
+              className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-center
+                         rounded-2xl border border-white/10 bg-black/30 p-4"
             >
               <input
-                placeholder="Game Slug"
+                list="game-list"
+                placeholder="Game"
                 value={o.gameSlug}
-                onChange={(e) =>
-                  updateOverride(i, "gameSlug", e.target.value)
-                }
-                className="input"
+                onChange={(e) => {
+                  const slug = e.target.value;
+                  updateOverride(i, "gameSlug", slug);
+                  updateOverride(i, "itemSlug", "");
+                  fetchItemsForGame(slug);
+                }}
+                className="input h-10 text-base md:text-sm"
               />
+
+              <datalist id="game-list">
+                {games.map((g) => (
+                  <option key={g.gameSlug} value={g.gameSlug}>
+                    {g.gameName}
+                  </option>
+                ))}
+              </datalist>
+
               <input
-                placeholder="Item Slug"
+                list={`item-list-${i}`}
+                placeholder="Item"
                 value={o.itemSlug}
-                onChange={(e) =>
-                  updateOverride(i, "itemSlug", e.target.value)
-                }
-                className="input"
+                onChange={(e) => {
+                  const slug = e.target.value;
+                  updateOverride(i, "itemSlug", slug);
+                  const item = itemsByGame[o.gameSlug]?.find(
+                    (it) => it.itemSlug === slug
+                  );
+                  if (item) {
+                    updateOverride(i, "fixedPrice", item.sellingPrice);
+                  }
+                }}
+                className="input h-10 text-base md:text-sm"
               />
+
+              <datalist id={`item-list-${i}`}>
+                {(itemsByGame[o.gameSlug] || []).map((item) => (
+                  <option key={item.itemSlug} value={item.itemSlug}>
+                    {item.itemName}
+                  </option>
+                ))}
+              </datalist>
+
               <input
                 type="number"
-                placeholder="Final Price ₹"
                 value={o.fixedPrice}
                 onChange={(e) =>
                   updateOverride(i, "fixedPrice", e.target.value)
                 }
-                className="input"
+                className="input h-10 text-base md:text-sm"
               />
+
               <button
                 onClick={() => deleteOverride(i)}
-                className="text-sm text-red-400 text-left md:text-right"
+                className="text-xs text-red-400 hover:text-red-300 sm:col-span-2 lg:col-span-1 sm:text-right"
               >
                 Delete
               </button>
             </div>
           ))}
-        </div>
 
-        <button
-          onClick={addOverride}
-          className="text-sm font-semibold text-[var(--accent)]"
-        >
-          + Add Fixed Price
-        </button>
+          <button
+            onClick={addOverride}
+            className="text-sm font-semibold text-[var(--accent)]"
+          >
+            + Add Fixed Price
+          </button>
+        </div>
       </section>
 
       {/* ================= SAVE ================= */}
@@ -246,11 +317,13 @@ export default function PricingTab({
         <button
           onClick={onSave}
           disabled={!canSave}
-          className={`px-6 py-2 rounded-lg font-semibold ${
-            canSave
-              ? "bg-[var(--accent)] text-black"
-              : "bg-gray-500/40 text-gray-400 cursor-not-allowed"
-          }`}
+          className={`h-11 px-7 rounded-lg text-sm font-semibold transition
+            w-full sm:w-auto
+            ${
+              canSave
+                ? "bg-[var(--accent)] text-black hover:bg-[var(--accent)]/90"
+                : "bg-white/10 text-gray/40 cursor-not-allowed"
+            }`}
         >
           {savingPricing ? "Saving..." : "Save Pricing"}
         </button>

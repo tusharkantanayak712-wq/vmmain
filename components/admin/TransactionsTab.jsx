@@ -1,37 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function TransactionsTab({ transactions = [] }) {
   const [selectedTx, setSelectedTx] = useState(null);
 
-  const statusStyle = {
-    success: "bg-green-500/15 text-green-400",
-    failed: "bg-red-500/15 text-red-400",
-    pending: "bg-yellow-500/15 text-yellow-400",
+  const statusMeta = {
+    success: "bg-green-500/20 text-green-400",
+    failed: "bg-red-500/20 text-red-400",
+    pending: "bg-yellow-500/20 text-yellow-400",
   };
 
   return (
-    <>
+    <div className="space-y-6">
+
       {/* ================= HEADER ================= */}
-      <div className="mb-4">
-        <h2 className="text-lg font-bold">Transactions</h2>
+      <div>
+        <h2 className="text-xl font-extrabold tracking-tight">
+          Transactions
+        </h2>
         <p className="text-sm text-[var(--muted)]">
-          Successful and processed payments.
+          All processed and attempted payments.
         </p>
       </div>
 
-      {/* ================= DESKTOP TABLE ================= */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
+      {/* ================= DESKTOP ================= */}
+      <div className="hidden md:block rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-black/20 border-b border-[var(--border)]">
-            <tr className="text-left text-[var(--muted)]">
-              <th className="py-3 px-4">Date</th>
-              <th className="px-4">Order ID</th>
-              <th className="px-4">User</th>
-              <th className="px-4">Game</th>
-              <th className="px-4">Amount</th>
-              <th className="px-4">Status</th>
+          <thead className="bg-black/5">
+            <tr className="text-xs uppercase tracking-wide text-[var(--muted)]">
+              <th className="px-5 py-3 text-left">Date</th>
+              <th className="px-5 py-3 text-left">Order ID</th>
+              <th className="px-5 py-3 text-left">User</th>
+              <th className="px-5 py-3 text-left">Game</th>
+              <th className="px-5 py-3 text-right">Amount</th>
+              <th className="px-5 py-3 text-left">Status</th>
             </tr>
           </thead>
 
@@ -40,34 +43,33 @@ export default function TransactionsTab({ transactions = [] }) {
               <tr
                 key={t._id}
                 onClick={() => setSelectedTx(t)}
-                className="border-t border-[var(--border)]
-                           cursor-pointer hover:bg-white/5 transition"
+                className="border-t border-[var(--border)] hover:bg-black/5 cursor-pointer transition"
               >
-                <td className="py-3 px-4 text-xs text-[var(--muted)]">
+                <td className="px-5 py-4 text-xs text-[var(--muted)]">
                   {new Date(t.createdAt).toLocaleString()}
                 </td>
 
-                <td className="px-4 font-mono text-xs break-all">
+                <td className="px-5 py-4 font-mono text-xs break-all">
                   {t.orderId}
                 </td>
 
-                <td className="px-4 break-all">
+                <td className="px-5 py-4 truncate">
                   {t.email || t.userId || "—"}
                 </td>
 
-                <td className="px-4">{t.gameSlug}</td>
+                <td className="px-5 py-4 capitalize text-[var(--muted)]">
+                  {t.gameSlug}
+                </td>
 
-                <td className="px-4 font-semibold text-green-400">
+                <td className="px-5 py-4 text-right font-bold text-green-400">
                   ₹{t.price}
                 </td>
 
-                <td className="px-4">
+                <td className="px-5 py-4">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      statusStyle[t.status] || "bg-gray-500/15"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${statusMeta[t.status]}`}
                   >
-                    {t.status}
+                    {t.status.toUpperCase()}
                   </span>
                 </td>
               </tr>
@@ -75,10 +77,7 @@ export default function TransactionsTab({ transactions = [] }) {
 
             {!transactions.length && (
               <tr>
-                <td
-                  colSpan={6}
-                  className="py-8 text-center text-[var(--muted)]"
-                >
+                <td colSpan={6} className="py-12 text-center text-[var(--muted)]">
                   No transactions found
                 </td>
               </tr>
@@ -87,108 +86,163 @@ export default function TransactionsTab({ transactions = [] }) {
         </table>
       </div>
 
-      {/* ================= MOBILE CARDS ================= */}
-      <div className="md:hidden space-y-3 overflow-x-hidden">
+      {/* ================= MOBILE ================= */}
+      <div className="md:hidden space-y-3">
         {transactions.map((t) => (
           <div
             key={t._id}
             onClick={() => setSelectedTx(t)}
-            className="rounded-2xl border border-[var(--border)]
-                       bg-[var(--card)] p-4
-                       cursor-pointer active:scale-[0.98]
-                       transition overflow-hidden"
+            className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 space-y-2 cursor-pointer active:scale-[0.98] transition"
           >
-            <div className="flex justify-between items-start mb-2 min-w-0">
-              <div className="text-xs text-[var(--muted)] truncate">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-[var(--muted)]">
                 {new Date(t.createdAt).toLocaleDateString()}
-              </div>
+              </span>
 
               <span
-                className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${
-                  statusStyle[t.status] || "bg-gray-500/15"
-                }`}
+                className={`px-2 py-0.5 rounded-full text-xs font-semibold ${statusMeta[t.status]}`}
               >
                 {t.status}
               </span>
             </div>
 
-            <div className="text-sm font-semibold text-green-400">
+            <div className="text-lg font-bold text-green-400">
               ₹{t.price}
             </div>
 
-            <div className="text-xs text-[var(--muted)] mt-1">
+            <div className="text-xs text-[var(--muted)] capitalize">
               {t.gameSlug}
             </div>
 
-            <div className="mt-2 text-xs break-all line-clamp-1">
+            <div className="text-xs font-mono truncate">
               {t.orderId}
             </div>
 
-            <div className="mt-1 text-xs text-[var(--muted)] break-all truncate">
+            <div className="text-xs text-[var(--muted)] truncate">
               {t.email || t.userId || "—"}
             </div>
           </div>
         ))}
-
-        {!transactions.length && (
-          <p className="text-center text-[var(--muted)] py-8">
-            No transactions found
-          </p>
-        )}
       </div>
 
-      {/* ================= MODAL ================= */}
+      {/* ================= DRAWER ================= */}
       {selectedTx && (
-        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
-          <div className="relative w-full max-w-md rounded-2xl
-                          bg-[var(--card)] border border-[var(--border)]
-                          p-6 overflow-hidden">
-
-            <button
-              onClick={() => setSelectedTx(null)}
-              className="absolute top-3 right-3 text-[var(--muted)] hover:text-white"
-            >
-              ✕
-            </button>
-
-            <h3 className="text-lg font-bold mb-4">
-              Transaction Details
-            </h3>
-
-            <div className="space-y-3 text-sm">
-              <Detail label="Order ID" value={selectedTx.orderId} />
-              <Detail label="Game" value={selectedTx.gameSlug} />
-              <Detail
-                label="Item"
-                value={`${selectedTx.itemName} (${selectedTx.itemSlug})`}
-              />
-              <Detail label="Player ID" value={selectedTx.playerId} />
-              <Detail label="Zone ID" value={selectedTx.zoneId} />
-              <Detail label="Payment Method" value={selectedTx.paymentMethod} />
-              <Detail label="Amount" value={`₹${selectedTx.price}`} />
-              <Detail label="Status" value={selectedTx.status} />
-              <Detail label="Payment Status" value={selectedTx.paymentStatus} />
-              <Detail label="Topup Status" value={selectedTx.topupStatus} />
-              <Detail label="Email" value={selectedTx.email || "—"} />
-              <Detail label="Phone" value={selectedTx.phone || "—"} />
-              <Detail
-                label="Created At"
-                value={new Date(selectedTx.createdAt).toLocaleString()}
-              />
-            </div>
-          </div>
-        </div>
+        <TransactionDrawer
+          tx={selectedTx}
+          onClose={() => setSelectedTx(null)}
+        />
       )}
-    </>
+    </div>
   );
 }
 
-/* ================= HELPER ================= */
+/* ================= DRAWER ================= */
+
+function TransactionDrawer({ tx, onClose }) {
+  useEffect(() => {
+    const esc = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  }, [onClose]);
+
+  const statusMeta = {
+    success: "bg-green-500/20 text-green-400",
+    failed: "bg-red-500/20 text-red-400",
+    pending: "bg-yellow-500/20 text-yellow-400",
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex">
+      {/* Overlay */}
+      <div
+        onClick={onClose}
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      />
+
+      {/* Drawer */}
+      <div className="relative ml-auto w-full max-w-md h-full bg-[var(--card)] border-l border-[var(--border)] shadow-2xl animate-slide-in">
+
+        {/* ===== HEADER ===== */}
+        <div className="px-6 py-5 border-b border-[var(--border)] relative space-y-2">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 h-8 w-8 rounded-full flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-black/10"
+          >
+            ✕
+          </button>
+
+          <p className="text-xs text-[var(--muted)]">
+            Transaction Amount
+          </p>
+
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-extrabold text-green-400">
+              ₹{tx.price}
+            </span>
+
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${statusMeta[tx.status]}`}
+            >
+              {tx.status.toUpperCase()}
+            </span>
+          </div>
+
+          <p className="text-xs text-[var(--muted)] font-mono break-all">
+            {tx.orderId}
+          </p>
+        </div>
+
+        {/* ===== CONTENT ===== */}
+        <div className="p-6 space-y-6 overflow-y-auto h-[calc(100%-120px)] text-sm">
+          <Section title="Game & Item">
+            <Detail label="Game" value={tx.gameSlug} />
+            <Detail label="Item Name" value={tx.itemName} />
+            <Detail label="Item Slug" value={tx.itemSlug} />
+          </Section>
+
+          <Section title="Player">
+            <Detail label="Player ID" value={tx.playerId} />
+            <Detail label="Zone ID" value={tx.zoneId} />
+          </Section>
+
+          <Section title="Payment">
+            <Detail label="Method" value={tx.paymentMethod} />
+            <Detail label="Payment Status" value={tx.paymentStatus} />
+            <Detail label="Topup Status" value={tx.topupStatus} />
+          </Section>
+
+          <Section title="User">
+            <Detail label="Email" value={tx.email || "—"} />
+            <Detail label="Phone" value={tx.phone || "—"} />
+            <Detail
+              label="Created"
+              value={new Date(tx.createdAt).toLocaleString()}
+            />
+          </Section>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ================= HELPERS ================= */
+
+function Section({ title, children }) {
+  return (
+    <div>
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)] mb-3">
+        {title}
+      </h4>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
 function Detail({ label, value }) {
   return (
-    <div className="flex justify-between gap-4 min-w-0">
-      <span className="text-[var(--muted)]">{label}</span>
-      <span className="font-medium text-right break-words max-w-[60%]">
+    <div className="flex justify-between gap-4">
+      <span className="text-xs text-[var(--muted)]">{label}</span>
+      <span className="font-medium break-words max-w-[60%] text-right">
         {value}
       </span>
     </div>

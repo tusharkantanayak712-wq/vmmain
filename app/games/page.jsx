@@ -49,7 +49,7 @@ export default function GamesPage() {
         setGames(
           (data?.data?.games || []).map((g) =>
             g.gameName === "PUBG Mobile"
-              ? { ...g, gameName: "BGMI" }
+              ? { ...g, gameName: "PUBG Mobile" }
               : g
           )
         );

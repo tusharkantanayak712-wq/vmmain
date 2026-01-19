@@ -27,25 +27,28 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
   const getStatus = (status) => status || "open";
 
   return (
-    <>
+    <div className="space-y-6">
+
       {/* ================= HEADER ================= */}
-      <div className="mb-4">
-        <h2 className="text-lg font-bold">Support Queries</h2>
+      <div>
+        <h2 className="text-lg font-extrabold tracking-tight">
+          Support Queries
+        </h2>
         <p className="text-sm text-[var(--muted)]">
-          Messages submitted by users.
+          Messages submitted by users that require attention.
         </p>
       </div>
 
       {/* ================= DESKTOP TABLE ================= */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
+      <div className="hidden md:block rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--card)]">
         <table className="w-full text-sm">
-          <thead className="bg-black/20">
-            <tr className="text-left text-[var(--muted)]">
-              <th className="py-3 px-4">User</th>
-              <th className="px-4">Type</th>
-              <th className="px-4">Message</th>
-              <th className="px-4">Status</th>
-              <th className="px-4">Created</th>
+          <thead className="bg-black/10">
+            <tr className="text-left text-xs uppercase tracking-wide text-[var(--muted)]">
+              <th className="px-5 py-3">User</th>
+              <th className="px-5 py-3">Type</th>
+              <th className="px-5 py-3">Message</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3">Created</th>
             </tr>
           </thead>
 
@@ -58,33 +61,41 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
                 <tr
                   key={q._id}
                   onClick={() => setActiveQuery(q)}
-                  className="border-t border-[var(--border)]
-                             hover:bg-white/5 cursor-pointer transition"
+                  className="
+                    border-t border-[var(--border)]
+                    hover:bg-black/5
+                    cursor-pointer
+                    transition
+                  "
                 >
-                  <td className="py-3 px-4">
+                  <td className="px-5 py-3">
                     <div className="font-medium break-all">
                       {q.email || "User"}
                     </div>
-                    <div className="text-xs text-[var(--muted)]">
-                      {q.phone || ""}
-                    </div>
+                    {q.phone && (
+                      <div className="text-xs text-[var(--muted)]">
+                        {q.phone}
+                      </div>
+                    )}
                   </td>
 
-                  <td className="px-4 capitalize">{q.type}</td>
+                  <td className="px-5 py-3 capitalize text-[var(--muted)]">
+                    {q.type}
+                  </td>
 
-                  <td className="px-4 max-w-xs truncate text-[var(--muted)]">
+                  <td className="px-5 py-3 max-w-sm truncate text-[var(--muted)]">
                     {q.message}
                   </td>
 
-                  <td className="px-4">
+                  <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${meta.class}`}
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${meta.class}`}
                     >
                       {meta.label}
                     </span>
                   </td>
 
-                  <td className="px-4 text-xs text-[var(--muted)]">
+                  <td className="px-5 py-3 text-xs text-[var(--muted)]">
                     {new Date(q.createdAt).toLocaleString()}
                   </td>
                 </tr>
@@ -95,7 +106,7 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
               <tr>
                 <td
                   colSpan={5}
-                  className="text-center py-8 text-[var(--muted)]"
+                  className="text-center py-10 text-[var(--muted)]"
                 >
                   No support queries yet
                 </td>
@@ -106,7 +117,7 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
       </div>
 
       {/* ================= MOBILE CARDS ================= */}
-      <div className="md:hidden space-y-3 overflow-x-hidden">
+      <div className="md:hidden space-y-3">
         {queries.map((q) => {
           const status = getStatus(q.status);
           const meta = statusMeta[status];
@@ -115,33 +126,36 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
             <div
               key={q._id}
               onClick={() => setActiveQuery(q)}
-              className="rounded-2xl border border-[var(--border)]
-                         bg-[var(--card)] p-4
-                         active:scale-[0.98] transition
-                         overflow-hidden"
+              className="
+                rounded-xl border border-[var(--border)]
+                bg-[var(--card)]
+                p-4
+                space-y-2
+                active:scale-[0.98]
+                transition
+              "
             >
-              <div className="flex justify-between items-start mb-2 min-w-0">
-                <div className="font-semibold break-all truncate max-w-[70%]">
+              <div className="flex items-start justify-between gap-2">
+                <div className="font-semibold truncate">
                   {q.email || q.phone || "User"}
                 </div>
 
                 <span
-                  className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${meta.class}`}
+                  className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-semibold ${meta.class}`}
                 >
                   {meta.label}
                 </span>
               </div>
 
-              <div className="text-xs text-[var(--muted)] capitalize mb-1 truncate">
+              <div className="text-xs capitalize text-[var(--muted)]">
                 {q.type}
               </div>
 
-              <p className="text-sm text-[var(--text)]
-                            break-words line-clamp-2">
+              <p className="text-sm text-[var(--foreground)] line-clamp-2">
                 {q.message}
               </p>
 
-              <div className="mt-2 text-xs text-[var(--muted)] truncate">
+              <div className="text-xs text-[var(--muted)]">
                 {new Date(q.createdAt).toLocaleDateString()}
               </div>
             </div>
@@ -158,16 +172,22 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
       {/* ================= MODAL ================= */}
       {activeQuery && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
-          <div className="w-full max-w-md rounded-2xl
-                          bg-[var(--card)] border border-[var(--border)]
-                          p-6 space-y-4">
-
+          <div className="
+            w-full max-w-md
+            rounded-2xl
+            bg-[var(--card)]
+            border border-[var(--border)]
+            p-6
+            space-y-4
+          ">
             {/* Header */}
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-bold">Support Query</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold">
+                Support Query Details
+              </h3>
               <button
                 onClick={() => setActiveQuery(null)}
-                className="text-[var(--muted)] hover:text-white"
+                className="text-[var(--muted)] hover:text-[var(--foreground)]"
               >
                 ✕
               </button>
@@ -175,26 +195,50 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
 
             {/* Content */}
             <div className="space-y-4 text-sm">
-              <Info label="Contact" value={activeQuery.email || activeQuery.phone || "-"} />
-              <Info label="Type" value={activeQuery.type} capitalize />
+              <Info
+                label="Contact"
+                value={
+                  activeQuery.email ||
+                  activeQuery.phone ||
+                  "-"
+                }
+              />
+
+              <Info
+                label="Type"
+                value={activeQuery.type}
+                capitalize
+              />
 
               <div>
-                <p className="text-xs text-[var(--muted)]">Message</p>
-                <p className="font-medium whitespace-pre-wrap break-words max-w-full">
+                <p className="text-xs text-[var(--muted)] mb-1">
+                  Message
+                </p>
+                <p className="font-medium whitespace-pre-wrap break-words">
                   {activeQuery.message}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs text-[var(--muted)] mb-1">Status</p>
+                <p className="text-xs text-[var(--muted)] mb-1">
+                  Status
+                </p>
                 <select
                   value={getStatus(activeQuery.status)}
                   onChange={(e) => {
-                    onUpdateStatus(activeQuery._id, e.target.value);
+                    onUpdateStatus(
+                      activeQuery._id,
+                      e.target.value
+                    );
                     setActiveQuery(null);
                   }}
-                  className="w-full px-3 py-2 rounded-lg
-                             bg-[var(--background)] border border-[var(--border)]"
+                  className="
+                    w-full h-9
+                    rounded-lg
+                    border border-[var(--border)]
+                    bg-[var(--background)]
+                    text-sm
+                  "
                 >
                   <option value="open">Open</option>
                   <option value="in_progress">In Progress</option>
@@ -204,13 +248,16 @@ export default function SupportQueriesTab({ queries = [], onUpdateStatus }) {
               </div>
 
               <p className="text-xs text-[var(--muted)]">
-                Created: {new Date(activeQuery.createdAt).toLocaleString()}
+                Created:{" "}
+                {new Date(
+                  activeQuery.createdAt
+                ).toLocaleString()}
               </p>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

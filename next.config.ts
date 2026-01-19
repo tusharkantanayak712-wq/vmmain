@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "busan-public.s3.ap-south-1.amazonaws.com",
       },
+        {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
       {
         protocol: "https",
         hostname: "1gamestopup.com", // optional if images come from here later
