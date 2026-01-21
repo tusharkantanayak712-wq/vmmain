@@ -22,6 +22,7 @@
     "next": "^16.0.8",
     "nodemailer": "^7.0.12",
     "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-i18next": "^16.5.0",
