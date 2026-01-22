@@ -131,7 +131,7 @@ export default function AccountTab({ userDetails }: AccountTabProps) {
           </div>
 
           <button
-            disabled={loadingPass}
+            disabled={true}
             onClick={handlePasswordUpdate}
             className="
               w-full sm:w-auto min-w-[220px]
