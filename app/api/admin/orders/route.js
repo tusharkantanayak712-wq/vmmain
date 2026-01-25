@@ -23,7 +23,7 @@ function verifyOwner(req) {
 
 /* =========================
    GET ALL ORDERS (OWNER)
-   + Pagination + Search
+   + Pagination + Search + Filters
 ========================= */
 export async function GET(req) {
   try {
@@ -37,21 +37,42 @@ export async function GET(req) {
     const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 100);
     const search = searchParams.get("search")?.trim();
 
+    // 🔽 FILTERS
+    const status = searchParams.get("status");
+    const gameSlug = searchParams.get("gameSlug");
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+
     const skip = (page - 1) * limit;
 
-    /* ================= SEARCH FILTER ================= */
+    /* ================= FILTER ================= */
     let filter = {};
 
+    // 🔍 Text search
     if (search) {
-      filter = {
-        $or: [
-          { orderId: { $regex: search, $options: "i" } },
-          { gameSlug: { $regex: search, $options: "i" } },
-          { itemName: { $regex: search, $options: "i" } },
-          { playerId: { $regex: search, $options: "i" } },
-          { status: { $regex: search, $options: "i" } },
-        ],
-      };
+      filter.$or = [
+        { orderId: { $regex: search, $options: "i" } },
+        { gameSlug: { $regex: search, $options: "i" } },
+        { itemName: { $regex: search, $options: "i" } },
+        { playerId: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // 📌 Status filter
+    if (status) {
+      filter.status = status;
+    }
+
+    // 🎮 Game filter
+    if (gameSlug) {
+      filter.gameSlug = gameSlug;
+    }
+
+    // 📅 Date range filter
+    if (from || to) {
+      filter.createdAt = {};
+      if (from) filter.createdAt.$gte = new Date(from);
+      if (to) filter.createdAt.$lte = new Date(to);
     }
 
     /* ================= QUERY ================= */
@@ -101,7 +122,7 @@ export async function PATCH(req) {
       );
     }
 
-    const allowedStatus = ["pending", "success", "failed", "refund"];
+    const allowedStatus = ["pending", "success", "failed", "cancelled"];
     if (!allowedStatus.includes(status)) {
       return Response.json(
         { success: false, message: "Invalid status" },
@@ -109,15 +130,11 @@ export async function PATCH(req) {
       );
     }
 
-    /* =========================
-       BUILD UPDATE PAYLOAD
-    ========================= */
     const update = {
       status,
       updatedAt: new Date(),
     };
 
-    // 🔒 OWNER OVERRIDE LOGIC
     if (status === "success") {
       update.paymentStatus = "success";
       update.topupStatus = "success";

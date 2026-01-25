@@ -30,58 +30,57 @@ export async function GET() {
 
 
 
+
 // export async function GET() {
 //   try {
 //     const data = {
 //       statusCode: 200,
 //       success: true,
 //       message: "All banners retrieved",
-// data: [
+//     data: [
 //   {
 //     bannerImage:
-//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766143761/111111off_w8m8ix.jpg",
-//     bannerFrom: "Yuji Main Store",
-//     bannerLink: "https://meowji.store",
-//     bannerTitle: "Christmas Sale – 2% OFF Every Pack 🎄",
-//     bannerSlug: "yuji-christmas-sale-2-percent-off",
+//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619209/ideogram-v3.0_A_high-quality_horizontal_rectangular_website_banner_for_a_gaming_top-up_platfor-0_1_ckhsxa.png",
+//     bannerFrom: "Blue Buff",
+//     bannerLink: "https://bluebuff.com",
+//     bannerTitle: "Blue Buff – MLBB Diamond Top-Up",
+//     bannerSlug: "blue-buff-mlbb-diamond-topup",
 //     gameId: ["mlbb"],
 //     bannerDate: "2025-04-30T00:00:00.000Z",
 //     bannerSummary:
-//       "Christmas Sale is live! Enjoy 2% OFF on every MLBB Diamond pack. Limited-time festive offer 🎁",
+//       "Your one-stop MLBB top-up destination. Get affordable Diamonds 💎 with instant delivery and trusted service.",
 //     isShow: true,
 //     __v: 0,
 //   },
 //   {
 //     bannerImage:
-//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766143761/yujimlb_bkeikj.jpg",
-//     bannerFrom: "Yuji Main Store",
-//     bannerLink: "https://meowji.store",
-//     bannerTitle: "Safe, Secure & Trusted Top-Ups",
-//     bannerSlug: "yuji-safe-secure-best-store",
+//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619176/generated-image_35_mixdtz.png",
+//     bannerFrom: "Blue Buff",
+//     bannerLink: "https://bluebuff.com",
+//     bannerTitle: "Instant Game Top-Ups",
+//     bannerSlug: "blue-buff-instant-game-topups",
 //     gameId: [],
 //     bannerDate: "2025-04-29T00:00:00.000Z",
 //     bannerSummary:
-//       "Safe and secure payments with instant delivery. Yuji Main Store – trusted by gamers for reliable top-ups.",
+//       "Top up your favorite games instantly with secure payments and fast processing.",
 //     isShow: true,
 //     __v: 0,
 //   },
 //   {
 //     bannerImage:
-//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766143761/mlbd_nc0nhi.jpg",
-//     bannerFrom: "Yuji Main Store",
-//     bannerLink: "https://meowji.store",
-//     bannerTitle: "Top Up in Your ID Today",
-//     bannerSlug: "yuji-topup-in-your-id-today",
+//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1765619191/ideogram-v3.0_A_high-quality_horizontal_rectangular_website_banner_for_a_gaming_top-up_website-0_2_rgpuck.png",
+//     bannerFrom: "Blue Buff",
+//     bannerLink: "https://bluebuff.com",
+//     bannerTitle: "Cheapest MLBB Diamonds",
+//     bannerSlug: "blue-buff-cheapest-mlbb-diamonds",
 //     gameId: ["mlbb"],
 //     bannerDate: "2025-04-29T00:00:00.000Z",
 //     bannerSummary:
-//       "Top up directly in your game ID today. Fast processing, instant diamonds, and 24/7 support.",
+//       "Lowest prices on MLBB Diamonds with 24/7 automatic instant support.",
 //     isShow: true,
 //     __v: 0,
 //   },
 // ]
-
-
 
 //     };
 
