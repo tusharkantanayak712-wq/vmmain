@@ -262,7 +262,7 @@ export default function GamesPage() {
                 {cat.categoryTitle}
               </h2>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                 {filtered.map((game, index) => (
                   <GameCard key={index} game={game} />
                 ))}
@@ -277,7 +277,7 @@ export default function GamesPage() {
             All Games
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
             {processGames(games).map((game, i) => (
               <GameCard key={i} game={game} />
             ))}

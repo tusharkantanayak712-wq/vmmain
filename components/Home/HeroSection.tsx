@@ -10,6 +10,7 @@ import TrustHighlights from "./TrustHighlights";
 import MLBBPurchaseGuide from "../HelpImage/MLBBPurchaseGuide";
 import TopNoticeBanner from "./TopNoticeBanner";
 import ScrollingNoticeBand from "./ScrollingNoticeBand";
+import HomeQuickAction from "./HomeQuickAction";
 
 export default function HeroSection() {
   const [search, setSearch] = useState("");
@@ -29,6 +30,7 @@ export default function HeroSection() {
     <>
      <TopNoticeBanner/>
        <GameBannerCarousel/>
+       <HomeQuickAction/>
          <ScrollingNoticeBand/>
     <GamesPage/>
       <ScrollingNoticeBand/>

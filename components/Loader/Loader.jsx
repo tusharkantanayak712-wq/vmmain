@@ -3,45 +3,43 @@ import React from "react";
 export default function BlueBuffSingularityLoader() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--background)]">
-      <div className="relative w-48 h-48">
+      <div className="relative w-40 h-40">
 
-        {/* ================= RIPPLE WAVES ================= */}
-        {[0, 1, 2].map((i) => (
+        {/* ================= FAST RIPPLE WAVES ================= */}
+        {[0, 1].map((i) => (
           <div
             key={i}
             className="absolute inset-0 rounded-full border animate-ripple"
             style={{
               borderColor: "var(--accent)",
-              animationDelay: `${i * 0.9}s`,
-              opacity: 0.15,
+              animationDelay: `${i * 0.4}s`,
+              opacity: 0.2,
             }}
           />
         ))}
 
         {/* ================= AURA BREATH ================= */}
         <div
-          className="absolute inset-0 rounded-full blur-3xl animate-breath"
+          className="absolute inset-0 rounded-full blur-2xl animate-breath"
           style={{
             background:
-              "radial-gradient(circle, var(--accent), transparent 70%)",
-            opacity: 0.4,
+              "radial-gradient(circle, var(--accent), transparent 65%)",
+            opacity: 0.45,
           }}
         />
 
-        {/* ================= OUTER PHASE RING ================= */}
-        <div className="absolute inset-4 rounded-full border border-[var(--accent)]/30 animate-phase-slow" />
-
-        {/* ================= INNER COUNTER PHASE ================= */}
-        <div className="absolute inset-8 rounded-full border border-[var(--accent)]/40 animate-phase-fast" />
+        {/* ================= ROTATION RINGS ================= */}
+        <div className="absolute inset-4 rounded-full border border-[var(--accent)]/40 animate-phase-slow" />
+        <div className="absolute inset-7 rounded-full border border-[var(--accent)]/50 animate-phase-fast" />
 
         {/* ================= ENERGY SCAN ================= */}
-        <div className="absolute inset-10 overflow-hidden rounded-full">
+        <div className="absolute inset-9 overflow-hidden rounded-full">
           <div
             className="absolute inset-0 animate-scan"
             style={{
               background:
-                "conic-gradient(from 0deg, transparent 55%, var(--accent), transparent)",
-              opacity: 0.6,
+                "conic-gradient(from 0deg, transparent 60%, var(--accent), transparent)",
+              opacity: 0.7,
             }}
           />
         </div>
@@ -52,18 +50,17 @@ export default function BlueBuffSingularityLoader() {
             key={i}
             className="absolute inset-0 animate-orbit"
             style={{
-              animationDelay: `${i * 0.4}s`,
-              animationDuration: "7s",
+              animationDelay: `${i * 0.2}s`,
             }}
           >
             <div
-              className="absolute w-2.5 h-2.5 rounded-full animate-flicker"
+              className="absolute w-2 h-2 rounded-full animate-flicker"
               style={{
                 top: "50%",
                 left: "50%",
-                transform: `rotate(${deg}deg) translateX(70px)`,
+                transform: `rotate(${deg}deg) translateX(56px)`,
                 background: "var(--accent)",
-                boxShadow: "0 0 14px var(--accent)",
+                boxShadow: "0 0 12px var(--accent)",
               }}
             />
           </div>
@@ -72,7 +69,7 @@ export default function BlueBuffSingularityLoader() {
         {/* ================= CORE ================= */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div
-            className="absolute w-28 h-28 rounded-full blur-xl animate-heartbeat"
+            className="absolute w-24 h-24 rounded-full blur-xl animate-heartbeat"
             style={{
               background:
                 "radial-gradient(circle, #22d3ee, transparent 65%)",
@@ -80,19 +77,19 @@ export default function BlueBuffSingularityLoader() {
           />
 
           <div
-            className="relative w-18 h-18 rounded-full flex items-center justify-center animate-core-wobble"
+            className="relative w-16 h-16 rounded-full flex items-center justify-center animate-core-wobble"
             style={{
               background:
                 "linear-gradient(145deg, var(--accent), #22d3ee)",
               boxShadow:
-                "0 0 34px rgba(34,211,238,.7), inset 0 0 14px rgba(255,255,255,.3)",
+                "0 0 28px rgba(34,211,238,.8), inset 0 0 10px rgba(255,255,255,.35)",
             }}
           >
             <span
-              className="text-xl font-extrabold"
+              className="text-lg font-extrabold"
               style={{
                 color: "var(--foreground)",
-                textShadow: "0 2px 14px rgba(0,0,0,.7)",
+                textShadow: "0 2px 12px rgba(0,0,0,.6)",
               }}
             >
               V
@@ -104,20 +101,20 @@ export default function BlueBuffSingularityLoader() {
       {/* ================= TEXT ================= */}
       <div className="absolute bottom-24 text-center">
         <p className="text-sm tracking-wider text-[var(--muted)]">
-          Blue Buff Resonating
+          Initializing…
         </p>
-        <p className="text-xs opacity-60 mt-1">Aligning energy layers…</p>
+        <p className="text-xs opacity-60 mt-1">Syncing systems</p>
       </div>
 
-      {/* ================= MOTION SYSTEM ================= */}
+      {/* ================= MOTION SYSTEM (FAST) ================= */}
       <style jsx>{`
         @keyframes ripple {
-          0% {
-            transform: scale(0.6);
-            opacity: 0.3;
+          from {
+            transform: scale(0.7);
+            opacity: 0.35;
           }
-          100% {
-            transform: scale(1.2);
+          to {
+            transform: scale(1.25);
             opacity: 0;
           }
         }
@@ -125,30 +122,24 @@ export default function BlueBuffSingularityLoader() {
         @keyframes breath {
           0%,
           100% {
-            transform: scale(0.9);
-            opacity: 0.3;
+            transform: scale(0.95);
+            opacity: 0.35;
           }
           50% {
-            transform: scale(1.06);
-            opacity: 0.5;
+            transform: scale(1.08);
+            opacity: 0.55;
           }
         }
 
         @keyframes phaseSlow {
-          from {
-            transform: rotate(0deg);
-          }
           to {
             transform: rotate(360deg);
           }
         }
 
         @keyframes phaseFast {
-          from {
-            transform: rotate(360deg);
-          }
           to {
-            transform: rotate(0deg);
+            transform: rotate(-360deg);
           }
         }
 
@@ -167,7 +158,7 @@ export default function BlueBuffSingularityLoader() {
         @keyframes flicker {
           0%,
           100% {
-            opacity: 0.6;
+            opacity: 0.7;
           }
           50% {
             opacity: 1;
@@ -176,13 +167,12 @@ export default function BlueBuffSingularityLoader() {
 
         @keyframes heartbeat {
           0%,
-          40%,
           100% {
-            transform: scale(0.9);
-            opacity: 0.6;
+            transform: scale(0.95);
+            opacity: 0.7;
           }
           50% {
-            transform: scale(1.15);
+            transform: scale(1.2);
             opacity: 1;
           }
         }
@@ -190,39 +180,39 @@ export default function BlueBuffSingularityLoader() {
         @keyframes wobble {
           0%,
           100% {
-            transform: rotate(-1deg) scale(1);
+            transform: rotate(0deg) scale(1);
           }
           50% {
-            transform: rotate(1deg) scale(1.03);
+            transform: rotate(1deg) scale(1.04);
           }
         }
 
         .animate-ripple {
-          animation: ripple 2.6s ease-out infinite;
+          animation: ripple 1.6s ease-out infinite;
         }
         .animate-breath {
-          animation: breath 3.2s ease-in-out infinite;
+          animation: breath 2.2s ease-in-out infinite;
         }
         .animate-phase-slow {
-          animation: phaseSlow 10s linear infinite;
+          animation: phaseSlow 6s linear infinite;
         }
         .animate-phase-fast {
-          animation: phaseFast 6s linear infinite;
+          animation: phaseFast 3.5s linear infinite;
         }
         .animate-scan {
-          animation: scan 4.2s linear infinite;
+          animation: scan 2.4s linear infinite;
         }
         .animate-orbit {
-          animation: orbit 7s ease-in-out infinite;
+          animation: orbit 4s linear infinite;
         }
         .animate-flicker {
-          animation: flicker 1.6s ease-in-out infinite;
+          animation: flicker 1.1s ease-in-out infinite;
         }
         .animate-heartbeat {
-          animation: heartbeat 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          animation: heartbeat 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
         .animate-core-wobble {
-          animation: wobble 3s ease-in-out infinite;
+          animation: wobble 1.8s ease-in-out infinite;
         }
       `}</style>
     </div>

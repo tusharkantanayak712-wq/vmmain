@@ -44,15 +44,18 @@ const LEGAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="mt-24 text-[var(--muted)]">
+    <footer className="relative mt-28 text-[var(--muted)] overflow-hidden">
+
+      {/* ===== Ambient glow ===== */}
+      <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-r from-[var(--accent)]/10 via-purple-500/10 to-cyan-500/10 blur-3xl" />
 
       {/* ================= TOP BAND ================= */}
-      <div className="border-t border-[var(--border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="relative border-t border-[var(--border)] bg-[var(--card)]/70 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
 
-          {/* Brand Story */}
+          {/* ===== Brand ===== */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-[var(--foreground)]">
+            <h2 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
               {BRAND.name}
             </h2>
 
@@ -65,9 +68,9 @@ export default function Footer() {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[var(--accent)] transition"
+                className="flex items-center gap-1 hover:text-[var(--accent)] transition"
               >
-                <FaInstagram className="inline mr-1" />
+                <FaInstagram />
                 @{INSTAGRAM_USERNAME}
               </a>
 
@@ -75,17 +78,20 @@ export default function Footer() {
                 href={WHATSAPP_CHAT_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[var(--accent)] transition"
+                className="flex items-center gap-1 hover:text-[var(--accent)] transition"
               >
-                <FaWhatsapp className="inline mr-1" />
+                <FaWhatsapp />
                 WhatsApp
               </a>
             </div>
           </div>
 
-          {/* Navigation */}
-          <div className="grid grid-cols-2 gap-6 text-sm">
+          {/* ===== Navigation ===== */}
+          <div className="grid grid-cols-2 gap-8 text-sm md:col-span-2">
             <div className="flex flex-col gap-3">
+              <p className="text-xs uppercase tracking-wider text-[var(--foreground)] opacity-70">
+                Navigation
+              </p>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
@@ -98,6 +104,9 @@ export default function Footer() {
             </div>
 
             <div className="flex flex-col gap-3">
+              <p className="text-xs uppercase tracking-wider text-[var(--foreground)] opacity-70">
+                Legal
+              </p>
               {LEGAL_LINKS.map((link) => (
                 <Link
                   key={link.href}
@@ -109,22 +118,21 @@ export default function Footer() {
               ))}
             </div>
           </div>
-
         </div>
       </div>
 
       {/* ================= BOTTOM BAND ================= */}
-      <div className="border-t border-[var(--border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div className="border-t border-[var(--border)] bg-[var(--background)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
 
-          <p>
+          <p className="opacity-80">
             © {new Date().getFullYear()} {BRAND_NAME}. All rights reserved.
           </p>
 
-          <p>
-            Built with{" "}
-            <FaHeart className="inline w-3 h-3 text-[var(--accent)] mx-0.5" />{" "}
-            by{" "}
+          <p className="flex items-center gap-1 opacity-80">
+            Built with
+            <FaHeart className="inline w-3 h-3 text-[var(--accent)] mx-0.5" />
+            by
             <a
               href={WHATSAPP_STORE_LINK}
               target="_blank"
@@ -134,7 +142,6 @@ export default function Footer() {
               Blue Buff
             </a>
           </p>
-
         </div>
       </div>
     </footer>

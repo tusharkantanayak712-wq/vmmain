@@ -122,12 +122,23 @@ export default function Header() {
           <ThemeToggle />
 
           {/* USER ICON */}
-          <button
-            onClick={() => setUserMenuOpen((v) => !v)}
-            className="w-10 h-10 rounded-full bg-[var(--accent)] text-white flex items-center justify-center font-bold"
-          >
-            {user ? user.name?.charAt(0)?.toUpperCase() : <FaUser />}
-          </button>
+                     <button
+            onClick={() => setUserMenuOpen((p) => !p)}
+  className="w-10 h-10 rounded-full bg-[var(--accent)] flex items-center justify-center overflow-hidden"
+>
+  {user?.avatar ? (
+    <Image
+      src={user.avatar}
+      alt="User Avatar"
+      width={40}
+      height={40}
+      className="object-cover w-full h-full"
+    />
+  ) : (
+    <FaUser className="text-white" />
+  )}
+</button>
+          
 
           {/* USER DROPDOWN */}
           {userMenuOpen && !loading && (
