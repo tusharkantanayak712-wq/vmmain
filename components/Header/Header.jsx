@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiMenu, FiX } from "react-icons/fi";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -90,140 +91,205 @@ export default function Header() {
   }, []);
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? "backdrop-blur-md shadow-md bg-[var(--card)]/80 border-b border-[var(--border)]"
-          : "bg-transparent"
-      }`}
+    <motion.header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled
+        ? "backdrop-blur-xl shadow-lg bg-[var(--card)]/90 border-b border-[var(--border)]"
+        : "bg-transparent"
+        }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-1 h-16">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-16">
 
         {/* LOGO */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center relative group">
           <Image src={logo} alt="Logo" width={90} height={28} priority />
+          <motion.div
+            className="absolute -bottom-1 left-0 h-0.5 bg-[var(--accent)]"
+            initial={{ width: 0 }}
+            whileHover={{ width: "100%" }}
+            transition={{ duration: 0.3 }}
+          />
         </Link>
 
         {/* DESKTOP NAV */}
-        <nav className="hidden md:flex items-center space-x-6 text-[var(--muted)]">
-          {HEADER_CONFIG.nav.map((item) => (
+        <nav className="hidden md:flex items-center space-x-1">
+          {HEADER_CONFIG.nav.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
-              className="hover:text-[var(--foreground)]"
+              className="relative px-4 py-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors group"
             >
-              {item.label}
+              <span className="relative z-10">{item.label}</span>
+              <motion.div
+                className="absolute inset-0 bg-[var(--accent)]/10 rounded-lg"
+                initial={{ scale: 0, opacity: 0 }}
+                whileHover={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              />
             </Link>
           ))}
         </nav>
 
         {/* RIGHT */}
-        <div className="flex items-center gap-4 relative" ref={dropdownRef}>
+        <div className="flex items-center gap-3 relative" ref={dropdownRef}>
           <ThemeToggle />
 
           {/* USER ICON */}
-                     <button
+          <motion.button
             onClick={() => setUserMenuOpen((p) => !p)}
-  className="w-10 h-10 rounded-full bg-[var(--accent)] flex items-center justify-center overflow-hidden"
->
-  {user?.avatar ? (
-    <Image
-      src={user.avatar}
-      alt="User Avatar"
-      width={40}
-      height={40}
-      className="object-cover w-full h-full"
-    />
-  ) : (
-    <FaUser className="text-white" />
-  )}
-</button>
-          
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-purple-500 flex items-center justify-center overflow-hidden shadow-lg relative"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {user?.avatar ? (
+              <Image
+                src={user.avatar}
+                alt="User Avatar"
+                width={40}
+                height={40}
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <FaUser className="text-white" />
+            )}
+            <motion.div
+              className="absolute inset-0 border-2 border-white/30 rounded-full"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          </motion.button>
 
           {/* USER DROPDOWN */}
-          {userMenuOpen && !loading && (
-            <div className="absolute right-0 top-14 w-64 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-lg p-4 z-50">
-
-              {!user ? (
-                <Link href="/login" className="block py-2 hover:text-[var(--accent)]">
-                  Login / Register
-                </Link>
-              ) : (
-                <>
-                  {/* WALLET */}
-                  <Link href="/dashboard">
-                    <div className="flex justify-between bg-[var(--background)] px-3 py-2 rounded-lg border mb-3">
-                      <span className="text-[var(--accent)] font-semibold">
-                        ₹{user.wallet}
-                      </span>
-                      <FiPlus size={18} />
-                    </div>
-                  </Link>
-
-                  {/* USER MENU */}
-                  {HEADER_CONFIG.userMenu.map(
-                    (item) =>
-                      item.auth && (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          className="block py-2 hover:text-[var(--accent)]"
-                        >
-                          {item.label}
-                        </Link>
-                      )
-                  )}
-
-                  {/* ROLE MENU */}
-                  {HEADER_CONFIG.roleMenu[user.userType]?.map((item) => (
+          <AnimatePresence>
+            {userMenuOpen && !loading && (
+              <motion.div
+                className="absolute right-0 top-14 w-64 bg-[var(--card)] border border-[var(--border)] rounded-2xl shadow-2xl overflow-hidden z-50"
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="p-4">
+                  {!user ? (
                     <Link
-                      key={item.label}
-                      href={item.href}
-                      className="block py-2 hover:text-[var(--accent)]"
+                      href="/login"
+                      className="block py-3 px-4 text-center rounded-xl bg-[var(--accent)] text-white font-semibold hover:opacity-90 transition-opacity"
                     >
-                      {item.label}
+                      Login / Register
                     </Link>
-                  ))}
+                  ) : (
+                    <>
+                      {/* WALLET */}
+                      <Link href="/dashboard">
+                        <motion.div
+                          className="flex justify-between items-center bg-gradient-to-r from-[var(--accent)]/10 to-purple-500/10 px-4 py-3 rounded-xl border border-[var(--accent)]/30 mb-3"
+                          whileHover={{ scale: 1.02 }}
+                        >
+                          <span className="text-[var(--accent)] font-bold text-lg">
+                            ₹{user.wallet}
+                          </span>
+                          <motion.div
+                            className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center"
+                            whileHover={{ rotate: 90 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <FiPlus className="text-white" size={16} />
+                          </motion.div>
+                        </motion.div>
+                      </Link>
 
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left py-2 text-red-500 hover:text-red-400"
-                  >
-                    Logout
-                  </button>
-                </>
-              )}
-            </div>
-          )}
+                      {/* DIVIDER */}
+                      <div className="h-px bg-[var(--border)] my-3" />
+
+                      {/* USER MENU */}
+                      <div className="space-y-1">
+                        {HEADER_CONFIG.userMenu.map(
+                          (item) =>
+                            item.auth && (
+                              <Link
+                                key={item.label}
+                                href={item.href}
+                                className="block py-2 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all text-sm"
+                              >
+                                {item.label}
+                              </Link>
+                            )
+                        )}
+
+                        {/* ROLE MENU */}
+                        {HEADER_CONFIG.roleMenu[user.userType]?.map((item) => (
+                          <Link
+                            key={item.label}
+                            href={item.href}
+                            className="block py-2 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all text-sm font-semibold"
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+
+                      {/* DIVIDER */}
+                      <div className="h-px bg-[var(--border)] my-3" />
+
+                      <motion.button
+                        onClick={handleLogout}
+                        className="w-full text-center py-2 px-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all text-sm font-semibold"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Logout
+                      </motion.button>
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* MOBILE TOGGLE */}
-          <button
+          <motion.button
             onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden text-3xl"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[var(--background)] transition-colors"
+            whileTap={{ scale: 0.9 }}
           >
-            {menuOpen ? "✕" : "☰"}
-          </button>
+            {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </motion.button>
         </div>
       </div>
 
       {/* MOBILE NAV */}
-      <div
-        className={`md:hidden transition-all duration-300 overflow-hidden ${
-          menuOpen ? "max-h-[300px]" : "max-h-0"
-        } bg-[var(--card)] border-t`}
-      >
-        <nav className="flex flex-col px-6 py-4 space-y-4 text-[var(--muted)]">
-          {HEADER_CONFIG.nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </header>
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="md:hidden bg-[var(--card)] border-t border-[var(--border)]"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <nav className="flex flex-col px-6 py-4 space-y-2">
+              {HEADER_CONFIG.nav.map((item, index) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-2 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all"
+                  >
+                    {item.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }

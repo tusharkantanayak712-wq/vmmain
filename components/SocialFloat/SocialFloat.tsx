@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   FaWhatsapp,
@@ -22,14 +23,15 @@ const socialLinks = [
     name: "WhatsApp",
     icon: FaWhatsapp,
     url: WHATSAPP_CHAT_LINK,
-    color: "hover:bg-green-500 hover:text-white",
+    gradient: "from-green-400 to-green-600",
+    hoverColor: "hover:shadow-green-500/50",
   },
   {
     name: "Instagram",
     icon: FaInstagram,
     url: INSTAGRAM_URL,
-    color:
-      "hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:text-white",
+    gradient: "from-purple-500 via-pink-500 to-orange-500",
+    hoverColor: "hover:shadow-pink-500/50",
   },
 ];
 
@@ -64,114 +66,233 @@ export default function SocialFloat() {
           text: "Check out this awesome site!",
           url: window.location.href,
         });
-      } catch {}
+      } catch { }
     } else {
       await navigator.clipboard.writeText(window.location.href);
       alert("Link copied to clipboard!");
     }
   };
 
+  const menuVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 20,
+      },
+    },
+  };
+
   return (
     <div ref={containerRef} className="fixed bottom-6 right-6 z-50">
-      {/* ================= FLOATING MENU (ONLY WHEN OPEN) ================= */}
-      {isOpen && (
-        <div className="absolute bottom-20 right-0 flex flex-col items-end gap-3">
-          {socialLinks.map((social, index) => {
-            const Icon = social.icon;
-            return (
+      {/* ================= FLOATING MENU ================= */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="absolute bottom-20 right-0 flex flex-col items-end gap-3"
+            variants={menuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            {/* SOCIAL LINKS */}
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+              return (
+                <motion.div key={social.name} variants={itemVariants}>
+                  <Link
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <motion.div
+                      className={`relative w-12 h-12 rounded-full bg-gradient-to-br ${social.gradient} flex items-center justify-center text-white text-lg shadow-lg ${social.hoverColor} group overflow-hidden`}
+                      whileHover={{ scale: 1.15, rotate: 5 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {/* PULSE RING */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-white/50"
+                        animate={{
+                          scale: [1, 1.3, 1],
+                          opacity: [0.5, 0, 0.5],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
+
+                      {/* ICON */}
+                      <motion.div
+                        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Icon />
+                      </motion.div>
+
+                      {/* LABEL */}
+                      <motion.span
+                        className="absolute right-16 bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--foreground)] whitespace-nowrap shadow-lg opacity-0 group-hover:opacity-100"
+                        initial={{ x: 10 }}
+                        whileHover={{ x: 0 }}
+                      >
+                        {social.name}
+                      </motion.span>
+                    </motion.div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+
+            {/* DIVIDER */}
+            <motion.div
+              className="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent w-12 my-1"
+              variants={itemVariants}
+            />
+
+            {/* SHARE BUTTON */}
+            <motion.div variants={itemVariants}>
+              <motion.button
+                onClick={handleShare}
+                className="relative w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-lg shadow-lg hover:shadow-blue-500/50 group overflow-hidden"
+                whileHover={{ scale: 1.15, rotate: -5 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="Share"
+              >
+                {/* PULSE RING */}
+                <motion.div
+                  className="absolute inset-0 rounded-full border-2 border-white/50"
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    opacity: [0.5, 0, 0.5],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                  }}
+                />
+
+                <motion.div
+                  whileHover={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <FaShareNodes />
+                </motion.div>
+
+                {/* LABEL */}
+                <motion.span
+                  className="absolute right-16 bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--foreground)] whitespace-nowrap shadow-lg opacity-0 group-hover:opacity-100"
+                  initial={{ x: 10 }}
+                  whileHover={{ x: 0 }}
+                >
+                  Share
+                </motion.span>
+              </motion.button>
+            </motion.div>
+
+            {/* SUPPORT BUTTON */}
+            <motion.div variants={itemVariants}>
               <Link
-                key={social.name}
-                href={social.url}
+                href="https://ko-fi.com/zynxv1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`
-                  w-12 h-12
-                  rounded-full
-                  bg-[var(--card)]
-                  border border-[var(--border)]
-                  flex items-center justify-center
-                  text-lg
-                  shadow-lg
-                  transition-all
-                  hover:scale-110 hover:shadow-xl
-                  animate-[fadeUp_0.3s_ease-out]
-                  ${social.color}
-                `}
-                style={{ animationDelay: `${index * 60}ms` }}
-                aria-label={social.name}
               >
-                <Icon />
+                <motion.div
+                  className="relative w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-600 flex items-center justify-center text-white text-lg shadow-lg hover:shadow-pink-500/50 group overflow-hidden"
+                  whileHover={{ scale: 1.15, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Support"
+                >
+                  {/* PULSE RING */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-white/50"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 0, 0.5],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                  />
+
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  >
+                    <FaHeart />
+                  </motion.div>
+
+                  {/* LABEL */}
+                  <motion.span
+                    className="absolute right-16 bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--foreground)] whitespace-nowrap shadow-lg opacity-0 group-hover:opacity-100"
+                    initial={{ x: 10 }}
+                    whileHover={{ x: 0 }}
+                  >
+                    Support Us
+                  </motion.span>
+                </motion.div>
               </Link>
-            );
-          })}
-
-          <div className="h-px bg-[var(--border)] w-8 my-1" />
-
-          <button
-            onClick={handleShare}
-            className="
-              w-12 h-12
-              rounded-full
-              bg-[var(--card)]
-              border border-[var(--border)]
-              flex items-center justify-center
-              text-lg
-              shadow-lg
-              transition-all
-              hover:scale-110 hover:shadow-xl
-              hover:bg-blue-600 hover:text-white
-              animate-[fadeUp_0.3s_ease-out]
-            "
-            style={{ animationDelay: `${socialLinks.length * 60}ms` }}
-            aria-label="Share"
-          >
-            <FaShareNodes />
-          </button>
-
-          <Link
-            href="https://ko-fi.com/zynxv1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              w-12 h-12
-              rounded-full
-              bg-[var(--card)]
-              border border-[var(--border)]
-              flex items-center justify-center
-              text-lg
-              shadow-lg
-              transition-all
-              hover:scale-110 hover:shadow-xl
-              hover:bg-pink-600 hover:text-white
-              animate-[fadeUp_0.3s_ease-out]
-            "
-            style={{ animationDelay: `${(socialLinks.length + 1) * 60}ms` }}
-            aria-label="Support"
-          >
-            <FaHeart />
-          </Link>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ================= TOGGLE BUTTON ================= */}
-      <button
+      <motion.button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
-        className={`
-          w-14 h-14
-          rounded-full
-          bg-gradient-to-br from-[var(--accent)] to-purple-600
-          text-white
-          flex items-center justify-center
-          shadow-lg hover:shadow-xl
-          transition-all
-          hover:scale-110
-          ${isOpen ? "rotate-180" : "rotate-0"}
-        `}
+        className="relative w-14 h-14 rounded-full bg-gradient-to-br from-[var(--accent)] via-purple-600 to-pink-600 text-white flex items-center justify-center shadow-2xl overflow-hidden"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        animate={{ rotate: isOpen ? 180 : 0 }}
+        transition={{ duration: 0.3 }}
         aria-label="Toggle social menu"
       >
+        {/* ANIMATED BACKGROUND */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* PULSE EFFECT */}
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-white/30"
+          animate={{
+            scale: [1, 1.4, 1],
+            opacity: [0.5, 0, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* ICON */}
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 relative z-10"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -179,11 +300,11 @@ export default function SocialFloat() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={2.5}
             d="M5 15l7-7 7 7"
           />
         </svg>
-      </button>
+      </motion.button>
     </div>
   );
 }

@@ -1,219 +1,127 @@
 import React from "react";
 
-export default function BlueBuffSingularityLoader() {
+export default function QuantumLoader() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--background)]">
-      <div className="relative w-40 h-40">
-
-        {/* ================= FAST RIPPLE WAVES ================= */}
-        {[0, 1].map((i) => (
-          <div
-            key={i}
-            className="absolute inset-0 rounded-full border animate-ripple"
-            style={{
-              borderColor: "var(--accent)",
-              animationDelay: `${i * 0.4}s`,
-              opacity: 0.2,
-            }}
-          />
-        ))}
-
-        {/* ================= AURA BREATH ================= */}
-        <div
-          className="absolute inset-0 rounded-full blur-2xl animate-breath"
-          style={{
-            background:
-              "radial-gradient(circle, var(--accent), transparent 65%)",
-            opacity: 0.45,
-          }}
-        />
-
-        {/* ================= ROTATION RINGS ================= */}
-        <div className="absolute inset-4 rounded-full border border-[var(--accent)]/40 animate-phase-slow" />
-        <div className="absolute inset-7 rounded-full border border-[var(--accent)]/50 animate-phase-fast" />
-
-        {/* ================= ENERGY SCAN ================= */}
-        <div className="absolute inset-9 overflow-hidden rounded-full">
-          <div
-            className="absolute inset-0 animate-scan"
-            style={{
-              background:
-                "conic-gradient(from 0deg, transparent 60%, var(--accent), transparent)",
-              opacity: 0.7,
-            }}
-          />
-        </div>
-
-        {/* ================= ORBITING SPARKS ================= */}
-        {[0, 120, 240].map((deg, i) => (
-          <div
-            key={i}
-            className="absolute inset-0 animate-orbit"
-            style={{
-              animationDelay: `${i * 0.2}s`,
-            }}
-          >
-            <div
-              className="absolute w-2 h-2 rounded-full animate-flicker"
-              style={{
-                top: "50%",
-                left: "50%",
-                transform: `rotate(${deg}deg) translateX(56px)`,
-                background: "var(--accent)",
-                boxShadow: "0 0 12px var(--accent)",
-              }}
-            />
-          </div>
-        ))}
-
-        {/* ================= CORE ================= */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="absolute w-24 h-24 rounded-full blur-xl animate-heartbeat"
-            style={{
-              background:
-                "radial-gradient(circle, #22d3ee, transparent 65%)",
-            }}
-          />
-
-          <div
-            className="relative w-16 h-16 rounded-full flex items-center justify-center animate-core-wobble"
-            style={{
-              background:
-                "linear-gradient(145deg, var(--accent), #22d3ee)",
-              boxShadow:
-                "0 0 28px rgba(34,211,238,.8), inset 0 0 10px rgba(255,255,255,.35)",
-            }}
-          >
-            <span
-              className="text-lg font-extrabold"
-              style={{
-                color: "var(--foreground)",
-                textShadow: "0 2px 12px rgba(0,0,0,.6)",
-              }}
-            >
-              V
-            </span>
-          </div>
-        </div>
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--background)] overflow-hidden">
+      {/* Background Ambient Glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[var(--accent)]/5 rounded-full blur-3xl animate-pulse-slow"></div>
       </div>
 
-      {/* ================= TEXT ================= */}
-      <div className="absolute bottom-24 text-center">
-        <p className="text-sm tracking-wider text-[var(--muted)]">
-          Initializing…
+      {/* 3D ROTATING SYSTEM */}
+      <div className="relative w-48 h-48 flex items-center justify-center perspective-container">
+
+        {/* Ring 1 - Outer Orbital (Slow) */}
+        <div className="absolute w-full h-full rounded-full border border-[var(--accent)]/20 border-t-[var(--accent)]/60 animate-spin-slow"></div>
+
+        {/* Ring 2 - Gyroscopic Inner (3D) */}
+        <div className="absolute w-36 h-36 rounded-full border-2 border-transparent border-t-[var(--accent)] border-b-[var(--accent)] shadow-[0_0_15px_var(--accent)] animate-gyro-1"></div>
+
+        {/* Ring 3 - Counter Gyro */}
+        <div className="absolute w-28 h-28 rounded-full border border-dashed border-[var(--muted)]/50 animate-gyro-2"></div>
+
+        {/* CENTRAL CORE */}
+        <div className="absolute z-10 flex items-center justify-center">
+          {/* Pulsing Energy Field */}
+          <div className="absolute w-16 h-16 rounded-full bg-[var(--accent)]/20 blur-xl animate-pulse-fast"></div>
+
+          {/* Solid Core */}
+          <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_0_20px_var(--accent)] animate-levitate">
+            <span className="text-[var(--background)] font-black text-lg select-none">V</span>
+          </div>
+        </div>
+
+        {/* Orbiting Particles */}
+        <div className="absolute inset-0 animate-spin-reverse-slow">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--accent)] rounded-full shadow-[0_0_8px_var(--accent)]"></div>
+        </div>
+
+      </div>
+
+      {/* TEXT INDICATOR */}
+      <div className="mt-10 flex flex-col items-center gap-1 z-10">
+        {/* <h2 className="text-xl font-bold tracking-[0.3em] text-[var(--foreground)] animate-glitch-text" data-text="INITIALIZING">
+          INITIALIZING
+        </h2> */}
+        <div className="flex gap-1.5">
+          <div className="w-10 h-0.5 bg-[var(--accent)]/30 rounded-full overflow-hidden">
+            <div className="h-full w-full bg-[var(--accent)] origin-left animate-loading-bar"></div>
+          </div>
+        </div>
+        <p className="text-[10px] text-[var(--muted)] uppercase tracking-widest mt-1 opacity-70">
+          Vampenttic Systems
         </p>
-        <p className="text-xs opacity-60 mt-1">Syncing systems</p>
       </div>
 
-      {/* ================= MOTION SYSTEM (FAST) ================= */}
       <style jsx>{`
-        @keyframes ripple {
-          from {
-            transform: scale(0.7);
-            opacity: 0.35;
-          }
-          to {
-            transform: scale(1.25);
-            opacity: 0;
-          }
+        /* 3D Perspective Setup */
+        .perspective-container {
+            perspective: 1200px;
+            transform-style: preserve-3d;
         }
 
-        @keyframes breath {
-          0%,
-          100% {
-            transform: scale(0.95);
-            opacity: 0.35;
-          }
-          50% {
-            transform: scale(1.08);
-            opacity: 0.55;
-          }
+        /* Animations */
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes spin-reverse-slow {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
         }
 
-        @keyframes phaseSlow {
-          to {
-            transform: rotate(360deg);
-          }
+        /* Complex 3D Rotations */
+        @keyframes gyro-1 {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            33% { transform: rotateX(120deg) rotateY(60deg) rotateZ(120deg); }
+            66% { transform: rotateX(240deg) rotateY(120deg) rotateZ(240deg); }
+            100% { transform: rotateX(360deg) rotateY(180deg) rotateZ(360deg); }
+        }
+        @keyframes gyro-2 {
+            0% { transform: rotateX(360deg) rotateY(180deg) rotateZ(0deg); }
+            100% { transform: rotateX(0deg) rotateY(0deg) rotateZ(360deg); }
         }
 
-        @keyframes phaseFast {
-          to {
-            transform: rotate(-360deg);
-          }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+        }
+        @keyframes pulse-fast {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
         }
 
-        @keyframes scan {
-          to {
-            transform: rotate(360deg);
-          }
+        @keyframes levitate {
+             0%, 100% { transform: translateY(0); }
+             50% { transform: translateY(-4px); }
         }
 
-        @keyframes orbit {
-          to {
-            transform: rotate(360deg);
-          }
+        @keyframes loading-bar {
+            0% { transform: scaleX(0); }
+            50% { transform: scaleX(0.7); }
+            100% { transform: scaleX(0); transform-origin: right; }
         }
 
-        @keyframes flicker {
-          0%,
-          100% {
-            opacity: 0.7;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
+        /* Utility Classes */
+        .animate-spin-slow { animation: spin-slow 10s linear infinite; }
+        .animate-spin-reverse-slow { animation: spin-reverse-slow 15s linear infinite; }
+        .animate-gyro-1 { animation: gyro-1 4s linear infinite; }
+        .animate-gyro-2 { animation: gyro-2 5s linear infinite; }
+        .animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
+        .animate-pulse-fast { animation: pulse-fast 1.5s ease-in-out infinite; }
+        .animate-levitate { animation: levitate 2s ease-in-out infinite; }
+        .animate-loading-bar { animation: loading-bar 2s ease-in-out infinite; }
 
-        @keyframes heartbeat {
-          0%,
-          100% {
-            transform: scale(0.95);
-            opacity: 0.7;
-          }
-          50% {
-            transform: scale(1.2);
-            opacity: 1;
-          }
+        .animate-glitch-text::before,
+        .animate-glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-
-        @keyframes wobble {
-          0%,
-          100% {
-            transform: rotate(0deg) scale(1);
-          }
-          50% {
-            transform: rotate(1deg) scale(1.04);
-          }
-        }
-
-        .animate-ripple {
-          animation: ripple 1.6s ease-out infinite;
-        }
-        .animate-breath {
-          animation: breath 2.2s ease-in-out infinite;
-        }
-        .animate-phase-slow {
-          animation: phaseSlow 6s linear infinite;
-        }
-        .animate-phase-fast {
-          animation: phaseFast 3.5s linear infinite;
-        }
-        .animate-scan {
-          animation: scan 2.4s linear infinite;
-        }
-        .animate-orbit {
-          animation: orbit 4s linear infinite;
-        }
-        .animate-flicker {
-          animation: flicker 1.1s ease-in-out infinite;
-        }
-        .animate-heartbeat {
-          animation: heartbeat 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-        .animate-core-wobble {
-          animation: wobble 1.8s ease-in-out infinite;
-        }
+        
       `}</style>
     </div>
   );
