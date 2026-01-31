@@ -104,12 +104,12 @@ export default function AboutPage() {
         </p>
 
         <a
-          href="https://instagram.com/zynx.v1"
+          href="https://instagram.com/mlbbtopup.in"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-3 bg-gradient-to-r from-[var(--accent)] to-purple-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:scale-110 hover:shadow-[0_0_20px_var(--accent)] transition-all duration-300"
         >
-          <span>@zynx.v1</span>
+          <span>@mlbbtopup.in</span>
         </a>
       </section>
     </main>
