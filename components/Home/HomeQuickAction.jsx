@@ -33,7 +33,7 @@ export default function LeaderboardRegionSection() {
 
         {/* RIGHT — CHECK REGION */}
         <Link
-          href="/check-region"
+          href="/region"
           className="
             flex items-center gap-3
             rounded-xl
