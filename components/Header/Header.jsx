@@ -175,7 +175,6 @@ export default function Header() {
                   {!user ? (
                     <Link
                       href="/login"
-                      className="block py-3 px-4 text-center rounded-xl bg-[var(--accent)] text-white font-semibold hover:opacity-90 transition-opacity"
                     >
                       Login / Register
                     </Link>

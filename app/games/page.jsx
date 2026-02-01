@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FiFilter, FiX } from "react-icons/fi";
+import { FiFilter, FiX, FiSearch } from "react-icons/fi";
 import logo from "@/public/logo.png";
 import GamesFilterModal from "@/components/Games/GamesFilterModal";
 
@@ -40,11 +41,11 @@ export default function GamesPage() {
       .then((res) => res.json())
       .then((data) => {
         setCategory(data?.data?.category || []);
-              const fetchedOtts = data?.data?.otts || null;
+        const fetchedOtts = data?.data?.otts || null;
 
-                    const fetchedMemberships = data?.data?.memberships || null;
-                      setOtts(fetchedOtts);
-            setMemberships(fetchedMemberships);
+        const fetchedMemberships = data?.data?.memberships || null;
+        setOtts(fetchedOtts);
+        setMemberships(fetchedMemberships);
 
         setGames(
           (data?.data?.games || []).map((g) =>
@@ -112,70 +113,85 @@ export default function GamesPage() {
   };
 
   /* ================= GAME CARD ================= */
-  const GameCard = ({ game }) => {
+  const GameCard = ({ game, index = 0 }) => {
     const disabled = isOutOfStock(game.gameName);
 
     return (
-      <Link
-        href={disabled ? "#" : `/games/${game.gameSlug}`}
-        className={`group relative rounded-2xl overflow-hidden
-        bg-[var(--card)] border transition-all duration-300
-        ${
-          disabled
-            ? "opacity-40 pointer-events-none"
-            : "hover:-translate-y-1 hover:shadow-2xl hover:border-[var(--accent)]"
-        }`}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: index * 0.05 }}
+        whileHover={!disabled ? { y: -8, scale: 1.02 } : {}}
       >
-        <div className="relative aspect-[4/5]">
-          <Image
-            src={game.gameImageId?.image || logo}
-            alt={game.gameName}
-            fill
-            className={`object-cover transition-transform duration-500
-            ${disabled ? "grayscale" : "group-hover:scale-110"}`}
-          />
+        <Link
+          href={disabled ? "#" : `/games/${game.gameSlug}`}
+          className={`group relative rounded-2xl overflow-hidden block
+          bg-[var(--card)] border transition-all duration-300
+          ${disabled
+              ? "opacity-40 pointer-events-none"
+              : "hover:shadow-2xl hover:border-[var(--accent)]"
+            }`}
+        >
+          <div className="relative aspect-[4/5]">
+            <Image
+              src={game.gameImageId?.image || logo}
+              alt={game.gameName}
+              fill
+              className={`object-cover transition-transform duration-500
+              ${disabled ? "grayscale" : "group-hover:scale-110"}`}
+            />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-          {!disabled && game.tagId && (
-            <span
-              className="absolute top-3 left-3 text-[10px] px-2 py-1 rounded-full font-semibold shadow"
-              style={{
-                background: game.tagId.tagBackground,
-                color: game.tagId.tagColor,
-              }}
-            >
-              {game.tagId.tagName}
-            </span>
-          )}
+            {!disabled && game.tagId && (
+              <motion.span
+                className="absolute top-3 left-3 text-[10px] px-2 py-1 rounded-full font-semibold shadow"
+                style={{
+                  background: game.tagId.tagBackground,
+                  color: game.tagId.tagColor,
+                }}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2 + index * 0.05 }}
+              >
+                {game.tagId.tagName}
+              </motion.span>
+            )}
 
-          <div className="absolute bottom-3 left-3 right-3">
-            <h3 className="text-sm font-semibold text-white truncate">
-              {game.gameName}
-            </h3>
-            <p className="text-xs text-white/70 truncate">
-              {game.gameFrom}
-            </p>
-          </div>
-
-          {!disabled && (
-            <div className="absolute inset-0 flex items-center justify-center
-            opacity-0 group-hover:opacity-100 transition">
-              <span className="px-5 py-2 rounded-xl text-sm font-semibold
-              bg-[var(--accent)] text-black shadow-xl">
-                Buy Now
-              </span>
+            <div className="absolute bottom-3 left-3 right-3">
+              <h3 className="text-sm font-semibold text-white truncate">
+                {game.gameName}
+              </h3>
+              <p className="text-xs text-white/70 truncate">
+                {game.gameFrom}
+              </p>
             </div>
-          )}
 
-          {disabled && (
-            <span className="absolute top-3 right-3 text-[10px]
-            px-2 py-1 rounded-full bg-red-600 text-white">
-              Out of Stock
-            </span>
-          )}
-        </div>
-      </Link>
+            {!disabled && (
+              <motion.div
+                className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+              >
+                <motion.span
+                  className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--accent)] text-black shadow-xl"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Buy Now
+                </motion.span>
+              </motion.div>
+            )}
+
+            {disabled && (
+              <span className="absolute top-3 right-3 text-[10px]
+              px-2 py-1 rounded-full bg-red-600 text-white">
+                Out of Stock
+              </span>
+            )}
+          </div>
+        </Link>
+      </motion.div>
     );
   };
 
@@ -229,11 +245,10 @@ export default function GamesPage() {
             onClick={() => setShowFilter(true)}
             className={`relative flex items-center gap-2 px-4 py-2 rounded-xl border
             transition-all
-            ${
-              activeFilterCount > 0
+            ${activeFilterCount > 0
                 ? "bg-[var(--accent)] text-black border-[var(--accent)]"
                 : "bg-[var(--card)] hover:border-[var(--accent)]"
-            }`}
+              }`}
           >
             <FiFilter className="text-lg" />
             <span className="text-sm font-medium">Filter</span>
@@ -286,49 +301,49 @@ export default function GamesPage() {
       </div>
 
       {memberships?.items?.length > 0 && (
-  <div className="max-w-7xl mx-auto mb-14">
-    <div className="flex items-center gap-3 mb-6">
-      <h2 className="text-2xl font-bold text-[var(--foreground)]">
-        {memberships.title}
-      </h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-      <span className="text-sm text-[var(--muted)]">
-        {memberships.total} plans
-      </span>
-    </div>
+        <div className="max-w-7xl mx-auto mb-14">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-[var(--foreground)]">
+              {memberships.title}
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+            <span className="text-sm text-[var(--muted)]">
+              {memberships.total} plans
+            </span>
+          </div>
 
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-      {memberships.items.map((plan) => (
-        <Link
-          key={plan.slug}
-          href={`/games/membership/${plan.slug}`}
-          className="group rounded-2xl bg-[var(--card)]
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            {memberships.items.map((plan) => (
+              <Link
+                key={plan.slug}
+                href={`/games/membership/${plan.slug}`}
+                className="group rounded-2xl bg-[var(--card)]
                      border border-[var(--border)]
                      hover:border-[var(--accent)]
                      transition-all duration-300
                      p-5 flex flex-col items-center text-center"
-        >
-          <div className="relative w-20 h-20 mb-4">
-            <Image
-              src={plan.image}
-              alt={plan.name}
-              fill
-              className="object-contain"
-            />
+              >
+                <div className="relative w-20 h-20 mb-4">
+                  <Image
+                    src={plan.image}
+                    alt={plan.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+
+                <h3 className="font-semibold text-[var(--foreground)]">
+                  {plan.name}
+                </h3>
+
+                <span className="mt-1 text-xs text-[var(--muted)]">
+                  {plan.duration}
+                </span>
+              </Link>
+            ))}
           </div>
-
-          <h3 className="font-semibold text-[var(--foreground)]">
-            {plan.name}
-          </h3>
-
-          <span className="mt-1 text-xs text-[var(--muted)]">
-            {plan.duration}
-          </span>
-        </Link>
-      ))}
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
 
       {/* ================= FILTER MODAL ================= */}
