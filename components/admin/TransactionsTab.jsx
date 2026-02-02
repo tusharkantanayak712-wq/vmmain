@@ -1,6 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Search,
+  RefreshCcw,
+  Clock,
+  User,
+  Gamepad2,
+  IndianRupee,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  ChevronRight,
+  X,
+  Filter,
+  CreditCard,
+  Hash,
+  Loader2,
+  Calendar,
+  Smartphone
+} from "lucide-react";
 
 export default function TransactionsTab() {
   const [transactions, setTransactions] = useState([]);
@@ -9,7 +29,7 @@ export default function TransactionsTab() {
 
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const [search] = useState("");
+  const [search, setSearch] = useState("");
 
   const [pagination, setPagination] = useState({
     total: 0,
@@ -54,291 +74,337 @@ export default function TransactionsTab() {
   };
 
   const statusMeta = {
-    success: "bg-green-500/20 text-green-400",
-    failed: "bg-red-500/20 text-red-400",
-    pending: "bg-yellow-500/20 text-yellow-400",
+    success: {
+      label: "Success",
+      class: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+      icon: <CheckCircle2 size={12} />
+    },
+    failed: {
+      label: "Failed",
+      class: "bg-rose-500/10 text-rose-500 border-rose-500/20",
+      icon: <XCircle size={12} />
+    },
+    pending: {
+      label: "Pending",
+      class: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+      icon: <Clock size={12} />
+    },
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-10">
       {/* ================= HEADER ================= */}
-      <div>
-        <h2 className="text-xl font-extrabold tracking-tight">
-          Transactions
-        </h2>
-        <p className="text-sm text-[var(--muted)]">
-          All processed and attempted payments.
-        </p>
-      </div>
-
-      {/* ================= META ================= */}
-      <div className="flex items-center justify-between text-sm text-[var(--muted)]">
-        <span>
-          Total Transactions:{" "}
-          <span className="font-semibold text-[var(--foreground)]">
-            {pagination.total}
-          </span>
-        </span>
-
-        <span>
-          Page {pagination.page} of {pagination.totalPages}
-        </span>
-      </div>
-
-      {/* ================= LOADING ================= */}
-      {loading && (
-        <div className="py-20 text-center text-[var(--muted)]">
-          Loading transactions…
-        </div>
-      )}
-
-      {!loading && (
-        <>
-          {/* ================= DESKTOP ================= */}
-          <div className="hidden md:block rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-black/5">
-                <tr className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                  <th className="px-5 py-3 text-left">Date</th>
-                  <th className="px-5 py-3 text-left">Order ID</th>
-                  <th className="px-5 py-3 text-left">User</th>
-                  <th className="px-5 py-3 text-left">Game</th>
-                  <th className="px-5 py-3 text-right">Amount</th>
-                  <th className="px-5 py-3 text-left">Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {transactions.map((t) => (
-                  <tr
-                    key={t._id}
-                    onClick={() => setSelectedTx(t)}
-                    className="border-t border-[var(--border)] hover:bg-black/5 cursor-pointer transition"
-                  >
-                    <td className="px-5 py-4 text-xs text-[var(--muted)]">
-                      {new Date(t.createdAt).toLocaleString()}
-                    </td>
-
-                    <td className="px-5 py-4 font-mono text-xs break-all">
-                      {t.orderId}
-                    </td>
-
-                    <td className="px-5 py-4 truncate">
-                      {t.email || t.userId || "—"}
-                    </td>
-
-                    <td className="px-5 py-4 capitalize text-[var(--muted)]">
-                      {t.gameSlug}
-                    </td>
-
-                    <td className="px-5 py-4 text-right font-bold text-green-400">
-                      ₹{t.price}
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${statusMeta[t.status]}`}
-                      >
-                        {t.status.toUpperCase()}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-
-                {!transactions.length && (
-                  <tr>
-                    <td colSpan={6} className="py-12 text-center text-[var(--muted)]">
-                      No transactions found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* ================= MOBILE ================= */}
-          <div className="md:hidden space-y-3">
-            {transactions.map((t) => (
-              <div
-                key={t._id}
-                onClick={() => setSelectedTx(t)}
-                className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 space-y-2 cursor-pointer active:scale-[0.98] transition"
-              >
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-[var(--muted)]">
-                    {new Date(t.createdAt).toLocaleDateString()}
-                  </span>
-
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-semibold ${statusMeta[t.status]}`}
-                  >
-                    {t.status}
-                  </span>
-                </div>
-
-                <div className="text-lg font-bold text-green-400">
-                  ₹{t.price}
-                </div>
-
-                <div className="text-xs text-[var(--muted)] capitalize">
-                  {t.gameSlug}
-                </div>
-
-                <div className="text-xs font-mono truncate">
-                  {t.orderId}
-                </div>
-
-                <div className="text-xs text-[var(--muted)] truncate">
-                  {t.email || t.userId || "—"}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ================= PAGINATION ================= */}
-          {pagination.totalPages > 1 && (
-            <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-4 py-2 rounded-lg border text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5"
-              >
-                ← Previous
-              </button>
-
-              <span className="text-sm text-[var(--muted)]">
-                Page <b>{pagination.page}</b> of{" "}
-                <b>{pagination.totalPages}</b>
-              </span>
-
-              <button
-                onClick={() =>
-                  setPage((p) =>
-                    Math.min(pagination.totalPages, p + 1)
-                  )
-                }
-                disabled={page === pagination.totalPages}
-                className="px-4 py-2 rounded-lg border text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5"
-              >
-                Next →
-              </button>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* ================= DRAWER ================= */}
-      {selectedTx && (
-        <TransactionDrawer
-          tx={selectedTx}
-          onClose={() => setSelectedTx(null)}
-        />
-      )}
-    </div>
-  );
-}
-
-/* ================= DRAWER ================= */
-
-function TransactionDrawer({ tx, onClose }) {
-  useEffect(() => {
-    const esc = (e) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", esc);
-    return () => window.removeEventListener("keydown", esc);
-  }, [onClose]);
-
-  const statusMeta = {
-    success: "bg-green-500/20 text-green-400",
-    failed: "bg-red-500/20 text-red-400",
-    pending: "bg-yellow-500/20 text-yellow-400",
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex">
-      <div
-        onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-      />
-
-      <div className="relative ml-auto w-full max-w-md h-full bg-[var(--card)] border-l border-[var(--border)] shadow-2xl animate-slide-in">
-        <div className="px-6 py-5 border-b border-[var(--border)] relative space-y-2">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 h-8 w-8 rounded-full flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-black/10"
-          >
-            ✕
-          </button>
-
-          <p className="text-xs text-[var(--muted)]">Transaction Amount</p>
-
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-extrabold text-green-400">
-              ₹{tx.price}
-            </span>
-
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold ${statusMeta[tx.status]}`}
-            >
-              {tx.status.toUpperCase()}
-            </span>
-          </div>
-
-          <p className="text-xs text-[var(--muted)] font-mono break-all">
-            {tx.orderId}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">Financial Stream</h2>
+          <p className="text-xs text-[var(--muted)] font-medium mt-1">
+            Real-time transaction monitoring and audit logs
           </p>
         </div>
 
-        <div className="p-6 space-y-6 overflow-y-auto h-[calc(100%-120px)] text-sm">
-          <Section title="Game & Item">
-            <Detail label="Game" value={tx.gameSlug} />
-            <Detail label="Item Name" value={tx.itemName} />
-            <Detail label="Item Slug" value={tx.itemSlug} />
-          </Section>
-
-          <Section title="Player">
-            <Detail label="Player ID" value={tx.playerId} />
-            <Detail label="Zone ID" value={tx.zoneId} />
-          </Section>
-
-          <Section title="Payment">
-            <Detail label="Method" value={tx.paymentMethod} />
-            <Detail label="Payment Status" value={tx.paymentStatus} />
-            <Detail label="Topup Status" value={tx.topupStatus} />
-          </Section>
-
-          <Section title="User">
-            <Detail label="Email" value={tx.email || "—"} />
-            <Detail label="Phone" value={tx.phone || "—"} />
-            <Detail
-              label="Created"
-              value={new Date(tx.createdAt).toLocaleString()}
-            />
-          </Section>
+        <div className="flex items-center gap-3">
+          <div className="px-3 py-1.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-[var(--muted)] uppercase">
+              {pagination.total} Live TXNS
+            </span>
+          </div>
+          <button
+            onClick={fetchTransactions}
+            className="p-2.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] active:scale-95 transition-all"
+          >
+            <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
+          </button>
         </div>
       </div>
+
+      {/* ================= SEARCH & FILTER ================= */}
+      <div className="flex flex-col md:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]/40" size={16} />
+          <input
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+            placeholder="Search Order ID, Email, Player ID..."
+            className="w-full h-11 pl-11 pr-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-sm focus:border-[var(--accent)]/50 outline-none transition-all placeholder:text-[var(--muted)]/40"
+          />
+        </div>
+        <button className="h-11 px-4 rounded-xl border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] flex items-center justify-center gap-2 hover:bg-[var(--foreground)]/[0.05] transition-all sm:w-max">
+          <Filter size={14} className="text-[var(--accent)]" />
+          <span className="text-xs font-bold uppercase">Filter Logic</span>
+        </button>
+      </div>
+
+      {/* ================= CONTENT ================= */}
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="py-32 flex flex-col items-center justify-center space-y-4"
+          >
+            <Loader2 className="animate-spin text-[var(--accent)]" size={32} />
+            <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Synchronizing Records</p>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-3"
+          >
+            {/* DESKTOP TABLE */}
+            <div className="hidden lg:block rounded-[2rem] overflow-hidden border border-[var(--border)] bg-[var(--card)]">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-[var(--foreground)]/[0.03] border-b border-[var(--border)]">
+                  <tr className="text-[10px] uppercase font-bold tracking-widest text-[var(--muted)]">
+                    <th className="px-6 py-4">Timeline</th>
+                    <th className="px-6 py-4">Reference</th>
+                    <th className="px-6 py-4">Identity</th>
+                    <th className="px-6 py-4">Category</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4 text-right">Value</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border)]">
+                  {transactions.map((t, idx) => {
+                    const meta = statusMeta[t.status] || statusMeta.pending;
+                    return (
+                      <motion.tr
+                        key={t._id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.03 }}
+                        onClick={() => setSelectedTx(t)}
+                        className="group hover:bg-[var(--foreground)]/[0.03] transition-colors cursor-pointer"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col">
+                            <span className="text-[var(--foreground)] font-medium">{new Date(t.createdAt).toLocaleDateString()}</span>
+                            <span className="text-[10px] text-[var(--muted)]/40">{new Date(t.createdAt).toLocaleTimeString()}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="font-mono text-[10px] text-[var(--accent)] uppercase">{t.orderId}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col max-w-[150px]">
+                            <span className="truncate text-[var(--foreground)] font-medium">{t.email || "Guest User"}</span>
+                            <span className="text-[10px] text-[var(--muted)]/40 truncate">{t.playerId || "No ID"}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="flex items-center gap-2 text-[10px] font-bold uppercase text-[var(--muted)]/60">
+                            <Gamepad2 size={12} className="text-[var(--accent)]" />
+                            {t.gameSlug}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[9px] font-bold uppercase tracking-wider ${meta.class}`}>
+                            {meta.icon}
+                            {meta.label}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <span className="text-base font-black text-emerald-500 tracking-tighter tabular-nums">
+                            ₹{t.price}
+                          </span>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* MOBILE LIST */}
+            <div className="lg:hidden space-y-3">
+              {transactions.map((t, idx) => {
+                const meta = statusMeta[t.status] || statusMeta.pending;
+                return (
+                  <motion.div
+                    key={t._id}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.03 }}
+                    onClick={() => setSelectedTx(t)}
+                    className="p-4 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] active:bg-[var(--foreground)]/[0.05] transition-all"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="space-y-0.5">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[8px] font-bold uppercase tracking-widest ${meta.class}`}>
+                          {meta.icon}
+                          {meta.label}
+                        </span>
+                        <p className="text-[10px] font-mono text-[var(--muted)]/40 uppercase mt-1">{t.orderId}</p>
+                      </div>
+                      <span className="text-lg font-black text-emerald-500 tracking-tighter">₹{t.price}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px]">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center shrink-0">
+                          <Gamepad2 size={14} className="text-[var(--accent)]" />
+                        </div>
+                        <div className="truncate">
+                          <p className="font-bold text-[var(--foreground)] uppercase">{t.gameSlug}</p>
+                          <p className="text-[var(--muted)]/60 truncate">{t.email || "No Email"}</p>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="font-medium text-[var(--muted)]/40">{new Date(t.createdAt).toLocaleDateString()}</p>
+                        <ChevronRight size={14} className="ml-auto text-[var(--muted)]/20 mt-1" />
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {!transactions.length && (
+              <div className="py-20 text-center border border-dashed border-[var(--border)] rounded-[2rem]">
+                <Hash className="mx-auto text-[var(--muted)]/20 mb-4" size={48} />
+                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Transaction Stream Empty</p>
+              </div>
+            )}
+
+            {/* ================= PAGINATION ================= */}
+            {pagination.totalPages > 1 && (
+              <div className="flex items-center justify-between pt-6 border-t border-[var(--border)]">
+                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase">
+                  Listing <b className="text-[var(--foreground)]">{pagination.page}</b> / {pagination.totalPages}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[10px] font-bold uppercase text-[var(--muted)]/60 hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.05] disabled:opacity-20 transition-all font-mono"
+                  >
+                    PREV
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+                    disabled={page === pagination.totalPages}
+                    className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[10px] font-bold uppercase text-[var(--muted)]/60 hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.05] disabled:opacity-20 transition-all font-mono"
+                  >
+                    NEXT
+                  </button>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ================= DRAWER ================= */}
+      <AnimatePresence>
+        {selectedTx && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTx(null)}
+              className="fixed inset-0 z-[1001] bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 h-full w-full max-w-lg bg-[var(--background)] border-l border-[var(--border)] shadow-2xl z-[1002] flex flex-col"
+            >
+              <div className="p-8 border-b border-[var(--border)] bg-gradient-to-r from-[var(--foreground)]/[0.02] to-transparent">
+                <div className="flex items-start justify-between mb-8">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">Transaction Verified</p>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Payment Report</h3>
+                  </div>
+                  <button
+                    onClick={() => setSelectedTx(null)}
+                    className="w-10 h-10 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]/40 hover:text-[var(--foreground)] hover:bg-red-500/20 transition-all"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between p-6 rounded-3xl bg-[var(--accent)]/5 border border-[var(--accent)]/10">
+                  <div>
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Settlement Amount</p>
+                    <span className="text-3xl font-black text-emerald-500 tabular-nums">₹{selectedTx.price}</span>
+                  </div>
+                  {(() => {
+                    const meta = statusMeta[selectedTx.status] || statusMeta.pending;
+                    return (
+                      <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-widest ${meta.class}`}>
+                        {meta.icon}
+                        {meta.label}
+                      </span>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8 space-y-10">
+                <DrawerSection icon={<Gamepad2 size={16} />} title="Service Node">
+                  <DrawerDetail label="Platform Source" value={selectedTx.gameSlug} emphasize />
+                  <DrawerDetail label="Asset Profile" value={selectedTx.itemName} />
+                  <DrawerDetail label="Asset Signature" value={selectedTx.itemSlug} />
+                </DrawerSection>
+
+                <DrawerSection icon={<Smartphone size={16} />} title="Terminal Link">
+                  <DrawerDetail label="Player Protocol" value={selectedTx.playerId} emphasize />
+                  <DrawerDetail label="Sector Node" value={selectedTx.zoneId || "GLOBAL"} />
+                </DrawerSection>
+
+                <DrawerSection icon={<CreditCard size={16} />} title="Financial Protocol">
+                  <DrawerDetail label="Settlement Path" value={selectedTx.paymentMethod} />
+                  <DrawerDetail label="Gateway Status" value={selectedTx.paymentStatus} emphasize />
+                  <DrawerDetail label="Fulfillment Node" value={selectedTx.topupStatus} />
+                </DrawerSection>
+
+                <DrawerSection icon={<User size={16} />} title="Authorized Entity">
+                  <DrawerDetail label="Registry Email" value={selectedTx.email || "GUEST"} />
+                  <DrawerDetail label="Comms Channel" value={selectedTx.phone || "UNLINKED"} />
+                  <DrawerDetail label="Sync Timestamp" value={new Date(selectedTx.createdAt).toLocaleString()} />
+                </DrawerSection>
+
+                <div className="pt-6 border-t border-[var(--border)] opacity-20">
+                  <p className="text-[8px] font-mono uppercase tracking-[0.4em] text-center text-[var(--foreground)]">Reference ID: {selectedTx.orderId.toUpperCase()}</p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 /* ================= HELPERS ================= */
 
-function Section({ title, children }) {
+function DrawerSection({ icon, title, children }) {
   return (
-    <div>
-      <h4 className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)] mb-3">
-        {title}
-      </h4>
-      <div className="space-y-2">{children}</div>
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 text-[var(--muted)]/40 truncate">
+        <div className="p-2 rounded-lg bg-[var(--foreground)]/[0.05] text-[var(--accent)]">{icon}</div>
+        <h4 className="text-[10px] font-black uppercase tracking-[0.2em]">{title}</h4>
+        <div className="h-px flex-1 bg-[var(--border)]" />
+      </div>
+      <div className="grid grid-cols-1 gap-4 px-1">{children}</div>
     </div>
   );
 }
 
-function Detail({ label, value }) {
+function DrawerDetail({ label, value, emphasize }) {
   return (
-    <div className="flex justify-between gap-4">
-      <span className="text-xs text-[var(--muted)]">{label}</span>
-      <span className="font-medium break-words max-w-[60%] text-right">
-        {value}
+    <div className="flex justify-between items-baseline gap-4 group">
+      <span className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-tight group-hover:text-[var(--muted)]/60 transition-colors whitespace-nowrap">{label}</span>
+      <span className={`text-sm font-bold text-right truncate ${emphasize ? "text-[var(--accent)] italic uppercase" : "text-[var(--foreground)]"}`}>
+        {value || "N/A"}
       </span>
     </div>
   );
