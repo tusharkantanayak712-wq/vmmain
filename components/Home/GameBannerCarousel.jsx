@@ -3,8 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { FiChevronLeft, FiChevronRight, FiPlay } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import logo from "@/public/logo.png";
 import Loader from "@/components/Loader/Loader";
 
@@ -84,7 +83,7 @@ export default function GameBannerCarousel() {
 
   return (
     <div className="relative w-full max-w-7xl mx-auto mt-8 px-4 select-none">
-      <div className="relative overflow-hidden rounded-3xl h-[280px] sm:h-[360px] md:h-[440px] lg:h-[500px] group shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl h-[220px] sm:h-[300px] md:h-[380px] lg:h-[420px] group shadow-2xl">
 
         {/* ANIMATED BACKGROUND */}
         <AnimatePresence initial={false} custom={direction}>
@@ -102,16 +101,14 @@ export default function GameBannerCarousel() {
             }}
             className="absolute inset-0"
           >
-            <Link href={banner.bannerLink || "/"} className="absolute inset-0">
-              <Image
-                src={imageSrc}
-                alt={banner.bannerTitle || "Game banner"}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 1200px"
-                className="object-cover"
-              />
-            </Link>
+            <Image
+              src={imageSrc}
+              alt={banner.bannerTitle || "Game banner"}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 1200px"
+              className="object-cover"
+            />
           </motion.div>
         </AnimatePresence>
 
@@ -126,17 +123,7 @@ export default function GameBannerCarousel() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          {/* FEATURED BADGE */}
-          <motion.div
-            className="mb-4 px-4 py-1.5 rounded-full bg-[var(--accent)]/20 border border-[var(--accent)]/50 backdrop-blur-sm"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring" }}
-          >
-            <span className="text-[var(--accent)] text-xs md:text-sm font-bold uppercase tracking-wider">
-              Featured
-            </span>
-          </motion.div>
+
 
           {/* TITLE */}
           <motion.h2
@@ -158,28 +145,7 @@ export default function GameBannerCarousel() {
             Fast delivery • Secure payments • 24/7 support
           </motion.p>
 
-          {/* CTA BUTTON */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, type: "spring" }}
-          >
-            <Link href={banner.bannerLink || "/"}>
-              <motion.button
-                className="group/btn px-8 py-3 rounded-xl bg-gradient-to-r from-[var(--accent)] to-purple-500 text-white font-bold text-sm md:text-base shadow-2xl flex items-center gap-3"
-                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px -10px rgba(99, 102, 241, 0.6)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>Explore Now</span>
-                <motion.div
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <FiPlay className="fill-current" size={18} />
-                </motion.div>
-              </motion.button>
-            </Link>
-          </motion.div>
+
         </motion.div>
 
         {/* NAVIGATION ARROWS */}

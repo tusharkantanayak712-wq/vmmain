@@ -104,7 +104,7 @@ export default function Header() {
 
         {/* LOGO */}
         <Link href="/" className="flex items-center relative group">
-          <Image src={logo} alt="Logo" width={90} height={28} priority />
+          <Image src={logo} alt="Logo" width={55} height={17} priority />
           <motion.div
             className="absolute -bottom-1 left-0 h-0.5 bg-[var(--accent)]"
             initial={{ width: 0 }}
