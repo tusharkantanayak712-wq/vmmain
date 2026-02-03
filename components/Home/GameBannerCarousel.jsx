@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import logo from "@/public/logo.png";
 import Loader from "@/components/Loader/Loader";
 
+const SLIDE_DURATION = 5000;
+
 export default function GameBannerCarousel() {
   const [banners, setBanners] = useState([]);
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef(null);
 
   /* ================= FETCH ================= */
   useEffect(() => {
@@ -32,15 +36,23 @@ export default function GameBannerCarousel() {
     return () => (active = false);
   }, []);
 
-  /* ================= AUTOPLAY ================= */
-  useEffect(() => {
-    if (banners.length <= 1) return;
-    const id = setInterval(() => {
+  /* ================= TIMER LOGIC ================= */
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (banners.length <= 1 || isPaused) return;
+
+    timerRef.current = setInterval(() => {
       setDirection(1);
       setCurrent((p) => (p + 1) % banners.length);
-    }, 5000);
-    return () => clearInterval(id);
-  }, [banners.length]);
+    }, SLIDE_DURATION);
+  }, [banners.length, isPaused]);
+
+  useEffect(() => {
+    startTimer();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [startTimer, current]);
 
   const goNext = useCallback(() => {
     setDirection(1);
@@ -52,39 +64,45 @@ export default function GameBannerCarousel() {
     setCurrent((p) => (p - 1 + banners.length) % banners.length);
   }, [banners.length]);
 
+  const jumpTo = (idx) => {
+    setDirection(idx > current ? 1 : -1);
+    setCurrent(idx);
+  };
+
   if (loading) return <Loader />;
   if (!banners.length) return null;
 
   const banner = banners[current];
-
-  // SAFE IMAGE SRC
   const imageSrc =
     typeof banner.bannerImage === "string" && banner.bannerImage
       ? banner.bannerImage
       : logo;
 
   const variants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 1000 : -1000,
+    enter: (dir) => ({
+      x: dir > 0 ? 1000 : -1000,
       opacity: 0,
-      scale: 0.8,
+      scale: 1.1,
     }),
     center: {
       x: 0,
       opacity: 1,
       scale: 1,
     },
-    exit: (direction) => ({
-      x: direction < 0 ? 1000 : -1000,
+    exit: (dir) => ({
+      x: dir < 0 ? 1000 : -1000,
       opacity: 0,
-      scale: 0.8,
+      scale: 0.9,
     }),
   };
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto mt-8 px-4 select-none">
-      <div className="relative overflow-hidden rounded-3xl h-[220px] sm:h-[300px] md:h-[380px] lg:h-[420px] group shadow-2xl">
-
+    <div className="relative w-full max-w-7xl mx-auto mt-6 px-4 select-none">
+      <div
+        className="relative overflow-hidden rounded-2xl h-[220px] sm:h-[320px] md:h-[420px] group shadow-xl"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         {/* ANIMATED BACKGROUND */}
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
@@ -95,9 +113,8 @@ export default function GameBannerCarousel() {
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.3 },
-              scale: { duration: 0.3 },
+              x: { type: "tween", duration: 0.5, ease: "easeInOut" },
+              opacity: { duration: 0.4 }
             }}
             className="absolute inset-0"
           >
@@ -106,111 +123,47 @@ export default function GameBannerCarousel() {
               alt={banner.bannerTitle || "Game banner"}
               fill
               priority
-              sizes="(max-width: 768px) 100vw, 1200px"
+              sizes="(max-width: 1280px) 100vw, 1280px"
               className="object-cover"
             />
           </motion.div>
         </AnimatePresence>
 
-        {/* GRADIENT OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
+        {/* BASIC GRADIENT OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-        {/* CONTENT */}
-        <motion.div
-          className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 md:px-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-
-
-          {/* TITLE */}
+        {/* CONTENT — ONLY TITLE */}
+        <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 flex items-end">
           <motion.h2
-            className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-white drop-shadow-2xl mb-4 max-w-4xl"
-            initial={{ opacity: 0, y: 20 }}
+            key={current}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+            className="text-xl sm:text-3xl md:text-4xl font-black text-white drop-shadow-lg"
           >
-            {banner.bannerTitle || "Discover New Offers"}
+            {banner.bannerTitle}
           </motion.h2>
+        </div>
 
-          {/* SUBTITLE */}
-          <motion.p
-            className="text-sm sm:text-base md:text-lg text-white/90 mb-6 max-w-2xl font-medium"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            Fast delivery • Secure payments • 24/7 support
-          </motion.p>
-
-
-        </motion.div>
-
-        {/* NAVIGATION ARROWS */}
+        {/* ARROWS — ONLY ON HOVER */}
         {banners.length > 1 && (
           <>
-            <motion.button
+            <button
               onClick={goPrev}
-              aria-label="Previous banner"
-              className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl"
-              whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-              whileTap={{ scale: 0.9 }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/20 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              <FiChevronLeft size={24} />
-            </motion.button>
+              <FiChevronLeft size={20} />
+            </button>
 
-            <motion.button
+            <button
               onClick={goNext}
-              aria-label="Next banner"
-              className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl"
-              whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-              whileTap={{ scale: 0.9 }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/20 backdrop-blur-md text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              <FiChevronRight size={24} />
-            </motion.button>
+              <FiChevronRight size={20} />
+            </button>
           </>
         )}
 
-        {/* PROGRESS INDICATORS */}
-        {banners.length > 1 && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-            {banners.map((_, i) => (
-              <motion.button
-                key={i}
-                onClick={() => {
-                  setDirection(i > current ? 1 : -1);
-                  setCurrent(i);
-                }}
-                className="relative h-1.5 rounded-full overflow-hidden"
-                whileHover={{ scale: 1.2 }}
-                style={{ width: i === current ? 40 : 24 }}
-              >
-                <div className="absolute inset-0 bg-white/30 backdrop-blur-sm" />
-                {i === current && (
-                  <motion.div
-                    className="absolute inset-0 bg-[var(--accent)]"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 5, ease: "linear" }}
-                    style={{ transformOrigin: "left" }}
-                  />
-                )}
-              </motion.button>
-            ))}
-          </div>
-        )}
 
-        {/* SLIDE COUNTER */}
-        <motion.div
-          className="absolute top-6 right-6 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white text-xs md:text-sm font-semibold"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7 }}
-        >
-          {current + 1} / {banners.length}
-        </motion.div>
       </div>
     </div>
   );
