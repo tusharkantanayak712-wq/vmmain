@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import { FiPlus, FiMenu, FiX } from "react-icons/fi";
+import { FiPlus, FiMenu, FiX, FiHome, FiGlobe, FiGrid, FiBarChart2, FiSettings, FiHelpCircle, FiCpu, FiAward } from "react-icons/fi";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -15,17 +16,17 @@ import logo from "@/public/logo.png";
 
 const HEADER_CONFIG = {
   nav: [
-    { label: "Home", href: "/" },
-    { label: "Region", href: "/region" },
-    { label: "Services", href: "/services" },
+    { label: "Home", href: "/", icon: <FiHome className="text-lg" /> },
+    { label: "Region", href: "/region", icon: <FiGlobe className="text-lg" /> },
+    { label: "Services", href: "/services", icon: <FiGrid className="text-lg" /> },
   ],
 
   userMenu: [
-    { label: "Dashboard", href: "/dashboard", auth: true },
-    { label: "Customer Support", href: "/dashboard", auth: true },
-    { label: "Account Settings", href: "/dashboard", auth: true },
-    { label: "Leader Board", href: "/leaderboard", auth: true },
-    { label: "Membership", href: "/admin-panal", auth: true },
+    { label: "Dashboard", href: "/dashboard", auth: true, icon: <FiBarChart2 /> },
+    { label: "Customer Support", href: "/dashboard", auth: true, icon: <FiHelpCircle /> },
+    { label: "Account Settings", href: "/dashboard", auth: true, icon: <FiSettings /> },
+    { label: "Leader Board", href: "/leaderboard", auth: true, icon: <FiAward /> },
+    { label: "Membership", href: "/admin-panal", auth: true, icon: <FiCpu /> },
   ],
 
   roleMenu: {
@@ -40,6 +41,7 @@ const HEADER_CONFIG = {
 ===================================================== */
 
 export default function Header() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -119,9 +121,16 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="relative px-4 py-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors group"
+              className="relative px-3 py-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors group flex items-center gap-2"
             >
-              <span className="relative z-10">{item.label}</span>
+              <span className="relative z-10 flex items-center gap-2">
+                <span className="text-lg opacity-80 group-hover:opacity-100 group-hover:text-[var(--accent)] transition-all">
+                  {item.icon}
+                </span>
+                <span className="text-sm font-semibold tracking-wide">
+                  {item.label}
+                </span>
+              </span>
               <motion.div
                 className="absolute inset-0 bg-[var(--accent)]/10 rounded-lg"
                 initial={{ scale: 0, opacity: 0 }}
@@ -138,7 +147,13 @@ export default function Header() {
 
           {/* USER ICON */}
           <motion.button
-            onClick={() => setUserMenuOpen((p) => !p)}
+            onClick={() => {
+              if (user) {
+                setUserMenuOpen((p) => !p);
+              } else {
+                router.push("/login");
+              }
+            }}
             className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-purple-500 flex items-center justify-center overflow-hidden shadow-lg relative"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -210,9 +225,12 @@ export default function Header() {
                               <Link
                                 key={item.label}
                                 href={item.href}
-                                className="block py-2 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all text-sm"
+                                className="flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all text-sm group"
                               >
-                                {item.label}
+                                <span className="text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors">
+                                  {item.icon}
+                                </span>
+                                <span className="font-medium">{item.label}</span>
                               </Link>
                             )
                         )}
@@ -279,9 +297,12 @@ export default function Header() {
                   <Link
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className="block py-2 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all"
+                    className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all group"
                   >
-                    {item.label}
+                    <span className="text-xl text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors">
+                      {item.icon}
+                    </span>
+                    <span className="font-bold tracking-wide">{item.label}</span>
                   </Link>
                 </motion.div>
               ))}
