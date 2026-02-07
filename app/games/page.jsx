@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FiFilter, FiX, FiSearch, FiZap, FiTarget, FiBox, FiLayers, FiShoppingBag } from "react-icons/fi";
+import { FiFilter, FiX, FiSearch, FiZap, FiTarget, FiBox, FiLayers, FiShoppingBag, FiGlobe } from "react-icons/fi";
 import logo from "@/public/logo.png";
 import GamesFilterModal from "@/components/Games/GamesFilterModal";
 
@@ -82,87 +82,98 @@ export default function GamesPage() {
 
   const GameCard = ({ game, index = 0 }) => {
     const disabled = isOutOfStock(game.gameName);
+    const region = game.gameFrom || "Global";
+    const isIndia = region.toLowerCase().includes("india") || region.toLowerCase().includes("in");
 
     return (
       <motion.div
         layout
-        initial={{ opacity: 0, scale: 0.98 }}
-        whileInView={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.4, delay: index * 0.02 }}
-        className="group relative"
+        transition={{ duration: 0.4, delay: index * 0.03 }}
+        className="group relative h-full"
       >
         <Link
           href={disabled ? "#" : `/games/${game.gameSlug}`}
-          className={`relative flex items-center gap-4 p-3 sm:p-4 rounded-xl sm:rounded-3xl overflow-hidden border transition-all duration-500 block ${disabled ? "opacity-40 cursor-not-allowed border-white/5 bg-white/[0.02]" : "border-white/5 hover:border-[var(--accent)]/40 bg-gradient-to-br from-white/[0.05] to-transparent hover:from-white/[0.1] hover:to-[var(--accent)]/[0.05] shadow-xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+          className={`relative flex items-center gap-5 p-4 sm:p-5 rounded-2xl sm:rounded-3xl overflow-hidden border transition-all duration-500 block h-full ${disabled
+            ? "opacity-40 cursor-not-allowed border-[var(--border)]/50 bg-[var(--card)]/50"
+            : "border-[var(--border)] hover:border-[var(--accent)]/50 bg-[var(--card)] hover:bg-[var(--card)]/80 shadow-lg hover:shadow-[0_10px_40px_rgba(0,0,0,0.2)]"
             }`}
         >
           {/* IMAGE */}
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden flex-shrink-0 border border-white/10 shadow-lg">
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl sm:rounded-2xl overflow-hidden flex-shrink-0 border border-white/10 shadow-2xl group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(var(--accent-rgb),0.2)] transition-all duration-500">
             <Image
               src={game.gameImageId?.image || logo}
               alt={game.gameName}
               fill
-              className={`object-cover transition-transform duration-700 ${disabled ? "grayscale" : "group-hover:scale-110"}`}
+              className={`object-cover transition-transform duration-700 ${disabled ? "grayscale" : "scale-105 group-hover:scale-110"}`}
             />
             {!disabled && (
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
             )}
             {disabled && (
               <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] flex items-center justify-center">
-                <FiX className="text-red-500 text-xl" />
+                <FiX className="text-red-500 text-2xl" />
               </div>
             )}
           </div>
 
           {/* CONTENT */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1.5">
-              <h3 className="text-[15px] sm:text-[18px] font-black text-[var(--foreground)] leading-tight group-hover:text-[var(--accent)] transition-colors uppercase tracking-tight truncate">
+          <div className="flex-1 min-w-0 flex flex-col justify-center h-full">
+            <div className="mb-2">
+              <h3 className="text-[18px] sm:text-[20px] font-black text-[var(--foreground)] leading-none group-hover:text-[var(--accent)] transition-colors uppercase tracking-tight truncate">
                 {game.gameName}
               </h3>
-              {!disabled && game.tagId && (
-                <div
-                  className="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-[var(--accent)] text-black hidden sm:inline-block shadow-[0_4px_10px_rgba(var(--accent-rgb),0.3)]"
-                >
-                  {game.tagId.tagName}
-                </div>
-              )}
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 opacity-40 group-hover:opacity-100 transition-all text-[var(--foreground)]">
-              <div className="flex items-center gap-1.5">
-                <FiTarget size={12} className="text-[var(--accent)]" />
-                <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">
-                  {game.gameFrom}
-                </p>
+            {/* TAGS & REGION */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                {/* Region Badge */}
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[10px] font-bold uppercase tracking-wider ${isIndia
+                  ? "bg-orange-500/10 border-orange-500/20 text-orange-400 group-hover:bg-orange-500/20"
+                  : "bg-blue-500/10 border-blue-500/20 text-blue-400 group-hover:bg-blue-500/20"
+                  } transition-colors`}>
+                  <FiGlobe size={10} />
+                  <span>{region}</span>
+                </div>
               </div>
-              <div className="hidden sm:flex items-center gap-1.5 border-l border-current/20 pl-4">
-                <FiLayers size={12} className="text-purple-400" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Verified</span>
-              </div>
+
+              {!disabled && game.tagId && (
+                <div className="flex items-center gap-2">
+                  <div
+                    className="px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest bg-[var(--accent)]/5 border border-[var(--accent)]/10 text-[var(--accent)]/80 group-hover:text-[var(--accent)] group-hover:border-[var(--accent)]/30 transition-all"
+                  >
+                    {game.tagId.tagName}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* ACTION BUTTON */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 pl-2 self-center">
             {!disabled ? (
               <div className="relative group/btn">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-current/5 border border-current/10 text-[var(--foreground)] flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-black transition-all duration-300 shadow-xl overflow-hidden">
-                  <FiShoppingBag size={20} className="relative z-10 group-hover/btn:scale-110 transition-transform" />
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/[0.03] border border-white/10 text-[var(--foreground)] flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-black transition-all duration-300 shadow-xl overflow-hidden relative z-10">
+                  <FiShoppingBag size={20} className="transition-transform duration-300 group-hover/btn:-rotate-12 group-hover/btn:scale-110" />
                 </div>
+                {/* Glow behind button */}
+                <div className="absolute inset-0 bg-[var(--accent)]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
             ) : (
-              <div className="px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">Inactive</span>
+              <div className="px-3 py-1.5 rounded bg-red-500/10 border border-red-500/20">
+                <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Sold Out</span>
               </div>
             )}
           </div>
 
-          {/* DECORATIVE ACCENT */}
-          <div className="absolute right-0 top-0 w-16 h-16 bg-gradient-to-bl from-[var(--accent)]/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-          <div className="absolute left-0 bottom-0 w-24 h-0.5 bg-gradient-to-r from-[var(--accent)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          {/* BACKGROUND EFFECTS */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <div className="absolute right-0 top-0 w-32 h-32 bg-[var(--accent)]/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full pointer-events-none" />
+          <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-blue-500/10 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full pointer-events-none" />
         </Link>
       </motion.div>
     );
