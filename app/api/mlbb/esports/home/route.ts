@@ -42,21 +42,21 @@ export async function GET() {
         reward: "Elite Skin + Diamonds",
         date: "Every Weekend",
         image: "",
-        link: "https://wa.me/916372305866",
+        link: "https://wa.me/919178521537",
       },
       {
         name: "MLBB Ranked Rush Tournament",
         reward: "Starlight Pass Giveaway",
         date: "Monthly Event",
         image: "",
-        link: "https://wa.me/916372305866",
+        link: "https://wa.me/919178521537",
       },
       {
         name: "5v5 Squad Battle Arena",
         reward: "Cash Prize + Hero Fragments",
         date: "Seasonal",
         image: "",
-        link: "https://wa.me/916372305866",
+        link: "https://wa.me/919178521537",
       }
     ],
 

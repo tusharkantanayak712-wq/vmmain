@@ -3,7 +3,7 @@
 import { FiUsers, FiGlobe, FiZap, FiCode } from "react-icons/fi";
 
 export default function ServicesPage() {
-  const whatsappLink = "https://wa.me/916372305866";
+  const whatsappLink = "https://wa.me/919178521537";
 
   const services = [
     {
@@ -60,9 +60,9 @@ export default function ServicesPage() {
                 className={`relative p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)]
                 transition-all text-left
                 ${service.active
-                  ? "cursor-pointer hover:border-[var(--accent)]/40 hover:shadow-lg"
-                  : "opacity-60 cursor-not-allowed"
-                }`}
+                    ? "cursor-pointer hover:border-[var(--accent)]/40 hover:shadow-lg"
+                    : "opacity-60 cursor-not-allowed"
+                  }`}
               >
                 {/* Badge */}
                 <span className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full 

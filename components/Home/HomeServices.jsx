@@ -81,7 +81,7 @@ export default function HomeServices() {
               className="flex flex-col sm:flex-row items-center gap-6"
             >
               <motion.a
-                href="tel:+916372305866"
+                href="tel:+919178521537"
                 className="flex items-center gap-3 text-lg font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
                 whileHover={{ scale: 1.02 }}
               >
@@ -92,7 +92,7 @@ export default function HomeServices() {
               </motion.a>
 
               <motion.a
-                href="https://wa.me/916372305866"
+                href="https://wa.me/919178521537"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative group/btn"
