@@ -30,7 +30,7 @@
    🌙 DARK – PROFESSIONAL / UNIVERSAL
    ====================================================== */
 html[data-theme="dark"] {
-  --background: #020617;
+  --background: #010411;
   --foreground: #e5e7eb;
   --accent: #38bdf8;
   --accent-hover: #0ea5e9;
@@ -126,8 +126,8 @@ html[data-theme="glass"] {
   --accent: #5eead4;
   --accent-hover: #2dd4bf;
   --muted: #94a3b8;
-  --border: rgba(255,255,255,0.12);
-  --card: rgba(255,255,255,0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --card: rgba(255, 255, 255, 0.06);
 }
 
 /* ======================================================
@@ -298,6 +298,7 @@ html[data-theme="neonlime"] {
   --border: #365314;
   --card: #1a2e05;
 }
+
 /* ================= GIRLY / CUTE THEMES ================= */
 
 /* 🌹 Rose Blush */
@@ -376,6 +377,7 @@ html[data-theme="vanilla"] {
   --border: #fde68a;
   --card: #fef3c7;
 }
+
 /* ================= MANLY / STRONG THEMES ================= */
 
 /* 🔩 Steel Gray */
@@ -472,6 +474,7 @@ a {
   color: var(--accent);
   transition: color 0.3s ease;
 }
+
 a:hover {
   color: var(--accent-hover);
 }
@@ -499,10 +502,12 @@ html[data-theme="glass"] .card {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--accent);
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
@@ -516,24 +521,59 @@ html[data-theme="glass"] .card {
 
 /* Random shaking / popping / wiggle animations */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-6px);
+  }
+
+  40% {
+    transform: translateX(6px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 @keyframes pop {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.15); }
-  60% { transform: scale(0.95); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  30% {
+    transform: scale(1.15);
+  }
+
+  60% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes floatUp {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* Animation controller */
@@ -554,20 +594,25 @@ html[data-theme="glass"] .card {
   animation-name: floatUp, shake;
   animation-delay: 1s;
 }
+
 /* FALL ANIMATION */
 @keyframes fallDown {
   0% {
     transform: translateY(0) rotate(0deg);
   }
+
   40% {
     transform: translateY(120px) rotate(25deg);
   }
+
   60% {
     transform: translateY(180px) rotate(-10deg);
   }
+
   80% {
     transform: translateY(210px) rotate(5deg);
   }
+
   100% {
     transform: translateY(230px) rotate(0deg);
   }
@@ -585,8 +630,58 @@ html[data-theme="glass"] .card {
     opacity: 0;
     transform: translateY(16px) scale(0.85);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* ======================================================
+   ✨ COMPONENT ANIMATIONS
+   ====================================================== */
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+@keyframes rotate-gradient {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: rotate-gradient 3s linear infinite;
 }
