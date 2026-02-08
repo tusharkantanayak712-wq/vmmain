@@ -4,85 +4,86 @@ import Link from "next/link";
 import { Globe, Trophy, Gamepad2, LayoutGrid } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function LeaderboardRegionSection() {
+export default function HomeQuickAction() {
   const actions = [
     {
       title: "Ranking",
-      icon: <Trophy className="h-4 w-4" />,
+      icon: <Trophy className="h-5 w-5" />,
       href: "/leaderboard",
-      color: "from-amber-500/10 to-orange-500/10",
-      accent: "text-amber-400",
+      accent: "#f59e0b", // Amber
     },
     {
       title: "Games",
-      icon: <Gamepad2 className="h-4 w-4" />,
+      icon: <Gamepad2 className="h-5 w-5" />,
       href: "/games",
-      color: "from-blue-500/10 to-indigo-500/10",
-      accent: "text-blue-400",
+      accent: "#3b82f6", // Blue
     },
     {
       title: "Services",
-      icon: <LayoutGrid className="h-4 w-4" />,
+      icon: <LayoutGrid className="h-5 w-5" />,
       href: "/services",
-      color: "from-purple-500/10 to-fuchsia-500/10",
-      accent: "text-purple-400",
+      accent: "#8b5cf6", // Purple
     },
     {
       title: "Region",
-      icon: <Globe className="h-4 w-4" />,
+      icon: <Globe className="h-5 w-5" />,
       href: "/region",
-      color: "from-emerald-500/10 to-teal-500/10",
-      accent: "text-emerald-400",
+      accent: "#10b981", // Emerald
     },
   ];
 
   return (
-    <section className="w-full px-4 py-4 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-4 gap-2 md:gap-4">
+    <section className="w-full px-4 py-2 relative">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
           {actions.map((action, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.05 }}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05, duration: 0.4 }}
             >
               <Link
                 href={action.href}
-                className="group relative flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all duration-300"
+                className="group flex flex-col items-center gap-2 relative p-1.5"
               >
-                {/* Tactical Card Background - NO BORDER */}
-                <div className="absolute inset-0 rounded-xl bg-[var(--card)]/40 backdrop-blur-md transition-colors duration-300" />
+                {/* ICON CONTAINER - VIBRANT & TIGHT */}
+                <div className="relative">
+                  {/* Subtle Constant Glow */}
+                  <div
+                    className="absolute inset-0 blur-lg opacity-10 rounded-full"
+                    style={{ backgroundColor: action.accent }}
+                  />
 
-                {/* Glow Effect */}
-                <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${action.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div
+                    className="relative flex items-center justify-center p-2.5 rounded-xl bg-[var(--card)]/30 backdrop-blur-sm border border-white/5 transition-all duration-300 group-hover:scale-110 group-hover:bg-[var(--card)]/50"
+                    style={{ color: action.accent }}
+                  >
+                    {action.icon}
 
-                {/* Scanline Effect */}
-                <div className="absolute inset-0 overflow-hidden rounded-xl opacity-5 pointer-events-none">
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+                    {/* Hover Bloom */}
+                    <div
+                      className="absolute inset-0 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500 rounded-xl"
+                      style={{ backgroundColor: action.accent }}
+                    />
+                  </div>
                 </div>
 
-                {/* Icon Container - Smaller - NO BORDER */}
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  className={`relative h-9 w-9 flex items-center justify-center rounded-lg bg-black/40 shadow-xl ${action.accent} z-10`}
-                >
-                  {action.icon}
-
-                  {/* Icon Underglow */}
-                  <div className={`absolute inset-0 rounded-lg blur-md bg-current opacity-10`} />
-                </motion.div>
-
-                {/* Text Content - Tighter */}
-                <div className="relative z-10">
-                  <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-bold text-[var(--foreground)] opacity-80 group-hover:opacity-100 group-hover:text-[var(--accent)] transition-all">
+                {/* TEXT CONTENT - COMPACT */}
+                <div className="flex flex-col items-center">
+                  <span
+                    className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 group-hover:brightness-125"
+                    style={{ color: `${action.accent}cc` }} // Slightly transparent text
+                  >
                     {action.title}
                   </span>
-                </div>
 
-                {/* Micro Corner Decoration */}
-                <div className="absolute top-1.5 right-1.5 w-1 h-1 border-t border-r border-[var(--accent)]/0 group-hover:border-[var(--accent)]/40 transition-colors" />
-                <div className="absolute bottom-1.5 left-1.5 w-1 h-1 border-b border-l border-[var(--accent)]/0 group-hover:border-[var(--accent)]/40 transition-colors" />
+                  {/* Slim Underline */}
+                  <motion.div
+                    className="h-[1.5px] w-0 mt-1 rounded-full group-hover:w-full transition-all duration-500 ease-out"
+                    style={{ backgroundColor: action.accent }}
+                  />
+                </div>
               </Link>
             </motion.div>
           ))}

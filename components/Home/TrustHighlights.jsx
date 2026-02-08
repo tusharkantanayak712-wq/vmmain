@@ -13,46 +13,40 @@ import {
 export default function TrustHighlights() {
   const items = [
     {
-      title: "24/7",
-      subtitle: "Instant Delivery",
+      title: "Instant",
+      subtitle: "Fast Delivery",
       icon: FaBolt,
-      gradient: "from-yellow-400 to-orange-500",
-      bgGradient: "from-yellow-500/10 to-orange-500/10"
+      accent: "#f59e0b", // Amber
     },
     {
-      title: "100%",
-      subtitle: "Safe & Legit",
+      title: "Legit",
+      subtitle: "100% Secure",
       icon: FaShieldAlt,
-      gradient: "from-green-400 to-emerald-500",
-      bgGradient: "from-green-500/10 to-emerald-500/10"
+      accent: "#10b981", // Emerald
     },
     {
       title: "Easy",
-      subtitle: "Secure Payments",
+      subtitle: "Secure Pay",
       icon: FaCreditCard,
-      gradient: "from-blue-400 to-cyan-500",
-      bgGradient: "from-blue-500/10 to-cyan-500/10"
+      accent: "#3b82f6", // Blue
     },
     {
       title: "24/7",
       subtitle: "Live Support",
       icon: FaHeadset,
-      gradient: "from-purple-400 to-pink-500",
-      bgGradient: "from-purple-500/10 to-pink-500/10"
+      accent: "#8b5cf6", // Purple
     },
     {
       title: "Trusted",
-      subtitle: "By Thousands",
+      subtitle: "Top Rating",
       icon: FaUsers,
-      gradient: "from-amber-400 to-orange-500",
-      bgGradient: "from-amber-500/10 to-orange-500/10"
+      accent: "#ec4899", // Pink
     },
     {
-      title: "Fast",
-      subtitle: "Auto Topups",
+      title: "Auto",
+      subtitle: "Smart System",
       icon: FaRobot,
-      gradient: "from-cyan-400 to-blue-500",
-      bgGradient: "from-cyan-500/10 to-blue-500/10"
+      accent: "#06b6d4", // Cyan
     },
   ];
 
@@ -61,50 +55,41 @@ export default function TrustHighlights() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 15,
-      },
-    },
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <section className="py-8 px-4 bg-[var(--background)] text-[var(--foreground)]">
+    <section className="py-6 px-4 relative">
       <div className="max-w-7xl mx-auto">
-
-        {/* HEADING */}
+        {/* HEADING - MINIMALIST */}
         <motion.div
-          className="text-center mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          className="text-center mb-6 space-y-1"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
         >
-          <h2 className="text-xl md:text-2xl font-bold mb-1 bg-gradient-to-r from-[var(--foreground)] to-[var(--accent)] bg-clip-text text-transparent">
-            Why Players Trust Us
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)] opacity-80">
+            Reliability
+          </span>
+          <h2 className="text-xl md:text-2xl font-black text-[var(--foreground)] tracking-tight">
+            Why Trusted by Players
           </h2>
-          <p className="text-xs text-[var(--muted)]">
-            Secure • Fast • Verified Topups
-          </p>
         </motion.div>
 
         {/* GRID */}
         <motion.div
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
           variants={containerVariants}
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true }}
         >
           {items.map((item, i) => {
             const Icon = item.icon;
@@ -113,70 +98,45 @@ export default function TrustHighlights() {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                whileHover={{ y: -8, scale: 1.05 }}
+                whileHover={{ y: -4 }}
                 className="group relative"
               >
-                <div className={`
-                  relative overflow-hidden
-                  bg-gradient-to-br ${item.bgGradient}
-                  border border-[var(--border)]
-                  rounded-xl
-                  p-3
-                  flex flex-col items-center text-center
-                  transition-all duration-300
-                  hover:border-transparent
-                  hover:shadow-xl
-                `}>
-                  {/* GRADIENT BORDER ON HOVER */}
-                  <div className={`
-                    absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity
-                    bg-gradient-to-br ${item.gradient} p-[2px]
-                  `}>
-                    <div className="w-full h-full rounded-2xl bg-[var(--card)]" />
+                <div className="relative overflow-hidden bg-[var(--card)]/20 backdrop-blur-sm border border-[var(--border)]/50 rounded-2xl p-4 flex flex-col items-center text-center transition-all duration-300 group-hover:bg-[var(--card)]/40 group-hover:border-[var(--border)]">
+                  {/* ICON - SOFT TINTED */}
+                  <div className="relative mb-3.5">
+                    <div
+                      className="absolute inset-0 blur-lg opacity-10 group-hover:opacity-30 transition-opacity rounded-full scale-150"
+                      style={{ backgroundColor: item.accent }}
+                    />
+                    <div
+                      className="relative w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                      style={{
+                        backgroundColor: `${item.accent}15`,
+                        color: item.accent,
+                        border: `1px solid ${item.accent}30`
+                      }}
+                    >
+                      <Icon className="text-lg" />
+                    </div>
                   </div>
 
-                  {/* CONTENT */}
-                  <div className="relative z-10">
-                    {/* ICON */}
-                    <motion.div
-                      className={`
-                        w-10 h-10 mx-auto mb-2
-                        rounded-lg
-                        flex items-center justify-center
-                        bg-gradient-to-br ${item.gradient}
-                        shadow-lg
-                      `}
-                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                      transition={{ duration: 0.5 }}
+                  {/* TEXT CONTENT */}
+                  <div className="space-y-0.5">
+                    <p
+                      className="text-xs font-black uppercase tracking-wider"
+                      style={{ color: item.accent }}
                     >
-                      <Icon className="text-white text-base" />
-                    </motion.div>
-
-                    {/* TITLE */}
-                    <p className={`
-                      text-sm font-bold mb-0.5
-                      bg-gradient-to-br ${item.gradient}
-                      bg-clip-text text-transparent
-                    `}>
                       {item.title}
                     </p>
-
-                    {/* SUBTITLE */}
-                    <p className="text-[10px] text-[var(--muted)] leading-tight">
+                    <p className="text-[9px] sm:text-[10px] font-bold text-[var(--muted)] uppercase tracking-tight opacity-60">
                       {item.subtitle}
                     </p>
                   </div>
 
-                  {/* SHINE EFFECT */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full"
-                    animate={{ x: ['-100%', '200%'] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatDelay: 2,
-                      ease: "easeInOut"
-                    }}
+                  {/* BOTTOM HOVER LINE */}
+                  <div
+                    className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out"
+                    style={{ backgroundColor: item.accent }}
                   />
                 </div>
               </motion.div>

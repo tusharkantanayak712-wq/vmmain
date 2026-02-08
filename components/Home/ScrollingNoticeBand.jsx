@@ -32,7 +32,7 @@ const NOTICE_CONFIG = {
       type: "text"
     }
   ],
-  duration: 45, // Slowed down for readability
+  duration: 60, // Slower for premium feel
 };
 /* ============================================================= */
 
@@ -40,19 +40,7 @@ export default function ScrollingNoticeBand() {
   const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || NOTICE_CONFIG.brandFallback;
 
   return (
-    <div className="relative w-full overflow-hidden bg-[var(--card)]/40 backdrop-blur-xl border-y border-[var(--border)] py-5 sm:py-6 mt-2 group">
-      {/* Background Glows (Theme Dependent) */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-10">
-        <div
-          className="absolute inset-x-0 top-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, var(--accent), transparent)' }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{ backgroundColor: 'var(--accent)' }}
-        />
-      </div>
-
+    <div className="relative w-full overflow-hidden bg-transparent border-y border-[var(--border)]/50 py-2.5 mt-1 group">
       {/* Content Container */}
       <div className="flex whitespace-nowrap relative z-10">
         <motion.div
@@ -68,31 +56,31 @@ export default function ScrollingNoticeBand() {
           {[...Array(2)].map((_, loopIdx) => (
             <div key={loopIdx} className="flex">
               {NOTICE_CONFIG.items.map((item, idx) => (
-                <div key={idx} className="flex items-center mx-12 sm:mx-16">
+                <div key={idx} className="flex items-center mx-10 sm:mx-12">
                   {/* Icon */}
-                  <span className="mr-3 text-lg" style={{ color: 'var(--accent)' }}>
+                  <span className="mr-2 text-base opacity-70" style={{ color: 'var(--accent)' }}>
                     {item.icon}
                   </span>
 
                   {/* Text */}
-                  <span className="text-sm sm:text-base font-black uppercase tracking-widest text-[var(--foreground)]">
+                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-[var(--foreground)] opacity-60">
                     {item.type === "brand" ? (
                       <>
                         <span className="opacity-40">{item.prefix} </span>
-                        <span style={{ color: 'var(--accent)' }}>{BRAND_NAME} </span>
-                        <span style={{ color: 'var(--accent)' }}>{item.highlight}</span>
+                        <span style={{ color: 'var(--accent)' }} className="opacity-100">{BRAND_NAME} </span>
+                        <span style={{ color: 'var(--accent)' }} className="opacity-100">{item.highlight}</span>
                       </>
                     ) : (
                       <>
-                        <span style={{ color: 'var(--accent)' }}>{item.highlight}</span>
+                        <span style={{ color: 'var(--accent)' }} className="opacity-100">{item.highlight}</span>
                         <span className="mx-2 opacity-20">|</span>
-                        <span className="opacity-60 font-bold">{item.text.replace(item.highlight, "").trim()}</span>
+                        <span className="font-bold">{item.text.replace(item.highlight, "").trim()}</span>
                       </>
                     )}
                   </span>
 
-                  {/* HUD Separator */}
-                  <div className="ml-12 sm:ml-16 w-[1.5px] h-4 bg-[var(--border)] skew-x-[-20deg]" />
+                  {/* Dot Separator */}
+                  <div className="ml-10 sm:ml-12 w-1 h-1 rounded-full bg-[var(--accent)]/30" />
                 </div>
               ))}
             </div>
@@ -101,18 +89,8 @@ export default function ScrollingNoticeBand() {
       </div>
 
       {/* Edge Fades */}
-      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[var(--background)] to-transparent z-20" />
-      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[var(--background)] to-transparent z-20" />
-
-      {/* HUD Corner Accents */}
-      <div
-        className="absolute top-1 left-1 w-4 h-4 border-t border-l border-[var(--accent)]/30"
-        style={{ borderTopColor: 'var(--accent)', borderLeftColor: 'var(--accent)' }}
-      />
-      <div
-        className="absolute bottom-1 right-1 w-4 h-4 border-b border-r border-[var(--accent)]/30"
-        style={{ borderBottomColor: 'var(--accent)', borderRightColor: 'var(--accent)' }}
-      />
+      <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[var(--background)] to-transparent z-20" />
+      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[var(--background)] to-transparent z-20" />
     </div>
   );
 }

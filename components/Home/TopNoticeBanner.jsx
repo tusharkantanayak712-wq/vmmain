@@ -3,12 +3,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
-import { FiX, FiChevronRight } from "react-icons/fi";
+import { FiX, FiArrowRight } from "react-icons/fi";
 
 const STORAGE_KEY = "hide_whatsapp_banner";
 
-const WHATSAPP_CHANNEL_URL =
-  process.env.NEXT_PUBLIC_WHATSAPP_STORE_LINK || "";
+const WHATSAPP_CHANNEL_URL = process.env.NEXT_PUBLIC_WHATSAPP_STORE_LINK || "";
 
 export default function TopNoticeBanner() {
   const [visible, setVisible] = useState(false);
@@ -34,105 +33,73 @@ export default function TopNoticeBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="w-full border-b border-[var(--border)] bg-gradient-to-r from-[var(--background)] via-[var(--card)] to-[var(--background)] relative overflow-hidden"
+          className="w-full border-b border-[var(--border)] bg-gradient-to-r from-green-600/10 via-[var(--card)] to-green-600/10 relative z-10 overflow-hidden"
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
-          {/* Animated Background Pattern */}
-          <motion.div
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, var(--accent) 1px, transparent 0)`,
-              backgroundSize: '24px 24px'
-            }}
-            animate={{
-              backgroundPosition: ['0px 0px', '24px 24px']
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-
-          <motion.div
-            onClick={handleClick}
-            className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 cursor-pointer relative z-10"
-            whileHover={{ scale: 1.005 }}
-            transition={{ duration: 0.2 }}
-          >
-            {/* LEFT */}
-            <div className="flex items-center gap-3">
+          <div className="max-w-7xl mx-auto px-4 py-2.5 relative z-10">
+            <div className="flex items-center justify-between gap-4">
+              {/* CONTENT AREA */}
               <motion.div
-                className="p-2.5 rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg relative"
-                animate={{
-                  boxShadow: [
-                    "0 0 0 0 rgba(34, 197, 94, 0.4)",
-                    "0 0 0 8px rgba(34, 197, 94, 0)",
-                  ]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+                onClick={handleClick}
+                className="flex flex-1 items-center gap-3 cursor-pointer group min-w-0"
+                whileHover={{ x: 2 }}
+                transition={{ duration: 0.2 }}
               >
-                <FaWhatsapp size={20} />
-                <motion.div
-                  className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[var(--background)]"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
+                {/* ICON */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
+                    <FaWhatsapp size={18} />
+                  </div>
+                </div>
+
+                {/* TEXT */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs font-black uppercase tracking-[0.12em] text-[var(--foreground)]">
+                      WhatsApp Exclusive
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded-md bg-green-500/10 text-green-600 text-[9px] font-black uppercase tracking-tighter">
+                      News
+                    </span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-[var(--muted)] truncate font-medium max-w-md">
+                    Stay updated with instant offers, rewards & special announcements.
+                  </p>
+                </div>
               </motion.div>
 
-              <div className="leading-tight">
-                <p className="font-bold text-sm md:text-base text-[var(--foreground)] flex items-center gap-2">
-                  Join our WhatsApp Channel
-                  <motion.span
-                    className="inline-block px-2 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    NEW
-                  </motion.span>
-                </p>
-                <p className="text-xs md:text-sm text-[var(--muted)]">
-                  Instant offers, updates & exclusive announcements
-                </p>
+              {/* ACTION AREA */}
+              <div className="flex items-center gap-4">
+                <motion.button
+                  onClick={handleClick}
+                  className="hidden sm:flex items-center gap-2 text-[var(--accent)] font-black text-[10px] uppercase tracking-widest hover:brightness-110 transition-all group/btn"
+                >
+                  Join Channel
+                  <FiArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+
+                <div className="h-4 w-px bg-[var(--border)] hidden sm:block" />
+
+                <motion.button
+                  onClick={handleClose}
+                  className="p-1.5 text-[var(--muted)] hover:text-red-500 transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FiX size={16} />
+                </motion.button>
               </div>
             </div>
+          </div>
 
-            {/* RIGHT */}
-            <div className="flex items-center gap-3">
-              <motion.span
-                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-green-500 to-green-600 shadow-lg"
-                whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(34, 197, 94, 0.5)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Join Now
-                <motion.div
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <FiChevronRight size={16} />
-                </motion.div>
-              </motion.span>
-
-              <motion.button
-                onClick={handleClose}
-                className="rounded-full p-2 text-[var(--muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                aria-label="Close"
-              >
-                <FiX size={18} />
-              </motion.button>
-            </div>
-          </motion.div>
+          {/* TOP SLIM LINE */}
+          <div className="absolute top-0 left-0 w-full h-[1.5px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent" />
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
+
