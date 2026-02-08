@@ -1,79 +1,64 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiChevronDown, FiCheck } from "react-icons/fi";
+import { LuPalette } from "react-icons/lu";
 
-const themes = [
-  // 🌍 Core
-  { id: "light", icon: "☀️", label: "Light" },
-  { id: "dark", icon: "🌙", label: "Dark" },
-
-  // ⚡ Creative / Gaming
-  { id: "cyber", icon: "⚡", label: "Cyber Neon" },
-  { id: "retro", icon: "👾", label: "Retro Arcade" },
-  { id: "matrix", icon: "🧬", label: "Matrix" },
-  { id: "neonlime", icon: "🧿", label: "Neon Lime" },
-
-  // 🌸 Soft / Aesthetic
-  { id: "sakura", icon: "🌸", label: "Sakura" },
-  // { id: "aqua", icon: "🌊", label: "Aqua Wave" },
-  { id: "autumn", icon: "🍂", label: "Autumn" },
-
-  // 💖 Girly / Cute
-  { id: "rose", icon: "🌹", label: "Rose Blush" },
-  { id: "lavender", icon: "💜", label: "Lavender Dream" },
-  { id: "peach", icon: "🍑", label: "Peach Glow" },
-  // { id: "cotton", icon: "🍬", label: "Cotton Candy" },
-  // { id: "bubblegum", icon: "🎀", label: "Bubblegum Pop" },
-  // { id: "cherry", icon: "🍒", label: "Cherry Kiss" },
-  { id: "vanilla", icon: "🍦", label: "Vanilla Cream" },
-
-  // 🔥 Bold / Aggressive
-  { id: "inferno", icon: "🔥", label: "Inferno" },
-  { id: "crimson", icon: "🩸", label: "Crimson Noir" },
-
-  // 🧔 Manly / Strong
-  { id: "steel", icon: "🔩", label: "Steel Gray" },
-  // { id: "gunmetal", icon: "🛠️", label: "Gunmetal" },
-  // { id: "midnightblack", icon: "🖤", label: "Midnight Black" },
-  // { id: "royalblue", icon: "👑", label: "Royal Blue" },
-  { id: "bloodiron", icon: "🩸", label: "Blood Iron" },
-  // { id: "warzone", icon: "⚔️", label: "War Zone" },
-  { id: "carbon", icon: "🏴", label: "Carbon Fiber" },
-
-  // 🌲 Calm / Natural
-  { id: "forest", icon: "🌲", label: "Forest" },
-  { id: "emerald", icon: "🪙", label: "Finance Emerald" },
-
-  // 🌌 Dark / Premium
-  { id: "void", icon: "🌌", label: "Void Purple" },
-  // { id: "obsidian", icon: "🪐", label: "Obsidian" },
-  { id: "midnight", icon: "🌙", label: "Midnight Blue" },
-
-  // 🧊 Modern / SaaS
-  { id: "glass", icon: "🧊", label: "Glass" },
-  { id: "slate", icon: "🧠", label: "Slate Pro" },
-  // { id: "frost", icon: "❄️", label: "Frost" },
-
-  // 🎨 Creator / Luxury
-  { id: "solar", icon: "🟡", label: "Solar Gold" },
-  // { id: "sunset", icon: "🌅", label: "Sunset" },
-  { id: "prism", icon: "🌈", label: "Prism" },
+const THEME_GROUPS = [
+  {
+    name: "Core",
+    items: [
+      { id: "light", icon: "☀️", label: "Light" },
+      { id: "dark", icon: "🌙", label: "Dark" },
+    ]
+  },
+  {
+    name: "Gaming",
+    items: [
+      { id: "cyber", icon: "⚡", label: "Cyber Neon" },
+      { id: "retro", icon: "👾", label: "Retro Arcade" },
+      { id: "matrix", icon: "🧬", label: "Matrix" },
+    ]
+  },
+  {
+    name: "Premium",
+    items: [
+      { id: "glass", icon: "🧊", label: "Glass" },
+      { id: "slate", icon: "🧠", label: "Slate Pro" },
+      { id: "void", icon: "🌌", label: "Void Luxe" },
+    ]
+  },
+  {
+    name: "Soft",
+    items: [
+      { id: "sakura", icon: "🌸", label: "Sakura" },
+      { id: "lavender", icon: "💜", label: "Lavender" },
+      { id: "peach", icon: "🍑", label: "Peach" },
+    ]
+  },
+  {
+    name: "Strong",
+    items: [
+      { id: "crimson", icon: "🩸", label: "Crimson" },
+      { id: "carbon", icon: "🏴", label: "Carbon" },
+      { id: "bloodiron", icon: "⛓️", label: "Blood Iron" },
+    ]
+  }
 ];
 
-
+const ALL_THEMES = THEME_GROUPS.flatMap(g => g.items);
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<string>("dark");
   const [open, setOpen] = useState(false);
 
-  // Load stored theme on mount
   useEffect(() => {
     const stored = localStorage.getItem("theme") || "dark";
     setTheme(stored);
     document.documentElement.setAttribute("data-theme", stored);
   }, []);
 
-  // Change theme handler
   const changeTheme = (newTheme: string) => {
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
@@ -81,7 +66,6 @@ export default function ThemeToggle() {
     setOpen(false);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -89,78 +73,102 @@ export default function ThemeToggle() {
         setOpen(false);
       }
     };
-
     if (open) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
 
-  const currentTheme = themes.find((t) => t.id === theme);
+  const currentTheme = ALL_THEMES.find((t) => t.id === theme);
 
   return (
-    <div className="relative inline-block text-left theme-toggle-container">
-      {/* 🎨 Current Theme Button */}
-      <button
+    <div className="relative inline-block theme-toggle-container">
+      {/* TRIGGER BUTTON - PREMIUM PILL */}
+      <motion.button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1 border border-[var(--border)] rounded-full bg-[var(--card)] hover:bg-[var(--accent)] hover:text-white text-xs font-medium transition-all shadow-md hover:shadow-lg"
-        aria-label="Select Theme"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--card)]/50 backdrop-blur-md border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all shadow-sm group"
       >
-        <span className="text-base inline-block animate-sway">
-          {currentTheme?.icon || "🎨"}
-        </span>
-        <span>{currentTheme?.label || "Theme"}</span>
-      </button>
-
-      {/* 🪄 Dropdown Menu */}
-      {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-md max-h-56 overflow-y-auto">
-          <div className="py-1">
-            {themes.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => changeTheme(t.id)}
-                className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-xs transition-all ${
-                  theme === t.id
-                    ? "bg-[var(--accent)] text-white font-semibold"
-                    : "hover:bg-[var(--accent)] hover:text-white text-[var(--foreground)]"
-                }`}
-              >
-                <span className="text-base emoji-icon">{t.icon}</span>
-                <span>{t.label}</span>
-              </button>
-            ))}
-          </div>
+        <div className="relative w-5 h-5 flex items-center justify-center text-sm">
+          <LuPalette className={`transition-transform duration-500 ${open ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'}`} />
+          <span className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${open ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'}`}>
+            {currentTheme?.icon || "✨"}
+          </span>
         </div>
-      )}
+        <span className="text-[11px] font-black uppercase tracking-[0.15em] text-[var(--foreground)] hidden sm:inline">
+          {currentTheme?.label || "Theme"}
+        </span>
+        <FiChevronDown className={`w-3 h-3 transition-transform duration-300 ${open ? 'rotate-180 text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
+      </motion.button>
 
-      {/* 💫 Animations */}
-      <style jsx>{`
-        /* Gentle 45° sway animation */
-        @keyframes sway {
-          0%, 100% {
-            transform: rotate(0deg);
-          }
-          25% {
-            transform: rotate(15deg);
-          }
-          75% {
-            transform: rotate(-15deg);
-          }
+      {/* DROPDOWN MENU */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 5, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="absolute right-0 mt-3 w-56 bg-[var(--card)]/90 backdrop-blur-2xl border border-[var(--border)] rounded-2xl shadow-2xl z-[100] overflow-hidden"
+          >
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-[var(--border)]/50 bg-[var(--accent)]/5">
+              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent)]">
+                Appearance Settings
+              </p>
+            </div>
+
+            <div className="max-h-[350px] overflow-y-auto px-2 py-2 theme-scroll">
+              {THEME_GROUPS.map((group, gIdx) => (
+                <div key={group.name} className={gIdx !== 0 ? "mt-4" : ""}>
+                  <p className="px-3 mb-1.5 text-[8px] font-black uppercase tracking-[0.4em] text-[var(--muted)] opacity-50">
+                    {group.name}
+                  </p>
+                  <div className="space-y-0.5">
+                    {group.items.map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => changeTheme(t.id)}
+                        className={`w-full group/item flex items-center justify-between px-3 py-2 rounded-xl transition-all ${theme === t.id
+                            ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
+                            : "hover:bg-[var(--accent)]/10 text-[var(--foreground)]"
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm transition-transform group-hover/item:scale-125 duration-300">{t.icon}</span>
+                          <span className={`text-[11px] font-bold ${theme === t.id ? 'opacity-100' : 'opacity-70 group-hover/item:opacity-100'}`}>
+                            {t.label}
+                          </span>
+                        </div>
+                        {theme === t.id && (
+                          <motion.div layoutId="active-check">
+                            <FiCheck className="w-3.5 h-3.5" />
+                          </motion.div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx global>{`
+        .theme-scroll::-webkit-scrollbar {
+          width: 4px;
         }
-
-        .animate-sway {
-          animation: sway 4s ease-in-out infinite;
+        .theme-scroll::-webkit-scrollbar-track {
+          background: transparent;
         }
-
-        .emoji-icon {
-          transition: transform 0.4s ease;
-        }
-
-        .emoji-icon:hover {
-          transform: rotate(360deg);
+        .theme-scroll::-webkit-scrollbar-thumb {
+          background: var(--border);
+          border-radius: 10px;
         }
       `}</style>
     </div>
   );
 }
+
