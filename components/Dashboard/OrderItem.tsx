@@ -9,10 +9,13 @@ import {
   FiCreditCard,
   FiPackage,
   FiHash,
-  FiShare2,
   FiCopy,
-  FiX,
+  FiCheck,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiClock,
 } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* ================= TYPES ================= */
 
@@ -54,183 +57,145 @@ const getGameName = (slug: string) => {
 
 export default function OrderItem({ order }: { order: OrderType }) {
   const [open, setOpen] = useState(false);
-  const [showReceipt, setShowReceipt] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const status = order.topupStatus || order.status;
+  const status = (order.topupStatus || order.status).toLowerCase();
 
-  const statusStyle = {
-    success: "bg-green-500/10 text-green-400 border-green-500/30",
-    failed: "bg-red-500/10 text-red-400 border-red-500/30",
-    pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
-  }[status] || "bg-yellow-500/10 text-yellow-400 border-yellow-500/30";
+  const statusConfig: Record<string, { color: string; icon: any; label: string }> = {
+    success: { color: "#10b981", icon: <FiCheckCircle />, label: "Delivered" },
+    failed: { color: "#ef4444", icon: <FiAlertCircle />, label: "Failed" },
+    pending: { color: "#f59e0b", icon: <FiClock />, label: "Processing" },
+  };
+
+  const currentStatus = statusConfig[status] || statusConfig.pending;
+
+  const handleCopy = () => {
+    const receiptText = `
+--- Vampenttic Order ---
+Order: ${getGameName(order.gameSlug)}
+ID: ${order.orderId}
+Item: ${order.itemName}
+Player: ${order.playerId}
+Zone: ${order.zoneId || "N/A"}
+Amount: ₹${order.price}
+Date: ${new Date(order.createdAt).toLocaleString()}
+Status: ${currentStatus.label}
+--------------------------
+`.trim();
+    navigator.clipboard.writeText(receiptText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
-    <>
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm">
-        {/* HEADER */}
-        <div className="px-4 py-4 space-y-2">
-          {/* ROW 1 */}
-          <div className="flex items-center gap-2 text-xs font-mono text-[var(--muted)]">
-            <FiHash />
-            <span className="truncate">{order.orderId}</span>
-          </div>
+    <motion.div
+      layout
+      className="group rounded-3xl border border-[var(--border)] bg-[var(--card)]/40 hover:bg-[var(--card)]/60 backdrop-blur-sm transition-all duration-300 overflow-hidden"
+    >
+      {/* MAIN VISIBLE HEADER */}
+      <div className="px-4 py-4 sm:px-5 sm:py-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
-          {/* ROW 2 */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-              <FiCalendar />
-              {new Date(order.createdAt).toLocaleDateString()}
-            </div>
-            <div className="text-base font-bold">₹{order.price}</div>
-          </div>
-
-          {/* ROW 3 */}
-          <div className="flex items-center justify-between">
-            <span
-              className={`px-3 py-1 text-xs rounded-full font-semibold border ${statusStyle}`}
+          {/* LEFT: INFO */}
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex-shrink-0 flex items-center justify-center text-white shadow-lg"
+              style={{ backgroundColor: currentStatus.color }}
             >
-              {status.toUpperCase()}
-            </span>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowReceipt(true)}
-                className="p-2 rounded-lg border border-[var(--border)]"
-                aria-label="Open receipt"
-              >
-                <FiShare2 size={16} />
-              </button>
-
-              <button
-                onClick={() => setOpen(!open)}
-                className="p-2"
-                aria-label="Expand"
-              >
-                <FiChevronDown
-                  className={`transition-transform ${
-                    open ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+              <FiPackage size={18} className="sm:size-5" />
             </div>
-          </div>
-        </div>
 
-        {/* EXPANDED */}
-        <div
-          className={`grid transition-all duration-300 ${
-            open
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0"
-          }`}
-        >
-          <div className="overflow-hidden px-4 pb-4">
-            <div className="border-t border-[var(--border)] pt-4 space-y-3 text-sm">
-              <Info label="Game" value={getGameName(order.gameSlug)} icon={<FiUser />} />
-              <Info label="Player ID" value={order.playerId} mono icon={<FiUser />} />
-              <Info label="Zone ID" value={order.zoneId} mono icon={<FiGrid />} />
-              <Info
-                label="Payment"
-                value={order.paymentMethod.toUpperCase()}
-                icon={<FiCreditCard />}
-              />
-
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--background)]/60 p-3">
-                <div className="flex items-center gap-2 text-xs text-[var(--muted)] mb-1">
-                  <FiPackage /> Item
-                </div>
-                <p className="font-medium break-words">
-                  {order.itemName}
-                </p>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] opacity-60 truncate">
+                ID: {order.orderId.slice(-8).toUpperCase()}
+              </span>
+              <h3 className="text-sm sm:text-[15px] font-black text-[var(--foreground)] tracking-tight truncate">
+                {getGameName(order.gameSlug)}
+              </h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <div
+                  className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
+                  style={{ backgroundColor: currentStatus.color }}
+                />
+                <span className="text-[10px] sm:text-[11px] font-bold" style={{ color: currentStatus.color }}>
+                  {currentStatus.label}
+                </span>
               </div>
             </div>
           </div>
+
+          {/* RIGHT: PRICE & ACTIONS */}
+          <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-8 border-t sm:border-t-0 border-[var(--border)]/30 pt-3 sm:pt-0">
+            <div className="sm:text-right">
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] opacity-60 block mb-0.5">Amount</span>
+              <span className="text-base sm:text-lg font-black text-[var(--foreground)] tracking-tighter">₹{order.price}</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleCopy}
+                className={`p-2 sm:p-2.5 rounded-xl border border-[var(--border)] transition-all flex items-center gap-2 ${copied ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]/5'}`}
+              >
+                {copied ? <FiCheck size={16} /> : <FiCopy size={16} />}
+                {copied && <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Copied</span>}
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setOpen(!open)}
+                className={`p-2 sm:p-2.5 rounded-xl transition-all ${open ? 'bg-[var(--accent)] text-white' : 'border border-[var(--border)] text-[var(--muted)]'}`}
+              >
+                <FiChevronDown
+                  size={18}
+                  className={`transition-transform duration-500 ${open ? "rotate-180" : ""}`}
+                />
+              </motion.button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {showReceipt && (
-        <ReceiptModal order={order} onClose={() => setShowReceipt(false)} />
-      )}
-    </>
-  );
-}
-
-/* ================= RECEIPT MODAL ================= */
-
-function ReceiptModal({
-  order,
-  onClose,
-}: {
-  order: OrderType;
-  onClose: () => void;
-}) {
-  const receiptText = `
-Order Receipt
-
-Order ID: ${order.orderId}
-Game: ${getGameName(order.gameSlug)}
-Player ID: ${order.playerId}
-Zone ID: ${order.zoneId}
-Item: ${order.itemName}
-Payment: ${order.paymentMethod.toUpperCase()}
-Date: ${new Date(order.createdAt).toLocaleString()}
-`.trim();
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(receiptText);
-    alert("Copied");
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: "Order Receipt",
-        text: receiptText,
-      });
-    } else {
-      await navigator.clipboard.writeText(receiptText);
-      alert("Share not supported. Copied instead.");
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-end justify-center">
-      <div className="w-full bg-white text-black rounded-t-2xl p-5 relative">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500"
-        >
-          <FiX size={18} />
-        </button>
-
-        <h2 className="text-lg font-bold text-center mb-4">
-          Receipt
-        </h2>
-
-        <pre className="text-xs bg-gray-100 rounded-xl p-3 whitespace-pre-wrap mb-4">
-          {receiptText}
-        </pre>
-
-        {/* COPY LEFT · SHARE RIGHT */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={handleCopy}
-            className="flex items-center justify-center gap-2
-                       border border-[var(--border)] py-2.5 rounded-xl font-semibold"
+      {/* EXPANDED CONTENT */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+            className="overflow-hidden"
           >
-            <FiCopy /> Copy
-          </button>
+            <div className="px-4 pb-6 sm:px-5">
+              <div className="pt-4 border-t border-[var(--border)]/50 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                <div className="space-y-4">
+                  <Info label="Service" value={getGameName(order.gameSlug)} icon={<FiUser />} />
+                  <Info label="Player ID" value={order.playerId} mono icon={<FiUser />} />
+                  <Info label="Zone ID" value={order.zoneId || "N/A"} mono icon={<FiGrid />} />
+                </div>
 
-          <button
-            onClick={handleShare}
-            className="flex items-center justify-center gap-2
-                       bg-[var(--primary)] text-white py-2.5 rounded-xl font-semibold"
-          >
-            <FiShare2 /> Share
-          </button>
-        </div>
-      </div>
-    </div>
+                <div className="space-y-4">
+                  <Info label="Item Pack" value={order.itemName} icon={<FiPackage />} />
+                  <Info label="Gateway" value={order.paymentMethod.toUpperCase()} icon={<FiCreditCard />} />
+                  <Info label="Timestamp" value={new Date(order.createdAt).toLocaleString()} icon={<FiCalendar />} />
+                </div>
+
+                {/* BOTTOM DECORATIVE FOOTER IN EXPANDED */}
+                <div className="sm:col-span-2 mt-4 px-3 py-2.5 rounded-2xl bg-[var(--accent)]/5 border border-[var(--accent)]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <FiHash className="text-[var(--accent)] flex-shrink-0" />
+                    <span className="text-[9px] font-black text-[var(--muted)] tracking-widest truncate">{order.orderId}</span>
+                  </div>
+                  <span className="text-[8px] font-black uppercase text-[var(--accent)] tracking-[0.25em] flex-shrink-0">Transaction Verified</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -248,18 +213,20 @@ function Info({
   mono?: boolean;
 }) {
   return (
-    <div className="flex justify-between items-center gap-3">
+    <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2 text-[var(--muted)]">
-        {icon}
-        <span>{label}</span>
+        <div className="text-[var(--accent)] opacity-60">
+          {icon}
+        </div>
+        <span className="text-[9px] font-black uppercase tracking-[0.2em]">{label}</span>
       </div>
       <span
-        className={`${
-          mono ? "font-mono text-xs" : "font-medium"
-        } text-right break-all`}
+        className={`${mono ? "font-mono text-xs" : "font-bold text-[13px]"
+          } text-[var(--foreground)] truncate`}
       >
         {value}
       </span>
     </div>
   );
 }
+
