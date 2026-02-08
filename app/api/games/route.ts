@@ -6,6 +6,14 @@ const MLBB_MAIN_IMAGE =
 
 const MLBB_SMALL_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/e5467ac4556c15c54810e9a78c0d7950_1_dvzsmd.jpg";
+const MLBB_MY_SING_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490927/d5fb0a2787575170c5fb9a4ad30b4aac.jpg_r4ci3s.jpg";
+const MLBB_INDO_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490919/4c2e2e5ef86bc8cb344febb4a87e8823.jpg_hxbpbs.jpg";
+
+
+const WEEKLY_MONTHLY_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490927/cb4ec20e05bcf396d0a52c4413cfdd98.jpg_asvgds.jpg";
 
 /* ================= OTT SECTION ================= */
 const OTTS = [
@@ -99,22 +107,40 @@ export async function GET() {
           image: MLBB_SMALL_IMAGE,
         };
       }
+      if (updatedGame.gameName === "SG/MY Mlbb") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_MY_SING_IMAGE,
+        };
+      }
+      if (updatedGame.gameName === "MLBB INDO") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_INDO_IMAGE,
+        };
+      }
+      if (updatedGame.gameSlug === "weeklymonthly-bundle931") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: WEEKLY_MONTHLY_IMAGE,
+        };
+      }
 
       return updatedGame;
     };
 
     /* ================= FILTER GAMES ================= */
-const excludedGameSlugs = [
-  "test-1637",
-  "mobile-legends-backup826",
-];
+    const excludedGameSlugs = [
+      "test-1637",
+      "mobile-legends-backup826",
+    ];
 
-const filteredGames =
-  data?.data?.games
-    ?.filter(
-      (game: any) => !excludedGameSlugs.includes(game.gameSlug)
-    )
-    ?.map(normalizeGame) || [];
+    const filteredGames =
+      data?.data?.games
+        ?.filter(
+          (game: any) => !excludedGameSlugs.includes(game.gameSlug)
+        )
+        ?.map(normalizeGame) || [];
 
     /* ================= FILTER CATEGORY GAMES ================= */
     const filteredCategories =
@@ -187,11 +213,11 @@ const filteredGames =
           total: OTTS.filter((o) => o.available).length,
         },
         // 🔥 MEMBERSHIP SECTION
-memberships: {
-  title: "Memberships & Passes",
-  items: MEMBERSHIPS.filter((m) => m.available),
-  total: MEMBERSHIPS.filter((m) => m.available).length,
-},
+        memberships: {
+          title: "Memberships & Passes",
+          items: MEMBERSHIPS.filter((m) => m.available),
+          total: MEMBERSHIPS.filter((m) => m.available).length,
+        },
 
       },
     });
