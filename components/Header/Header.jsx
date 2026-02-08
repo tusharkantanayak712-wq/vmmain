@@ -22,9 +22,9 @@ const HEADER_CONFIG = {
   ],
 
   userMenu: [
-    { label: "Dashboard", href: "/dashboard", auth: true, icon: <FiBarChart2 /> },
+    { label: "Orders", href: "/dashboard", auth: true, icon: <FiBarChart2 /> },
     { label: "Customer Support", href: "/dashboard", auth: true, icon: <FiHelpCircle /> },
-    { label: "Account Settings", href: "/dashboard", auth: true, icon: <FiSettings /> },
+    // { label: "Account Settings", href: "/dashboard", auth: true, icon: <FiSettings /> },
     { label: "Leader Board", href: "/leaderboard", auth: true, icon: <FiAward /> },
     { label: "Membership", href: "/admin-panal", auth: true, icon: <FiCpu /> },
   ],
