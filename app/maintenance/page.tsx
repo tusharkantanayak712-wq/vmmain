@@ -1,3 +1,5 @@
+import { FiTool } from "react-icons/fi";
+
 export const metadata = {
   title: "Under Maintenance",
   robots: "noindex, nofollow",
@@ -5,40 +7,23 @@ export const metadata = {
 
 export default function MaintenancePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-slate-950 px-4">
-      <div
-        className="
-          w-full max-w-md rounded-2xl
-          border border-cyan-500/20
-          bg-slate-900/70 backdrop-blur
-          shadow-[0_0_60px_rgba(34,211,238,0.15)]
-          p-8 text-center
-        "
-      >
-        {/* Brand */}
-        {/* <h1 className="text-3xl font-bold tracking-wide text-white">
-          Your<span className="text-cyan-400">Brand</span>
-        </h1> */}
+    <main className="min-h-screen flex items-center justify-center p-4 bg-black/95">
+      <div className="w-full max-w-md bg-[#0f172a] border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
 
-        {/* Loader */}
-        <div className="my-8 flex justify-center">
-          <div className="h-14 w-14 rounded-full border-4 border-cyan-400/20 border-t-cyan-400 animate-spin" />
+        {/* Icon */}
+        <div className="mx-auto w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-6">
+          <FiTool className="text-3xl text-blue-500" />
         </div>
 
-        {/* Text */}
-        <h2 className="text-xl font-semibold text-white">
-          We’re Under Maintenance 🚧
-        </h2>
-
-        <p className="mt-3 text-sm text-slate-400 leading-relaxed">
-          We’re upgrading our systems to give you a faster and smoother
-          experience. Please check back shortly.
+        {/* Content */}
+        <h2 className="text-2xl font-bold text-white mb-3">Under Maintenance</h2>
+        <p className="text-gray-400 text-sm leading-relaxed mb-6">
+          We are currently performing scheduled maintenance to improve our services. Please check back soon.
         </p>
 
-        {/* Optional info */}
-        {/* <div className="mt-6 text-xs text-slate-500">
-          © {new Date().getFullYear()} YourBrand · All rights reserved
-        </div> */}
+        <div className="mt-6 text-xs text-gray-600 font-medium">
+          System Maintenance • 2026
+        </div>
       </div>
     </main>
   );
