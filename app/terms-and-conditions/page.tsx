@@ -4,134 +4,85 @@ const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Vampettic";
 
 export default function TermsAndConditions() {
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-6 py-10">
-      <div className="max-w-4xl mx-auto">
+    <main className="max-w-4xl mx-auto px-6 py-12 text-gray-300">
+      <h1 className="text-3xl font-bold text-white mb-6">Terms & Conditions</h1>
+      <p className="mb-8 italic text-sm">Last updated: February 15, 2026</p>
 
-        <h1 className="text-4xl font-bold text-[var(--accent)] mb-6">
-          Terms & Conditions
-        </h1>
+      <div className="space-y-10">
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">1. Agreement to Terms</h2>
+          <p className="leading-relaxed">
+            By accessing or using the {BRAND} website (the "Service"), you agree to be bound by these Terms and Conditions. These terms apply to all visitors, users, and others who access or use the Service. If you disagree with any part of the terms, you may not access the Service.
+          </p>
+        </section>
 
-        <p className="text-[var(--muted)] mb-10">
-          Last updated: December 2025
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">2. Service Usage & Account Responsibility</h2>
+          <p className="leading-relaxed mb-4">
+            Our Service allows you to purchase digital products and game top-ups. To use the Service, you must provide accurate and complete information.
+          </p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li><strong>Accuracy:</strong> You are solely responsible for ensures that the Game ID, Zone ID, and Server details provided are correct. {BRAND} is not responsible for credits delivered to the wrong account due to user error.</li>
+            <li><strong>Eligibility:</strong> By using this Service, you represent that you are at least 13 years of age or have the consent of a legal guardian.</li>
+          </ul>
+        </section>
 
-        <p className="mb-6 leading-relaxed">
-          Welcome to <strong>{BRAND}</strong>. By accessing or using our website,
-          placing an order, or using any of our services, you agree to be bound by
-          these Terms & Conditions. If you do not agree, please do not use our
-          platform.
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">3. Payments and Refund Policy</h2>
+          <p className="leading-relaxed mb-4">
+            Payments are processed through secure third-party gateways. By placing an order, you authorize us to charge the specified amount.
+          </p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li><strong>Final Sale:</strong> Due to the nature of digital goods, all successful top-ups are non-refundable and non-exchangeable once the delivery has been initiated.</li>
+            <li><strong>Refund Eligibility:</strong> Refunds will only be considered if a technical error on our side prevents the delivery of the product. In such cases, the refund will be processed to the original payment source within 5-7 business days.</li>
+          </ul>
+        </section>
 
-        {/* 1 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          1. Use of the Platform
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          You agree to use {BRAND} only for lawful purposes and in compliance with
-          these Terms.
-          <br /><br />
-          You must ensure that all information provided during checkout — such as
-          game ID, server/zone, and contact details — is accurate. Incorrect
-          details may result in failed or irreversible top-ups.
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">4. Prohibited Activities</h2>
+          <p className="leading-relaxed mb-4">
+            Users are strictly prohibited from:
+          </p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Using the Service for any fraudulent or illegal transactions.</li>
+            <li>Attempting to exploit system bugs or vulnerabilities for personal gain.</li>
+            <li>Reselling {BRAND} services without explicit written permission.</li>
+            <li>Interfering with the security or operation of the website.</li>
+          </ul>
+        </section>
 
-        {/* 2 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          2. Orders & Top-Ups
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          • All top-up orders are processed automatically or semi-automatically.
-          <br />
-          • Once an order is successfully delivered, it is considered final.
-          <br />
-          • We are not responsible for losses caused by incorrect user input
-          (wrong game ID, server, or account).
-          <br /><br />
-          By placing an order, you confirm that you are the authorized user or
-          have permission to top up the selected game account.
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">5. Intellectual Property</h2>
+          <p className="leading-relaxed">
+            The Service and its original content (excluding game logos and trademarks owned by third parties), features, and functionality are and will remain the exclusive property of {BRAND}.
+          </p>
+        </section>
 
-        {/* 3 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          3. Payments
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          Payments are processed through trusted third-party payment gateways.
-          {BRAND} does not store sensitive payment information such as card
-          details or UPI credentials.
-          <br /><br />
-          Orders may be delayed or cancelled in cases of payment failure,
-          suspected fraud, or system issues.
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">6. Limitation of Liability</h2>
+          <p className="leading-relaxed">
+            In no event shall {BRAND} be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, or game account status (bans/restrictions) resulting from your use of the Service.
+          </p>
+        </section>
 
-        {/* 4 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          4. Refunds & Cancellations
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          Due to the digital and instant nature of game top-ups:
-          <br /><br />
-          • Successfully delivered top-ups are <strong>non-refundable</strong>.
-          <br />
-          • Refunds may be considered only if the order fails and the balance is
-          not credited to the game account.
-          <br /><br />
-          Any refund decision is at the sole discretion of {BRAND}.
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">7. Disclaimer</h2>
+          <p className="leading-relaxed">
+            {BRAND} is an independent platform and is NOT affiliated with, endorsed by, or sponsored by any game publishers (Moonton, Garena, Krafton, etc.). All game names and trademarks belong to their respective owners.
+          </p>
+        </section>
 
-        {/* 5 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          5. Prohibited Activities
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          You must not:
-          <br /><br />
-          • Attempt to exploit pricing, system bugs, or promotions
-          <br />
-          • Use the platform for fraudulent or unauthorized transactions
-          <br />
-          • Interfere with platform security or automated systems
-          <br />
-          • Resell services without written permission (unless explicitly allowed)
-        </p>
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-4">8. Termination</h2>
+          <p className="leading-relaxed">
+            We may terminate or suspend your access to the Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+          </p>
+        </section>
 
-        {/* 6 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          6. Third-Party Games & Trademarks
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          {BRAND} is an independent platform and is <strong>not affiliated with,
-            endorsed by, or sponsored by</strong> any game publisher.
-          <br /><br />
-          All game names, logos, and trademarks belong to their respective owners.
-        </p>
-
-        {/* 7 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          7. Limitation of Liability
-        </h2>
-        <p className="mb-6 leading-relaxed">
-          {BRAND} shall not be liable for:
-          <br /><br />
-          • Losses caused by incorrect user information
-          <br />
-          • Delays due to maintenance, API downtime, or external providers
-          <br />
-          • Game account bans or actions taken by game publishers
-          <br />
-          • Indirect or consequential damages
-        </p>
-
-        {/* 8 */}
-        <h2 className="text-2xl font-semibold text-[var(--accent)] mb-3">
-          8. Changes to Terms
-        </h2>
-        <p className="leading-relaxed">
-          {BRAND} reserves the right to update these Terms & Conditions at any
-          time. Changes take effect immediately once posted on this page.
-          Continued use of the platform indicates acceptance of the updated
-          terms.
-        </p>
+        <section className="pt-8 border-t border-gray-800">
+          <p className="mb-2">If you have any questions regarding these Terms, please contact us:</p>
+          <p className="font-semibold text-white">Email: {process.env.NEXT_PUBLIC_GMAIL_USER || "vampettic@gmail.com"}</p>
+        </section>
       </div>
     </main>
   );

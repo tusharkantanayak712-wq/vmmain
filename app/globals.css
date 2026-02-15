@@ -498,6 +498,19 @@ html[data-theme="glass"] .card {
   text-shadow: 0 0 12px var(--accent);
 }
 
+/* Scrollbar Hide Utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -33,11 +33,14 @@ const NAV_LINKS = [
   { label: "Region", href: "/region" },
   { label: "Services", href: "/services" },
   { label: "Leaderboard", href: "/leaderboard" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms & Conditions", href: "/terms-and-conditions" },
+  { label: "Refund Policy", href: "/refund-policy" },
 ];
 
 /* ================= COMPONENT ================= */
@@ -101,7 +104,7 @@ export default function Footer() {
           </div>
 
           {/* LINKS GRID */}
-          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
+          <div className="lg:col-span-7 grid grid-cols-2 gap-8">
             <div className="space-y-6">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)]">
                 Network
@@ -139,24 +142,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div className="space-y-6 col-span-2 sm:col-span-1">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)]">
-                Support
-              </p>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 text-[var(--accent)]">
-                    <FiMail size={16} />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase opacity-40 tracking-widest leading-none mb-1">Email</span>
-                    <a href="mailto:support@vampettic.com" className="text-xs font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-colors">
-                      support@vampettic.com
-                    </a>
-                  </div>
-                </li>
-              </ul>
-            </div>
+
           </div>
         </div>
 

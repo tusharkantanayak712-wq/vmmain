@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Gamepad2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import logo from "@/public/logo.png";
 import Loader from "@/components/Loader/Loader";
 import MLBBPurchaseGuide from "../../../components/HelpImage/MLBBPurchaseGuide";
@@ -27,6 +28,8 @@ export default function GameDetailPage() {
   const [redirecting, setRedirecting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [allGames, setAllGames] = useState([]);
+  const scrollContainerRef = useRef(null);
 
   const isBGMI =
     game?.gameName?.toLowerCase() === "pubg mobile" || game?.gameName?.toLowerCase() === "bgmi";
@@ -74,7 +77,25 @@ export default function GameDetailPage() {
     if (slug) {
       fetchGameData();
     }
+
+    // Fetch all games for the top switcher
+    fetch("/api/games")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success && data?.data?.games) {
+          setAllGames(data.data.games);
+        }
+      })
+      .catch((err) => console.error("Error fetching all games:", err));
   }, [slug]);
+
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const scrollTo = direction === "left" ? scrollLeft - 200 : scrollLeft + 200;
+      scrollContainerRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  };
 
   /* ================= LOADING & ERROR ================= */
   if (loading) {
@@ -188,66 +209,116 @@ export default function GameDetailPage() {
   };
 
   return (
-    <section className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-4 py-6">
+    <section className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-6">
+      {/* ================= TOP GAME SWITCHER ================= */}
+      <div className="sticky top-0 z-50 bg-[var(--background)]/80 backdrop-blur-md border-b border-white/5 px-2 py-3 mb-6">
+        <div className="max-w-6xl mx-auto relative group">
+          <div
+            ref={scrollContainerRef}
+            className="flex items-center gap-3 overflow-x-auto scrollbar-hide scroll-smooth px-8"
+          >
+            {allGames.map((g) => {
+              const isActive = g.gameSlug === slug;
+              return (
+                <Link
+                  key={g.gameSlug}
+                  href={`/games/${g.gameSlug}`}
+                  className={`flex flex-col items-center gap-1.5 flex-shrink-0 transition-all duration-300 min-w-[70px] ${isActive ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100"
+                    }`}
+                >
+                  <div className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 shadow-lg transition-all ${isActive ? "border-[var(--accent)]" : "border-transparent"
+                    }`}>
+                    <Image
+                      src={g.gameImageId?.image || logo}
+                      alt={g.gameName}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className={`text-[9px] font-black uppercase tracking-tighter truncate w-full text-center ${isActive ? "text-[var(--accent)]" : "text-[var(--muted)]"
+                    }`}>
+                    {g.gameName}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
 
-      {/* ================= HEADER ================= */}
-      <div className="max-w-6xl mx-auto mb-6 flex items-center gap-4">
-        <div className="w-14 h-14 relative rounded-lg overflow-hidden">
-          <Image
-            src={game?.gameImageId?.image || logo}
-            alt={game?.gameName || "Game"}
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        <div>
-          <h1 className="text-2xl font-extrabold">
-            {game?.gameName}
-          </h1>
-          <p className="text-xs text-[var(--muted)]">
-            {game?.gameFrom}
-          </p>
+          {/* Scroll Buttons - Only visible on hover/desktop */}
+          <button
+            onClick={() => scroll("left")}
+            className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-black/40 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          >
+            <FiChevronLeft className="text-white" />
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-black/40 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          >
+            <FiChevronRight className="text-white" />
+          </button>
         </div>
       </div>
 
-      {/* ================= ITEM GRID ================= */}
-      {isBGMI ? (
-        <ItemGridBgmi
-          items={game.allItems}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          buyPanelRef={buyPanelRef}
-        />
-      ) : (
-        <ItemGrid
-          items={game.allItems}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          buyPanelRef={buyPanelRef}
-        />
-      )}
+      <div className="max-w-6xl mx-auto px-4">
+        {/* ================= HEADER ================= */}
+        <div className="mb-6 flex items-center gap-4">
+          <div className="w-14 h-14 relative rounded-lg overflow-hidden">
+            <Image
+              src={game?.gameImageId?.image || logo}
+              alt={game?.gameName || "Game"}
+              fill
+              className="object-cover"
+            />
+          </div>
 
-      {/* ================= BUY PANEL ================= */}
-      {isBGMI ? (
-        <BuyPanelBgmi
-          activeItem={activeItem}
-          onBuy={goBuy}
-          redirecting={redirecting}
-          buyPanelRef={buyPanelRef}
-        />
-      ) : (
-        <BuyPanel
-          activeItem={activeItem}
-          onBuy={goBuy}
-          redirecting={redirecting}
-          buyPanelRef={buyPanelRef}
-        />
-      )}
-      {/* ================= HELP GUIDE ================= */}
-      {/* <div className="max-w-6xl mx-auto mt-6">
+          <div>
+            <h1 className="text-2xl font-extrabold">
+              {game?.gameName}
+            </h1>
+            <p className="text-xs text-[var(--muted)]">
+              {game?.gameFrom}
+            </p>
+          </div>
+        </div>
+
+        {/* ================= ITEM GRID ================= */}
+        {isBGMI ? (
+          <ItemGridBgmi
+            items={game.allItems}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            buyPanelRef={buyPanelRef}
+          />
+        ) : (
+          <ItemGrid
+            items={game.allItems}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            buyPanelRef={buyPanelRef}
+          />
+        )}
+
+        {/* ================= BUY PANEL ================= */}
+        {isBGMI ? (
+          <BuyPanelBgmi
+            activeItem={activeItem}
+            onBuy={goBuy}
+            redirecting={redirecting}
+            buyPanelRef={buyPanelRef}
+          />
+        ) : (
+          <BuyPanel
+            activeItem={activeItem}
+            onBuy={goBuy}
+            redirecting={redirecting}
+            buyPanelRef={buyPanelRef}
+          />
+        )}
+        {/* <div className="max-w-6xl mx-auto mt-6">
         <MLBBPurchaseGuide />
       </div> */}
+      </div>
     </section>
   );
 }

@@ -53,7 +53,7 @@ export default function SocialFloat() {
       } else if (currentScrollY > lastScrollY) {
         // Scrolling Down
         setIsVisible(false);
-        setIsOpen(false); // Close menu if open while scrolling down
+        setIsOpen(false);
       } else {
         // Scrolling Up
         setIsVisible(true);
@@ -138,7 +138,6 @@ export default function SocialFloat() {
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      {/* ================= FLOATING MENU ================= */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -148,7 +147,6 @@ export default function SocialFloat() {
             animate="visible"
             exit="hidden"
           >
-            {/* SOCIAL LINKS */}
             {socialLinks.map((social) => {
               const Icon = social.icon;
               return (
@@ -163,7 +161,6 @@ export default function SocialFloat() {
                       whileHover={{ scale: 1.15, rotate: 5 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      {/* PULSE RING */}
                       <motion.div
                         className="absolute inset-0 rounded-full border-2 border-white/50"
                         animate={{
@@ -176,16 +173,12 @@ export default function SocialFloat() {
                           ease: "easeInOut",
                         }}
                       />
-
-                      {/* ICON */}
                       <motion.div
                         whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                         transition={{ duration: 0.5 }}
                       >
                         <Icon />
                       </motion.div>
-
-                      {/* LABEL */}
                       <motion.span
                         className="absolute right-16 bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--foreground)] whitespace-nowrap shadow-lg opacity-0 group-hover:opacity-100"
                         initial={{ x: 10 }}
@@ -199,13 +192,11 @@ export default function SocialFloat() {
               );
             })}
 
-            {/* DIVIDER */}
             <motion.div
               className="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent w-12 my-1"
               variants={itemVariants}
             />
 
-            {/* SHARE BUTTON */}
             <motion.div variants={itemVariants}>
               <motion.button
                 onClick={handleShare}
@@ -214,7 +205,6 @@ export default function SocialFloat() {
                 whileTap={{ scale: 0.95 }}
                 aria-label="Share"
               >
-                {/* PULSE RING */}
                 <motion.div
                   className="absolute inset-0 rounded-full border-2 border-white/50"
                   animate={{
@@ -228,15 +218,12 @@ export default function SocialFloat() {
                     delay: 0.5,
                   }}
                 />
-
                 <motion.div
                   whileHover={{ rotate: [0, 15, -15, 0] }}
                   transition={{ duration: 0.5 }}
                 >
                   <FaShareNodes />
                 </motion.div>
-
-                {/* LABEL */}
                 <motion.span
                   className="absolute right-16 bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--foreground)] whitespace-nowrap shadow-lg opacity-0 group-hover:opacity-100"
                   initial={{ x: 10 }}
@@ -247,10 +234,9 @@ export default function SocialFloat() {
               </motion.button>
             </motion.div>
 
-            {/* SUPPORT BUTTON */}
             <motion.div variants={itemVariants}>
               <Link
-                href="https://ko-fi.com/zynxv1"
+                href="https://ko-fi.com/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -260,7 +246,6 @@ export default function SocialFloat() {
                   whileTap={{ scale: 0.95 }}
                   aria-label="Support"
                 >
-                  {/* PULSE RING */}
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-white/50"
                     animate={{
@@ -274,15 +259,12 @@ export default function SocialFloat() {
                       delay: 1,
                     }}
                   />
-
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 1, repeat: Infinity }}
                   >
                     <FaHeart />
                   </motion.div>
-
-                  {/* LABEL */}
                   <motion.span
                     className="absolute right-16 bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--foreground)] whitespace-nowrap shadow-lg opacity-0 group-hover:opacity-100"
                     initial={{ x: 10 }}
@@ -297,7 +279,6 @@ export default function SocialFloat() {
         )}
       </AnimatePresence>
 
-      {/* ================= TOGGLE BUTTON ================= */}
       <motion.button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
@@ -308,14 +289,11 @@ export default function SocialFloat() {
         transition={{ duration: 0.3 }}
         aria-label="Toggle social menu"
       >
-        {/* ANIMATED BACKGROUND */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"
           animate={{ rotate: 360 }}
           transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
         />
-
-        {/* PULSE EFFECT */}
         <motion.div
           className="absolute inset-0 rounded-full border-4 border-white/30"
           animate={{
@@ -328,8 +306,6 @@ export default function SocialFloat() {
             ease: "easeInOut",
           }}
         />
-
-        {/* ICON */}
         <svg
           className="w-6 h-6 relative z-10"
           fill="none"
