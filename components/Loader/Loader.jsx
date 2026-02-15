@@ -49,7 +49,7 @@ export default function QuantumLoader() {
           </div>
         </div>
         <p className="text-[10px] text-[var(--muted)] uppercase tracking-widest mt-1 opacity-70">
-          Vampenttic Systems
+          Vampettic Systems
         </p>
       </div>
 

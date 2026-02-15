@@ -71,7 +71,7 @@ export default function OrderItem({ order }: { order: OrderType }) {
 
   const handleCopy = () => {
     const receiptText = `
---- Vampenttic Order ---
+--- Vampettic Order ---
 Order: ${getGameName(order.gameSlug)}
 ID: ${order.orderId}
 Item: ${order.itemName}

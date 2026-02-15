@@ -1,12 +1,12 @@
 "use client";
 
-const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Meow Ji";
+const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Vampettic";
 
 export default function TermsAndConditions() {
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-6 py-10">
       <div className="max-w-4xl mx-auto">
-        
+
         <h1 className="text-4xl font-bold text-[var(--accent)] mb-6">
           Terms & Conditions
         </h1>
@@ -40,9 +40,9 @@ export default function TermsAndConditions() {
           2. Orders & Top-Ups
         </h2>
         <p className="mb-6 leading-relaxed">
-          • All top-up orders are processed automatically or semi-automatically.  
+          • All top-up orders are processed automatically or semi-automatically.
           <br />
-          • Once an order is successfully delivered, it is considered final.  
+          • Once an order is successfully delivered, it is considered final.
           <br />
           • We are not responsible for losses caused by incorrect user input
           (wrong game ID, server, or account).
@@ -71,7 +71,7 @@ export default function TermsAndConditions() {
         <p className="mb-6 leading-relaxed">
           Due to the digital and instant nature of game top-ups:
           <br /><br />
-          • Successfully delivered top-ups are <strong>non-refundable</strong>.  
+          • Successfully delivered top-ups are <strong>non-refundable</strong>.
           <br />
           • Refunds may be considered only if the order fails and the balance is
           not credited to the game account.
@@ -86,11 +86,11 @@ export default function TermsAndConditions() {
         <p className="mb-6 leading-relaxed">
           You must not:
           <br /><br />
-          • Attempt to exploit pricing, system bugs, or promotions  
+          • Attempt to exploit pricing, system bugs, or promotions
           <br />
-          • Use the platform for fraudulent or unauthorized transactions  
+          • Use the platform for fraudulent or unauthorized transactions
           <br />
-          • Interfere with platform security or automated systems  
+          • Interfere with platform security or automated systems
           <br />
           • Resell services without written permission (unless explicitly allowed)
         </p>
@@ -101,7 +101,7 @@ export default function TermsAndConditions() {
         </h2>
         <p className="mb-6 leading-relaxed">
           {BRAND} is an independent platform and is <strong>not affiliated with,
-          endorsed by, or sponsored by</strong> any game publisher.
+            endorsed by, or sponsored by</strong> any game publisher.
           <br /><br />
           All game names, logos, and trademarks belong to their respective owners.
         </p>
@@ -113,11 +113,11 @@ export default function TermsAndConditions() {
         <p className="mb-6 leading-relaxed">
           {BRAND} shall not be liable for:
           <br /><br />
-          • Losses caused by incorrect user information  
+          • Losses caused by incorrect user information
           <br />
-          • Delays due to maintenance, API downtime, or external providers  
+          • Delays due to maintenance, API downtime, or external providers
           <br />
-          • Game account bans or actions taken by game publishers  
+          • Game account bans or actions taken by game publishers
           <br />
           • Indirect or consequential damages
         </p>

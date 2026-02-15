@@ -5,7 +5,7 @@ import { FiZap, FiShield, FiTarget, FiBox } from "react-icons/fi";
 
 /* ================= NOTICE CONFIG (EDIT HERE) ================= */
 const NOTICE_CONFIG = {
-  brandFallback: "Vampenttic",
+  brandFallback: "Vampettic",
   items: [
     {
       icon: <FiZap />,

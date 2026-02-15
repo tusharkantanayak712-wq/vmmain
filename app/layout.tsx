@@ -7,8 +7,8 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export const metadata: Metadata = {
-  title: "Vamp – MLBB Diamond Top Up | Instant & Secure",
-  description: "Vamp is a fast and secure Mobile Legends (MLBB) diamond top-up platform. Instant delivery, safe payments, and 24/7 automated service.",
+  title: "Vampettic – MLBB Diamond Top Up | Instant & Secure",
+  description: "Vampettic is a fast and secure Mobile Legends (MLBB) diamond top-up platform. Instant delivery, safe payments, and 24/7 automated service.",
 
 };
 

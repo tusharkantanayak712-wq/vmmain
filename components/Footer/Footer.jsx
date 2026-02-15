@@ -9,19 +9,19 @@ import logo from "@/public/logo.png";
 
 /* ================= CONFIG ================= */
 
-const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "Vampenttic";
+const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "Vampettic";
 
 const BRAND = {
   name: BRAND_NAME,
   description:
-    "Premium game top-up solutions with instant delivery, secure protocols, and 24/7 expert support. Elevate your gaming experience with Vamp.",
+    "Premium game top-up solutions with instant delivery, secure protocols, and 24/7 expert support. Elevate your gaming experience with Vampettic.",
 };
 
 /* ================= ENV ================= */
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "6372305866";
 const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "#";
-const INSTAGRAM_USERNAME = process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME || "vampenttic";
+const INSTAGRAM_USERNAME = process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME || "vampettic";
 const WHATSAPP_STORE_LINK = process.env.NEXT_PUBLIC_WHATSAPP_STORE_LINK || "#";
 
 const WHATSAPP_CHAT_LINK = `https://wa.me/91${WHATSAPP_NUMBER.replace(/\D/g, "")}`;
@@ -150,8 +150,8 @@ export default function Footer() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] font-black uppercase opacity-40 tracking-widest leading-none mb-1">Email</span>
-                    <a href="mailto:support@vampenttic.com" className="text-xs font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-colors">
-                      support@vampenttic.com
+                    <a href="mailto:support@vampettic.com" className="text-xs font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-colors">
+                      support@vampettic.com
                     </a>
                   </div>
                 </li>

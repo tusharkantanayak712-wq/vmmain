@@ -104,7 +104,7 @@ export default function AuthPage() {
               <div className="relative w-24 h-24 bg-gradient-to-br from-[var(--accent)] to-purple-600 rounded-2xl shadow-inner flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 border border-white/10">
                 <Image
                   src="/logo.png"
-                  alt="Vamp Logo"
+                  alt="Vampettic Logo"
                   width={56}
                   height={56}
                   className="w-14 h-14 object-contain drop-shadow-md brightness-0 invert"

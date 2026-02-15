@@ -9,10 +9,11 @@ import {
   FaHeart,
   FaShareNodes,
 } from "react-icons/fa6";
+import { usePathname } from "next/navigation";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "";
 const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "#";
-const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "YUJI MLBB";
+const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "VAMPETTIC";
 
 const WHATSAPP_CHAT_LINK = WHATSAPP_NUMBER
   ? `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, "")}`
@@ -36,8 +37,37 @@ const socialLinks = [
 ];
 
 export default function SocialFloat() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  /* ================= SCROLL VISIBILITY ================= */
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < 100) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        // Scrolling Down
+        setIsVisible(false);
+        setIsOpen(false); // Close menu if open while scrolling down
+      } else {
+        // Scrolling Up
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  // Only show on / or /home
+  const isHome = pathname === "/" || pathname === "/home";
+  if (!isHome) return null;
 
   /* ================= CLOSE ON OUTSIDE CLICK ================= */
   useEffect(() => {
@@ -98,7 +128,16 @@ export default function SocialFloat() {
   };
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-6 z-50">
+    <motion.div
+      ref={containerRef}
+      className="fixed bottom-6 right-6 z-50"
+      initial={{ y: 0, opacity: 1 }}
+      animate={{
+        y: isVisible ? 0 : 100,
+        opacity: isVisible ? 1 : 0
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
       {/* ================= FLOATING MENU ================= */}
       <AnimatePresence>
         {isOpen && (
@@ -305,6 +344,6 @@ export default function SocialFloat() {
           />
         </svg>
       </motion.button>
-    </div>
+    </motion.div>
   );
 }
