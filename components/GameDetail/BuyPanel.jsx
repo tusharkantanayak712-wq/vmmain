@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { FiShoppingCart } from "react-icons/fi";
 import logo from "@/public/logo.png";
 
 export default function BuyPanel({
@@ -9,14 +10,21 @@ export default function BuyPanel({
   redirecting,
   buyPanelRef,
 }) {
+  const calculateDiscount = (selling, dummy) => {
+    if (!dummy || dummy <= selling) return null;
+    return Math.round(((dummy - selling) / dummy) * 100);
+  };
+
+  const discount = calculateDiscount(activeItem.sellingPrice, activeItem.dummyPrice);
+
   return (
     <div
       ref={buyPanelRef}
-      className="max-w-6xl mx-auto bg-[var(--card)] border border-[var(--border)]
-      rounded-xl p-4 flex flex-col gap-4"
+      className="max-w-6xl mx-auto bg-gray-900/50 border border-gray-800 rounded-2xl p-6"
     >
-      <div className="flex gap-4 items-center">
-        <div className="relative w-[110px] h-[110px] rounded-xl overflow-hidden">
+      <div className="flex flex-col sm:flex-row gap-6 items-center">
+        {/* Product Image */}
+        <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-800 flex-shrink-0">
           <Image
             src={activeItem.itemImageId?.image || logo}
             alt={activeItem.itemName}
@@ -25,37 +33,54 @@ export default function BuyPanel({
           />
         </div>
 
-        <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold">
+        {/* Product Info */}
+        <div className="flex-1 text-center sm:text-left">
+          <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-tight">
             💎 {activeItem.itemName}
           </h2>
 
-          <div className="flex items-center gap-2 mt-1.5">
-            <p className="text-2xl font-extrabold text-[var(--accent)]">
+          <div className="flex items-center gap-3 justify-center sm:justify-start">
+            <p className="text-3xl font-black text-[var(--accent)]">
               ₹{activeItem.sellingPrice}
             </p>
 
             {activeItem.dummyPrice && (
-              <p className="text-xs line-through text-[var(--muted)]">
-                ₹{activeItem.dummyPrice}
-              </p>
+              <>
+                <p className="text-sm line-through text-gray-600">
+                  ₹{activeItem.dummyPrice}
+                </p>
+                {discount && (
+                  <span className="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded">
+                    {discount}% OFF
+                  </span>
+                )}
+              </>
             )}
           </div>
         </div>
-      </div>
 
-      <button
-        onClick={() => onBuy(activeItem)}
-        disabled={redirecting}
-        className={`w-full py-3 rounded-xl font-bold text-base transition
-          ${
-            redirecting
-              ? "bg-[var(--border)] text-[var(--muted)] cursor-not-allowed"
+        {/* Buy Button */}
+        <button
+          onClick={() => onBuy(activeItem)}
+          disabled={redirecting}
+          className={`w-full sm:w-auto px-8 py-3 rounded-xl font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${redirecting
+              ? "bg-gray-800 text-gray-600 cursor-not-allowed"
               : "bg-[var(--accent)] text-black hover:opacity-90"
-          }`}
-      >
-        {redirecting ? "Redirecting…" : "Buy Now →"}
-      </button>
+            }`}
+        >
+          {redirecting ? (
+            <>
+              <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <FiShoppingCart size={18} />
+              Buy Now
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
