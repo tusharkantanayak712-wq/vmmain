@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import { FiPlus, FiMenu, FiX, FiHome, FiGlobe, FiGrid, FiBarChart2, FiSettings, FiHelpCircle, FiCpu, FiAward } from "react-icons/fi";
+import { FiPlus, FiHome, FiGlobe, FiGrid, FiBarChart2, FiSettings, FiHelpCircle, FiCpu, FiAward } from "react-icons/fi";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -43,7 +43,6 @@ const HEADER_CONFIG = {
 export default function Header() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -195,21 +194,51 @@ export default function Header() {
                     </Link>
                   ) : (
                     <>
-                      {/* WALLET */}
-                      <Link href="/dashboard">
+                      {/* PROFILE INFO */}
+                      <div className="flex items-center gap-3 bg-gradient-to-br from-[var(--accent)]/10 to-purple-500/10 p-3 rounded-2xl border border-[var(--accent)]/20 mb-3">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--accent)]/30 shrink-0">
+                          {user.avatar ? (
+                            <Image
+                              src={user.avatar}
+                              alt={user.name}
+                              width={48}
+                              height={48}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-[var(--accent)]/20 flex items-center justify-center">
+                              <FaUser className="text-[var(--accent)]" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-bold text-[var(--foreground)] truncate">
+                            {user.name}
+                          </span>
+                          <span className="text-[10px] text-[var(--muted)] truncate">
+                            {user.email}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* QUICK BALANCE */}
+                      <Link href="/dashboard" className="block mb-3">
                         <motion.div
-                          className="flex justify-between items-center bg-gradient-to-r from-[var(--accent)]/10 to-purple-500/10 px-4 py-3 rounded-xl border border-[var(--accent)]/30 mb-3"
+                          className="flex justify-between items-center bg-[var(--background)] px-4 py-2 rounded-xl border border-[var(--border)] group hover:border-[var(--accent)]/50 transition-colors"
                           whileHover={{ scale: 1.02 }}
                         >
-                          <span className="text-[var(--accent)] font-bold text-lg">
-                            ₹{user.wallet}
-                          </span>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-[var(--muted)] uppercase tracking-wider font-semibold">Balance</span>
+                            <span className="text-[var(--accent)] font-bold">
+                              ₹{user.wallet}
+                            </span>
+                          </div>
                           <motion.div
-                            className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center"
+                            className="w-7 h-7 rounded-full bg-[var(--accent)] flex items-center justify-center shadow-lg shadow-[var(--accent)]/20"
                             whileHover={{ rotate: 90 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <FiPlus className="text-white" size={16} />
+                            <FiPlus className="text-white" size={14} />
                           </motion.div>
                         </motion.div>
                       </Link>
@@ -265,51 +294,8 @@ export default function Header() {
             )}
           </AnimatePresence>
 
-          {/* MOBILE TOGGLE */}
-          <motion.button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[var(--background)] transition-colors"
-            whileTap={{ scale: 0.9 }}
-          >
-            {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </motion.button>
         </div>
       </div>
-
-      {/* MOBILE NAV */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            className="md:hidden bg-[var(--card)] border-t border-[var(--border)]"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <nav className="flex flex-col px-6 py-4 space-y-2">
-              {HEADER_CONFIG.nav.map((item, index) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all group"
-                  >
-                    <span className="text-xl text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors">
-                      {item.icon}
-                    </span>
-                    <span className="font-bold tracking-wide">{item.label}</span>
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.header>
   );
 }

@@ -83,23 +83,22 @@ export default function ThemeToggle() {
 
   return (
     <div className="relative inline-block theme-toggle-container">
-      {/* TRIGGER BUTTON - PREMIUM PILL */}
+      {/* TRIGGER BUTTON - CIRCULAR */}
       <motion.button
         onClick={() => setOpen(!open)}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--card)]/50 backdrop-blur-md border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all shadow-sm group"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="w-10 h-10 rounded-full bg-[var(--card)]/50 backdrop-blur-md border border-[var(--border)] hover:border-[var(--accent)]/50 flex items-center justify-center transition-all shadow-sm group relative overflow-hidden"
       >
-        <div className="relative w-5 h-5 flex items-center justify-center text-sm">
+        <div className="relative w-5 h-5 flex items-center justify-center text-sm z-10">
           <LuPalette className={`transition-transform duration-500 ${open ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'}`} />
           <span className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${open ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'}`}>
             {currentTheme?.icon || "✨"}
           </span>
         </div>
-        <span className="text-[11px] font-black uppercase tracking-[0.15em] text-[var(--foreground)] hidden sm:inline">
-          {currentTheme?.label || "Theme"}
-        </span>
-        <FiChevronDown className={`w-3 h-3 transition-transform duration-300 ${open ? 'rotate-180 text-[var(--accent)]' : 'text-[var(--muted)]'}`} />
+
+        {/* Subtle background glow on active */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)]/0 to-[var(--accent)]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
       </motion.button>
 
       {/* DROPDOWN MENU */}
@@ -130,9 +129,9 @@ export default function ThemeToggle() {
                       <button
                         key={t.id}
                         onClick={() => changeTheme(t.id)}
-                        className={`w-full group/item flex items-center justify-between px-3 py-2 rounded-xl transition-all ${theme === t.id
-                            ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
-                            : "hover:bg-[var(--accent)]/10 text-[var(--foreground)]"
+                        className={`w-full group/item flex items-center justify-between px-3 py-2 rounded-full transition-all ${theme === t.id
+                          ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
+                          : "hover:bg-[var(--accent)]/10 text-[var(--foreground)]"
                           }`}
                       >
                         <div className="flex items-center gap-3">

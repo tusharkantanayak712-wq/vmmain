@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaInstagram, FaWhatsapp, FaHeart } from "react-icons/fa6";
-import { FiArrowUpRight, FiMail, FiMapPin } from "react-icons/fi";
+import { FaInstagram, FaWhatsapp, FaDiscord, FaTelegram, FaHeart } from "react-icons/fa6";
+import { FiArrowUpRight, FiMail, FiMapPin, FiMessageSquare, FiShield, FiZap } from "react-icons/fi";
 import { motion } from "framer-motion";
 import logo from "@/public/logo.png";
 
@@ -13,128 +13,98 @@ const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "Vampettic";
 
 const BRAND = {
   name: BRAND_NAME,
+  tagline: "Unleash Your Gaming Potential",
   description:
-    "Premium game top-up solutions with instant delivery, secure protocols, and 24/7 expert support. Elevate your gaming experience with Vampettic.",
+    "We provide the fastest and most secure game top-up services for gamers worldwide. Experience seamless transactions and 24/7 priority support.",
 };
 
 /* ================= ENV ================= */
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "6372305866";
 const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "#";
-const INSTAGRAM_USERNAME = process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME || "vampettic";
-const WHATSAPP_STORE_LINK = process.env.NEXT_PUBLIC_WHATSAPP_STORE_LINK || "#";
-
 const WHATSAPP_CHAT_LINK = `https://wa.me/91${WHATSAPP_NUMBER.replace(/\D/g, "")}`;
 
-/* ================= LINKS ================= */
+const FOOTER_LINKS = {
+  company: [
+    { label: "Home", href: "/" },
+    { label: "Services", href: "/services" },
+    { label: "Region", href: "/region" },
+    { label: "Leaderboard", href: "/leaderboard" },
+  ],
+  support: [
+    { label: "Help Center", href: "/contact" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "About Us", href: "/about" },
+    { label: "Region Check", href: "/region" },
+  ],
+  legal: [
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms-and-conditions" },
+    { label: "Refund Policy", href: "/refund-policy" },
+  ],
+};
 
-const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Region", href: "/region" },
-  { label: "Services", href: "/services" },
-  { label: "Leaderboard", href: "/leaderboard" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
-
-const LEGAL_LINKS = [
-  { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms & Conditions", href: "/terms-and-conditions" },
-  { label: "Refund Policy", href: "/refund-policy" },
+const SOCIAL_LINKS = [
+  { icon: <FaInstagram size={20} />, href: INSTAGRAM_URL, color: "hover:text-pink-500", label: "Instagram" },
+  { icon: <FaWhatsapp size={20} />, href: WHATSAPP_CHAT_LINK, color: "hover:text-green-500", label: "WhatsApp" },
+  { icon: <FaDiscord size={20} />, href: "#", color: "hover:text-indigo-500", label: "Discord" },
+  { icon: <FaTelegram size={20} />, href: "#", color: "hover:text-blue-500", label: "Telegram" },
 ];
 
 /* ================= COMPONENT ================= */
 
 export default function Footer() {
   return (
-    <footer className="relative mt-20 border-t border-[var(--border)] bg-[var(--background)] overflow-hidden">
-      {/* Subtle Ambient Decorative Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-[80px] pointer-events-none" />
+    <footer className="relative mt-32 bg-[var(--background)] border-t border-[var(--border)] overflow-hidden">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/50 to-transparent" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--accent)]/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
 
-      {/* Top Accent Line */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/20 to-transparent" />
+      <div className="max-w-7xl mx-auto px-6 pt-20 pb-10 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16">
 
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+          {/* BRAND COLUMN */}
+          <div className="lg:col-span-4 space-y-8">
+            <div className="space-y-4">
+              <Link href="/" className="inline-block group">
+                <Image
+                  src={logo}
+                  alt={BRAND_NAME}
+                  width={120}
+                  height={40}
+                  className="transition-transform duration-500 group-hover:scale-105"
+                />
+              </Link>
+              <p className="text-[var(--muted)] text-sm leading-relaxed max-w-sm">
+                {BRAND.description}
+              </p>
+            </div>
 
-          {/* BRAND PORTION */}
-          <div className="lg:col-span-5 space-y-6">
-            <Link href="/" className="inline-block">
-              <Image src={logo} alt="Vamp" width={100} height={32} className="opacity-90 hover:opacity-100 transition-opacity" />
-            </Link>
-
-            <p className="text-sm text-[var(--muted)] max-w-sm leading-relaxed font-medium">
-              {BRAND.description}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <motion.a
-                whileHover={{ y: -3 }}
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] group/link transition-all"
-              >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/10 transition-transform group-hover/link:scale-110">
-                  <FaInstagram size={18} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase opacity-40 tracking-widest leading-none mb-1">Instagram</span>
-                  <span className="text-xs font-black text-[var(--foreground)]">@{INSTAGRAM_USERNAME}</span>
-                </div>
-              </motion.a>
-
-              <motion.a
-                whileHover={{ y: -3 }}
-                href={WHATSAPP_CHAT_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] group/link transition-all"
-              >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-lg shadow-green-500/10 transition-transform group-hover/link:scale-110">
-                  <FaWhatsapp size={18} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase opacity-40 tracking-widest leading-none mb-1">Support</span>
-                  <span className="text-xs font-black text-[var(--foreground)]">Contact Now</span>
-                </div>
-              </motion.a>
+            <div className="flex items-center gap-4">
+              {SOCIAL_LINKS.map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  whileHover={{ y: -5, scale: 1.1 }}
+                  className={`w-10 h-10 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] transition-all duration-300 ${social.color} hover:border-current hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.1)]`}
+                  aria-label={social.label}
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
             </div>
           </div>
 
-          {/* LINKS GRID */}
-          <div className="lg:col-span-7 grid grid-cols-2 gap-8">
+          {/* QUICK LINKS COLUMNS */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-8">
             <div className="space-y-6">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)]">
-                Network
-              </p>
+              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--foreground)]">Company</h4>
               <ul className="space-y-3">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="group flex items-center gap-1 text-sm font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-all"
-                    >
-                      {link.label}
-                      <FiArrowUpRight className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all text-[var(--accent)]" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="space-y-6">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)]">
-                Compliance
-              </p>
-              <ul className="space-y-3">
-                {LEGAL_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="group flex items-center gap-1 text-sm font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-all"
-                    >
+                {FOOTER_LINKS.company.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="text-sm font-medium text-[var(--muted)] hover:text-[var(--accent)] transition-colors flex items-center group">
+                      <span className="w-0 group-hover:w-2 h-px bg-[var(--accent)] mr-0 group-hover:mr-2 transition-all duration-300" />
                       {link.label}
                     </Link>
                   </li>
@@ -142,32 +112,74 @@ export default function Footer() {
               </ul>
             </div>
 
+            <div className="space-y-6">
+              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--foreground)]">Support</h4>
+              <ul className="space-y-3">
+                {FOOTER_LINKS.support.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="text-sm font-medium text-[var(--muted)] hover:text-[var(--accent)] transition-colors flex items-center group">
+                      <span className="w-0 group-hover:w-2 h-px bg-[var(--accent)] mr-0 group-hover:mr-2 transition-all duration-300" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
+          {/* TRUST BADGES COLUMN */}
+          <div className="lg:col-span-4 flex flex-col justify-end">
+            <div className="flex items-center justify-around md:justify-start md:gap-12 px-4 py-8 bg-gradient-to-br from-[var(--card)] to-transparent rounded-3xl border border-[var(--border)] lg:border-none">
+              <div className="flex flex-col items-center gap-2 group cursor-default">
+                <div className="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500 group-hover:bg-green-500/20 transition-colors duration-300">
+                  <FiShield size={24} />
+                </div>
+                <span className="text-[10px] font-black tracking-widest text-[var(--muted)]">SECURE</span>
+              </div>
+              <div className="flex flex-col items-center gap-2 group cursor-default">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] group-hover:bg-[var(--accent)]/20 transition-colors duration-300">
+                  <FiZap size={24} />
+                </div>
+                <span className="text-[10px] font-black tracking-widest text-[var(--muted)]">INSTANT</span>
+              </div>
+              <div className="flex flex-col items-center gap-2 group cursor-default">
+                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:bg-orange-500/20 transition-colors duration-300">
+                  <FiMail size={24} />
+                </div>
+                <span className="text-[10px] font-black tracking-widest text-[var(--muted)]">24/7 HELP</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* BOTTOM STRIP */}
-        <div className="mt-16 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row justify-between items-center gap-6 text-center sm:text-left">
-          <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] opacity-60">
-              © {new Date().getFullYear()} {BRAND_NAME}. Engineered for Gamers.
+        {/* DIVIDER */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--border)] to-transparent my-10" />
+
+        {/* BOTTOM SECTION */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <p className="text-xs text-[var(--muted)] font-medium">
+              © {new Date().getFullYear()} {BRAND_NAME}. All rights reserved.
             </p>
+            <div className="flex items-center gap-4">
+              {FOOTER_LINKS.legal.map((link) => (
+                <Link key={link.label} href={link.href} className="text-[10px] uppercase tracking-widest font-bold text-[var(--muted)] hover:text-[var(--accent)] transition-colors">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[var(--border)] bg-[var(--card)]/50">
-            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">Made with</span>
-            <FaHeart className="text-red-500 animate-pulse text-[10px]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">by</span>
-            <a
-              href="#"
-              className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
-            >
-              TK
-            </a>
+          <div className="flex items-center gap-3 px-5 py-2 rounded-full bg-[var(--card)] border border-[var(--border)] shadow-sm">
+            <span className="text-[10px] font-bold text-[var(--muted)] tracking-wider">MADE WITH</span>
+            <FaHeart className="text-red-500 animate-pulse" size={12} />
+            <span className="text-[10px] font-bold text-[var(--muted)] tracking-wider">BY</span>
+            <a href="#" className="text-[10px] font-black text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">TK</a>
           </div>
         </div>
       </div>
     </footer>
   );
 }
+
 
