@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Trophy, Gamepad2, LayoutGrid } from "lucide-react";
+import { Globe, Trophy, Gamepad2, LayoutGrid, Headset } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function HomeQuickAction() {
@@ -30,12 +30,18 @@ export default function HomeQuickAction() {
       href: "/region",
       accent: "#10b981", // Emerald
     },
+    {
+      title: "Support",
+      icon: <Headset className="h-5 w-5" />,
+      href: "/dashboard",
+      accent: "#ec4899", // Pink
+    },
   ];
 
   return (
     <section className="w-full px-4 py-2 relative">
       <div className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+        <div className="grid grid-cols-5 gap-2 sm:gap-4">
           {actions.map((action, idx) => (
             <motion.div
               key={idx}

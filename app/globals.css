@@ -698,3 +698,9 @@ html[data-theme="glass"] .card {
 .animate-spin-slow {
   animation: rotate-gradient 3s linear infinite;
 }
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(200%);
+  }
+}

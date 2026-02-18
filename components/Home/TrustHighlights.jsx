@@ -85,7 +85,7 @@ export default function TrustHighlights() {
 
         {/* GRID */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
+          className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

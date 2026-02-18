@@ -33,14 +33,6 @@ const OTTS = [
     category: "OTT",
     available: true,
   },
-  {
-    name: "Instagram Services",
-    slug: "instagram",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/a_jnlvg0.jpg",
-    category: "Social",
-    available: true,
-  },
 ];
 /* ================= MEMBERSHIP SECTION ================= */
 const MEMBERSHIPS = [

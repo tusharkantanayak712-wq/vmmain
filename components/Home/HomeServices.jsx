@@ -2,48 +2,48 @@
 
 import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 
-const PHONE_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "+91 6372305866";
+const PHONE_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "+91 9178521537";
 const WHATSAPP_LINK = `https://wa.me/${PHONE_NUMBER.replace(/\D/g, "")}`;
 
 export default function HomeServices() {
   return (
-    <section className="py-6 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="rounded-3xl border border-gray-800 bg-gray-900/40 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+    <section className="py-8 px-4">
+      <div className="max-w-sm mx-auto">
+        <div className="bg-[var(--card)]/80 backdrop-blur-sm border border-[var(--border)] rounded-[32px] p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden">
 
-          <div className="text-center md:text-left">
-            <h3 className="text-xl font-bold text-white mb-2 tracking-tight uppercase">
-              Premium Web Solutions
-            </h3>
-            <p className="text-sm text-gray-500 font-medium uppercase tracking-widest">
-              Design • Development • Maintenance
-            </p>
-          </div>
+          {/* Ambient Background Effect */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)]/[0.05] to-transparent pointer-events-none" />
 
-          <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-10">
-            <a
-              href={`tel:${PHONE_NUMBER}`}
-              className="flex items-center gap-4 hover:opacity-80 transition-opacity"
-            >
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-[var(--accent)]">
-                <FaPhoneAlt size={14} />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase text-gray-600 tracking-widest">24/7 Support</p>
-                <p className="text-sm font-bold text-white tracking-widest">{PHONE_NUMBER}</p>
-              </div>
-            </a>
+          <h3 className="text-xl font-black text-[var(--foreground)] mb-2 tracking-tight uppercase leading-tight drop-shadow-md relative z-10">
+            Premium Web Solutions
+          </h3>
 
-            <a
-              href={WHATSAPP_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold text-xs uppercase tracking-[0.2em] transition-all flex items-center gap-2"
-            >
-              <FaWhatsapp size={16} />
-              WhatsApp
-            </a>
-          </div>
+          <p className="text-[10px] text-[var(--muted)] font-bold uppercase tracking-[0.15em] mb-8 relative z-10">
+            Design • Development • Maintenance
+          </p>
+
+          <a
+            href={`tel:${PHONE_NUMBER}`}
+            className="flex items-center gap-4 mb-8 bg-[var(--background)]/50 p-3 pr-6 rounded-2xl hover:bg-[var(--background)]/80 transition-colors border border-[var(--border)] relative z-10 group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center text-[var(--accent)] shadow-lg group-hover:text-[var(--accent-hover)] transition-colors">
+              <FaPhoneAlt size={14} />
+            </div>
+            <div className="text-left">
+              <p className="text-[9px] font-black uppercase text-[var(--muted)] tracking-widest mb-0.5">24/7 Support</p>
+              <p className="text-sm font-bold text-[var(--foreground)] tracking-widest">{PHONE_NUMBER}</p>
+            </div>
+          </a>
+
+          <a
+            href={WHATSAPP_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-3.5 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#25D366]/20 hover:shadow-[#25D366]/40 hover:-translate-y-0.5 relative z-10"
+          >
+            <FaWhatsapp size={18} />
+            WhatsApp
+          </a>
 
         </div>
       </div>
