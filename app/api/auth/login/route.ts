@@ -65,6 +65,15 @@ export async function POST(request: Request) {
       );
     }
 
+    /* ================= GET USER IP ================= */
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : request.headers.get("x-real-ip") || "unknown";
+
+    /* ================= UPDATE TRACKING ================= */
+    foundUser.lastLogin = new Date();
+    foundUser.lastIp = ip;
+    await foundUser.save();
+
     /* ================= JWT GENERATION ================= */
     const token = jwt.sign(
       {

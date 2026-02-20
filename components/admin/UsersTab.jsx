@@ -26,6 +26,8 @@ import {
 export default function UsersTab() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
   const [updatingUserId, setUpdatingUserId] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -50,6 +52,28 @@ export default function UsersTab() {
   useEffect(() => {
     fetchUsers();
   }, [page, limit, search, filters]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoadingStats(true);
+      const token = sessionStorage.getItem("token");
+      const res = await fetch("/api/admin/users/stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStats(data.data);
+      }
+    } catch (err) {
+      console.error("Fetch stats failed", err);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -153,6 +177,63 @@ export default function UsersTab() {
         </div>
       </div>
 
+      {/* ================= STATS ================= */}
+      {!loadingStats && stats && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute -right-10 -top-10 w-32 h-32 bg-[var(--accent)]/10 rounded-full blur-3xl transition-all duration-500 group-hover:bg-[var(--accent)]/20" />
+
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)]">
+                <User size={16} />
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)] tracking-wide">New Users</h3>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-xl font-extrabold text-[var(--foreground)]">{stats.newUsers["1d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">Last 24h</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">{stats.newUsers["7d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">7 Days</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">{stats.newUsers["30d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">30 Days</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                <RefreshCcw size={16} />
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)] tracking-wide">Active Users (Logins)</h3>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-xl font-extrabold text-[var(--foreground)]">{stats.activeUsers["1d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">Last 24h</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">{stats.activeUsers["7d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">7 Days</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">{stats.activeUsers["30d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">30 Days</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ================= SEARCH & FILTERS ================= */}
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
@@ -203,6 +284,7 @@ export default function UsersTab() {
                     <th className="px-6 py-4">Contact</th>
                     <th className="px-6 py-4">Role</th>
                     <th className="px-6 py-4">Joined Date</th>
+                    <th className="px-6 py-4">Activity</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -239,6 +321,14 @@ export default function UsersTab() {
                       </td>
                       <td className="px-6 py-4 text-xs font-medium text-[var(--muted)]">
                         {new Date(u.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col text-[var(--muted)]">
+                          <span className="text-[var(--foreground)] font-medium text-[11px]">
+                            {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never'}
+                          </span>
+                          <span className="text-[10px] mt-0.5 opacity-70">IP: {u.lastIp || 'N/A'}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                         <RoleDropdown
@@ -290,6 +380,16 @@ export default function UsersTab() {
                           <span className="text-xs">{u.phone}</span>
                         </div>
                       )}
+
+                      {/* Added Activity */}
+                      <div className="flex items-center gap-2 text-[var(--muted)] mt-1.5 pt-1.5 border-t border-[var(--border)]/50">
+                        <span className="text-[10px] bg-[var(--foreground)]/[0.04] px-1.5 py-0.5 rounded text-[var(--foreground)] font-medium">
+                          {u.lastLogin ? new Date(u.lastLogin).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No login'}
+                        </span>
+                        <span className="text-[10px] opacity-70">
+                          {u.lastIp || 'No IP'}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between gap-4 pt-1" onClick={(e) => e.stopPropagation()}>
@@ -395,6 +495,8 @@ export default function UsersTab() {
                   <DrawerDetail label="Full Name" value={selectedUser.name} />
                   <DrawerDetail label="User ID" value={selectedUser.userId} />
                   <DrawerDetail label="Member Since" value={new Date(selectedUser.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })} />
+                  <DrawerDetail label="Last Login" value={selectedUser.lastLogin ? new Date(selectedUser.lastLogin).toLocaleString() : 'Never'} />
+                  <DrawerDetail label="Last IP Address" value={selectedUser.lastIp || 'N/A'} />
                 </DrawerSection>
 
                 <DrawerSection icon={<Mail size={18} />} title="Contact Details">

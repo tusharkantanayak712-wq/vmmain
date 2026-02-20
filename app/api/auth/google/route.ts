@@ -44,6 +44,14 @@ export async function POST(req: Request) {
       });
     }
 
+    /* ================= UPDATE TRACKING ================= */
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : req.headers.get("x-real-ip") || "unknown";
+
+    user.lastLogin = new Date();
+    user.lastIp = ip;
+    await user.save();
+
     /* ================= JWT ================= */
     const jwtToken = jwt.sign(
       { userId: user._id, userType: user.userType },

@@ -36,6 +36,10 @@ export async function POST(request: Request) {
     /* ================= GENERATE USER ID ================= */
     const userId = generateUserId(name, phone);
 
+    /* ================= GET IP ================= */
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : request.headers.get("x-real-ip") || "unknown";
+
     /* ================= CREATE USER ================= */
     await User.create({
       userId,
@@ -47,6 +51,8 @@ export async function POST(request: Request) {
       wallet: 0,
       order: 0,
       userType: "user",
+      lastLogin: null,
+      lastIp: ip,
     });
 
     return Response.json(

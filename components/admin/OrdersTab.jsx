@@ -29,6 +29,8 @@ export default function OrdersTab() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -50,6 +52,28 @@ export default function OrdersTab() {
   useEffect(() => {
     fetchOrders();
   }, [page, limit, search, filters]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoadingStats(true);
+      const token = sessionStorage.getItem("token");
+      const res = await fetch("/api/admin/orders/stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStats(data.data);
+      }
+    } catch (err) {
+      console.error("Fetch stats failed", err);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   /* ================= FETCH ORDERS ================= */
   const fetchOrders = async () => {
@@ -157,6 +181,64 @@ export default function OrdersTab() {
           </button>
         </div>
       </div>
+
+      {/* ================= STATS ================= */}
+      {!loadingStats && stats && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute -right-10 -top-10 w-32 h-32 bg-[var(--accent)]/10 rounded-full blur-3xl transition-all duration-500 group-hover:bg-[var(--accent)]/20" />
+
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)]">
+                <ShoppingBag size={16} />
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)] tracking-wide">Total Orders</h3>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-xl font-extrabold text-[var(--foreground)]">{stats.totalOrders["1d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">Last 24h</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">{stats.totalOrders["7d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">7 Days</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">{stats.totalOrders["30d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">30 Days</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                <IndianRupee size={16} />
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)] tracking-wide">Order Value</h3>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-xl font-extrabold text-emerald-500">₹{stats.totalValue["1d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">Last 24h</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">₹{stats.totalValue["7d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">7 Days</p>
+              </div>
+              <div className="pl-4 border-l border-[var(--border)]/50">
+                <p className="text-lg font-bold text-[var(--foreground)]">₹{stats.totalValue["30d"]}</p>
+                <p className="text-[10px] uppercase font-bold text-[var(--muted)]/60 tracking-wider mt-0.5">30 Days</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+      }
 
       {/* ================= FILTERS & SEARCH ================= */}
       <div className="space-y-3">
@@ -490,7 +572,7 @@ export default function OrdersTab() {
           </>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 }
 
