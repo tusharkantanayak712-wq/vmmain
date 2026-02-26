@@ -15,6 +15,7 @@ import TransactionsTab from "@/components/admin/TransactionsTab";
 import SupportQueriesTab from "@/components/admin/SupportQueriesTab";
 import BannersTab from "@/components/admin/BannersTab";
 import WalletTab from "@/components/admin/WalletTab";
+import SettingsTab from "@/components/admin/SettingsTab";
 
 
 export default function AdminPanalPage() {
@@ -223,7 +224,7 @@ export default function AdminPanalPage() {
 
           {/* TABS */}
           <div className="mb-5 flex flex-wrap gap-2">
-            {["users", "orders", "transactions", "wallet", "queries", "pricing", "banners"].map(
+            {["users", "orders", "transactions", "wallet", "queries", "pricing", "banners", "settings"].map(
               (tab) => {
                 const isActive = activeTab === tab;
 
@@ -307,6 +308,10 @@ export default function AdminPanalPage() {
             {activeTab === "banners" && (
               <BannersTab banners={banners} onRefresh={fetchBanners} />
             )}
+            {activeTab === "settings" && (
+              <SettingsTab />
+            )}
+
 
 
             {activeTab === "pricing" && (
