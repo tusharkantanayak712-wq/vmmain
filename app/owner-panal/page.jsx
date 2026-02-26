@@ -177,7 +177,7 @@ export default function AdminPanalPage() {
       <section className="min-h-screen bg-[var(--background)] px-6 py-3">
         <div className="max-w-6xl mx-auto">
           {/* HEADER */}
-          <div className="mb-4">
+          <div className="mb-3">
             <div className="flex items-center gap-2">
               <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-[var(--foreground)]">
                 Admin Panel

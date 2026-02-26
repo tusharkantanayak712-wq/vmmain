@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Save, AlertTriangle, Loader2, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Settings, AlertTriangle, Loader2, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SettingsTab() {
@@ -28,7 +28,7 @@ export default function SettingsTab() {
         }
     };
 
-    const handleSave = async () => {
+    const updateSettings = async (updatedSettings) => {
         try {
             setSaving(true);
             const token = sessionStorage.getItem("token");
@@ -38,18 +38,36 @@ export default function SettingsTab() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(settings),
+                body: JSON.stringify(updatedSettings),
             });
             const data = await res.json();
-            if (data.success) {
-                alert("Settings updated successfully");
-            } else {
+            if (!data.success) {
                 alert(data.message || "Failed to update");
+                return false;
             }
+            return true;
         } catch (err) {
             alert("Something went wrong");
+            return false;
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleToggle = async (e) => {
+        const newValue = e.target.checked;
+        const newSettings = { ...settings, maintenanceMode: newValue };
+
+        // Store current settings to revert if needed
+        const prevSettings = settings;
+
+        // Optimistic update
+        setSettings(newSettings);
+
+        const success = await updateSettings(newSettings);
+        if (!success) {
+            // Revert on failure
+            setSettings(prevSettings);
         }
     };
 
@@ -63,8 +81,8 @@ export default function SettingsTab() {
     }
 
     return (
-        <div className="space-y-8 max-w-2xl mx-auto py-4">
-            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
+        <div className="space-y-6 max-w-2xl mx-auto py-4">
+            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-3">
                 <div className="p-2.5 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)]">
                     <Settings size={22} />
                 </div>
@@ -101,7 +119,8 @@ export default function SettingsTab() {
                                 type="checkbox"
                                 className="sr-only peer"
                                 checked={settings.maintenanceMode}
-                                onChange={(e) => setSettings({ ...settings, maintenanceMode: e.target.checked })}
+                                onChange={handleToggle}
+                                disabled={saving}
                             />
                             <div className="w-14 h-8 bg-[var(--foreground)]/[0.05] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[var(--accent)] border border-[var(--border)]"></div>
                         </label>
@@ -124,16 +143,6 @@ export default function SettingsTab() {
                     )}
                 </div>
 
-                <div className="flex justify-end pt-4">
-                    <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="h-12 px-8 rounded-2xl bg-[var(--accent)] text-black font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-[var(--accent)]/20"
-                    >
-                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                        Save Evolution
-                    </button>
-                </div>
             </div>
         </div>
     );

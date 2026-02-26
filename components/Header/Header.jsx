@@ -101,7 +101,7 @@ export default function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-16">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-14">
 
         {/* LOGO */}
         <Link href="/" className="flex items-center relative group">
