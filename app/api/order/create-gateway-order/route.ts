@@ -6,6 +6,7 @@ import User from "@/models/User";
 import WalletTransaction from "@/models/WalletTransaction";
 import PricingConfig from "@/models/PricingConfig";
 import crypto from "crypto";
+import { FEATURE_FLAGS } from "@/lib/config";
 
 /* =====================================================
    TYPES
@@ -223,6 +224,13 @@ export async function POST(req: Request) {
 
     /* ---------- WALLET PAYMENT (SECURE & ATOMIC) ---------- */
     if (paymentMethod === "wallet") {
+      if (!FEATURE_FLAGS.WALLET_PURCHASE) {
+        return NextResponse.json({
+          success: false,
+          message: "Wallet purchase is temporarily disabled",
+        }, { status: 403 });
+      }
+
       // 🔒 Atomic Balance Check & Deduction
       // We find the user AND check their balance in a single MongoDB operation
       const updatedUser = await User.findOneAndUpdate(

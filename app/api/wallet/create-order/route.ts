@@ -3,8 +3,13 @@ import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
+import { FEATURE_FLAGS } from "@/lib/config";
 
 export async function POST(req: Request) {
+  if (!FEATURE_FLAGS.WALLET_ADD) {
+    return NextResponse.json({ success: false, message: "Wallet top-up is temporarily disabled" }, { status: 403 });
+  }
+
   await connectDB();
 
   const authHeader = req.headers.get("authorization");
