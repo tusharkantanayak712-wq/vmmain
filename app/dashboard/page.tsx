@@ -49,8 +49,8 @@ export default function Dashboard() {
 
   const tabCards = [
     { key: "orders", label: "Orders", value: "View" },
-    // { key: "wallet", label: "Wallet", value: `₹${walletBalance}` },
-    // { key: "account", label: "Profile", value: "Manage" },
+    { key: "wallet", label: "Wallet", value: `₹${walletBalance}` },
+    { key: "account", label: "Profile", value: "Manage" },
     { key: "query", label: "Support", value: "Help" },
   ];
 

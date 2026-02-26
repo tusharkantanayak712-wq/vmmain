@@ -40,61 +40,65 @@ export default function ReviewAndPaymentStep({
 
 
   // Handle proceed to payment
-const handleProceed = async () => {
-  if (!paymentMethod) {
-    alert("Please select a payment method");
-    return;
-  }
-
-  setIsRedirecting(true); // 🔑 start loading
-
-  try {
-    const userId = sessionStorage.getItem("userId");
-    const storedPhone = userPhone || sessionStorage.getItem("phone");
-
-    // if (!storedPhone) {
-    //   alert("Phone number missing. Please log in again.");
-    //   setIsRedirecting(false);
-    //   return;
-    // }
-
-    const orderPayload = {
-      gameSlug: slug,
-      itemSlug,
-      itemName,
-      playerId: reviewData.playerId,
-      zoneId: reviewData.zoneId,
-      paymentMethod,
-      email: userEmail || null,
-      phone: storedPhone,
-      currency: "INR",
-    };
-const token = sessionStorage.getItem("token");
-
-    const res = await fetch("/api/order/create-gateway-order", {
-      method: "POST",
-   headers: {
-        Authorization: `Bearer ${token}`,
-      },      body: JSON.stringify(orderPayload),
-    });
-
-    const data = await res.json();
-
-    if (!data.success) {
-      alert("Order failed: " + data.message);
-      setIsRedirecting(false);
+  const handleProceed = async () => {
+    if (!paymentMethod) {
+      alert("Please select a payment method");
       return;
     }
 
-    sessionStorage.setItem("pending_topup_order", data.orderId);
+    setIsRedirecting(true); // 🔑 start loading
 
-    // 🚀 redirect
-    window.location.href = data.paymentUrl;
-  } catch (err) {
-    alert("Something went wrong. Please try again.");
-    setIsRedirecting(false);
-  }
-};
+    try {
+      const userId = sessionStorage.getItem("userId");
+      const storedPhone = userPhone || sessionStorage.getItem("phone");
+
+      // if (!storedPhone) {
+      //   alert("Phone number missing. Please log in again.");
+      //   setIsRedirecting(false);
+      //   return;
+      // }
+
+      const orderPayload = {
+        gameSlug: slug,
+        itemSlug,
+        itemName,
+        playerId: reviewData.playerId,
+        zoneId: reviewData.zoneId,
+        paymentMethod,
+        email: userEmail || null,
+        phone: storedPhone,
+        currency: "INR",
+      };
+      const token = sessionStorage.getItem("token");
+
+      const res = await fetch("/api/order/create-gateway-order", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }, body: JSON.stringify(orderPayload),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        alert("Order failed: " + data.message);
+        setIsRedirecting(false);
+        return;
+      }
+
+      sessionStorage.setItem("pending_topup_order", data.orderId);
+
+      // 🚀 redirect
+      if (paymentMethod === "wallet") {
+        onPaymentComplete(); // This should set showSuccess to true in the parent
+        return;
+      }
+      window.location.href = data.paymentUrl;
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+      setIsRedirecting(false);
+    }
+  };
 
 
 
@@ -155,19 +159,17 @@ const token = sessionStorage.getItem("token");
           {/* Payment Method */}
           <div className="bg-black/20 p-4 rounded-xl border border-gray-700">
             <h3 className="font-semibold mb-3">Select Payment Method</h3>
-            
+
             {/* Wallet Button */}
             <button
-            disabled
               onClick={() => {
                 if (walletBalance < totalPrice) return;
                 setPaymentMethod("wallet");
               }}
-              className={`w-full p-3 rounded-lg border text-left ${
-                paymentMethod === "wallet"
+              className={`w-full p-3 rounded-lg border text-left ${paymentMethod === "wallet"
                   ? "border-[var(--accent)] bg-[var(--accent)]/20"
                   : "border-gray-700"
-              } ${walletBalance < totalPrice ? "opacity-50 cursor-not-allowed" : ""}`}
+                } ${walletBalance < totalPrice ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Wallet (₹{walletBalance})
             </button>
@@ -181,11 +183,10 @@ const token = sessionStorage.getItem("token");
             {/* UPI Button */}
             <button
               onClick={handleUPI}
-              className={`w-full mt-3 p-3 rounded-lg border text-left ${
-                paymentMethod === "upi"
+              className={`w-full mt-3 p-3 rounded-lg border text-left ${paymentMethod === "upi"
                   ? "border-[var(--accent)] bg-[var(--accent)]/20"
                   : "border-gray-700"
-              }`}
+                }`}
             >
               UPI Payment
             </button>
@@ -199,11 +200,11 @@ const token = sessionStorage.getItem("token");
               <p>Discount: -₹{discount}</p>
             </div>
             <p className="text-lg font-bold mt-2">Total: ₹{totalPrice}</p>
-            
+
             <button
               onClick={handleProceed}
               disabled={
-                 isRedirecting ||
+                isRedirecting ||
                 !paymentMethod ||
                 (paymentMethod === "wallet" && walletBalance < totalPrice)
               }
@@ -211,14 +212,14 @@ const token = sessionStorage.getItem("token");
     bg-[var(--accent)] text-black p-3 rounded-lg w-full mt-4 font-semibold
     disabled:opacity-50 flex items-center justify-center gap-2
   "            >
-             {isRedirecting ? (
-    <>
-      <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-      Redirecting…
-    </>
-  ) : (
-    "Proceed to Pay"
-  )}
+              {isRedirecting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  Redirecting…
+                </>
+              ) : (
+                "Proceed to Pay"
+              )}
             </button>
           </div>
         </>
@@ -231,7 +232,7 @@ const token = sessionStorage.getItem("token");
           {paymentMethod === "upi" && (
             <div className="bg-black/20 p-6 rounded-xl border border-gray-700 text-center">
               <p className="font-semibold mb-3">Scan to Pay</p>
-              
+
               <div className="w-48 h-48 mx-auto bg-white p-3 rounded-xl">
                 {upiQR ? (
                   <Image src={upiQR} alt="QR" width={200} height={200} />
@@ -239,7 +240,7 @@ const token = sessionStorage.getItem("token");
                   <p>Generating QR...</p>
                 )}
               </div>
-              
+
               <button
                 onClick={onPaymentComplete}
                 className="bg-[var(--accent)] text-black mt-4 w-full py-3 rounded-lg font-semibold"
@@ -253,13 +254,13 @@ const token = sessionStorage.getItem("token");
           {paymentMethod === "wallet" && (
             <div className="bg-black/20 p-6 rounded-xl border border-gray-700 text-center">
               <p className="mb-2">Wallet Balance: ₹{walletBalance}</p>
-              
+
               {walletBalance < totalPrice && (
                 <p className="text-red-400 text-xs mb-3">
                   Not enough balance to complete this purchase.
                 </p>
               )}
-              
+
               <button
                 onClick={onPaymentComplete}
                 disabled={walletBalance < totalPrice}

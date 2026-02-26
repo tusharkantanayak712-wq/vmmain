@@ -141,6 +141,7 @@ export async function PATCH(req) {
     }
 
     if (status === "failed") {
+      update.paymentStatus = "failed";
       update.topupStatus = "failed";
     }
 

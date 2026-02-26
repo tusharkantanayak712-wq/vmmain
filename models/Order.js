@@ -2,11 +2,12 @@ import mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema(
   {
-    orderId: { type: String,required: true, unique: true },
+    orderId: { type: String, required: true, unique: true },
     gameSlug: String,
     itemSlug: String,
     itemName: String,
     playerId: String,
+    userId: String,
     zoneId: String,
     paymentMethod: String,
     price: Number,
@@ -16,12 +17,12 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       enum: [
         "pending", "success", "failed", "refund",
-        "PENDING", "SUCCESS", "FAILED"  ,"REFUND"
+        "PENDING", "SUCCESS", "FAILED", "REFUND"
       ],
       default: "pending"
     },
-     // ✅ NEW: Top-up status
-  paymentStatus: {
+    // ✅ NEW: Top-up status
+    paymentStatus: {
       type: String,
       enum: ["pending", "success", "failed"],
       default: "pending",

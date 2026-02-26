@@ -1,12 +1,60 @@
 import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/mongodb";
+import Order from "@/models/Order";
+import User from "@/models/User";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
-  const { amount, mobile } = await req.json();
+  await connectDB();
 
-  const orderId = "ORD" + Date.now(); // unique
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
+
+  const token = authHeader.split(" ")[1];
+  let decoded: any;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET!);
+  } catch (err) {
+    return NextResponse.json({ success: false, message: "Invalid session" }, { status: 401 });
+  }
+
+  const userId = decoded.userId;
+  const { amount, mobile: reqMobile } = await req.json();
+
+  if (!amount || amount < 1) {
+    return NextResponse.json({ success: false, message: "Minimum amount ₹1" });
+  }
+
+  // 👤 Fetch User Details for fallback info
+  const user = await User.findById(userId);
+  if (!user) {
+    return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+  }
+
+  const finalMobile = reqMobile || user.phone || "0000000000";
+  const finalEmail = user.email || "";
+
+  const orderId = "WLT_" + Date.now(); // unique
+
+  // Save order to DB first
+  await Order.create({
+    orderId,
+    userId,
+    gameSlug: "wallet",
+    itemSlug: "wallet-topup",
+    itemName: `Wallet Topup (₹${amount})`,
+    price: Number(amount),
+    phone: finalMobile,
+    email: finalEmail,
+    paymentMethod: "upi",
+    status: "pending",
+    paymentStatus: "pending",
+  });
 
   const formData = new URLSearchParams();
-  formData.append("customer_mobile", mobile);
+  formData.append("customer_mobile", finalMobile);
   formData.append("user_token", process.env.XTRA_USER_TOKEN!);
   formData.append("amount", amount.toString());
   formData.append("order_id", orderId);

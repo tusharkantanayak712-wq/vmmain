@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
+import User from "@/models/User";
+import WalletTransaction from "@/models/WalletTransaction";
 import PricingConfig from "@/models/PricingConfig";
 import crypto from "crypto";
 
@@ -19,33 +21,33 @@ type OTTConfig = Record<string, number>;
    STATIC PRICING (SERVER TRUSTED)
 ===================================================== */
 
-const MEMBERSHIPS: Record<string, MembershipConfig> = {
+const MEMBERSHIPS: Record<string, { items: Record<string, { price: number; name: string }> }> = {
   "silver-membership": {
     items: {
-      "silver-1m": 99,
-      "silver-3m": 299,
+      "silver-1m": { price: 99, name: "Silver Membership (1 Month)" },
+      "silver-3m": { price: 299, name: "Silver Membership (3 Months)" },
     },
   },
   "reseller-membership": {
     items: {
-      "reseller-1m": 99,
-      "reseller-3m": 299,
+      "reseller-1m": { price: 199, name: "Reseller Membership (1 Month)" },
+      "reseller-3m": { price: 499, name: "Reseller Membership (3 Months)" },
     },
   },
 };
 
-const OTTS: Record<string, OTTConfig> = {
+const OTTS: Record<string, Record<string, { price: number; name: string }>> = {
   "youtube-premium": {
-    "yt-1m": 30,
-    "yt-3m": 90,
+    "yt-1m": { price: 30, name: "YouTube Premium (1 Month)" },
+    "yt-3m": { price: 90, name: "YouTube Premium (3 Months)" },
   },
   netflix: {
-    "nf-1m": 99,
-    "nf-3m": 249,
+    "nf-1m": { price: 99, name: "Netflix Premium (1 Month)" },
+    "nf-3m": { price: 249, name: "Netflix Premium (3 Months)" },
   },
   instagram: {
-    "ig-1k": 249,
-    "ig-5k": 1099,
+    "ig-1k": { price: 249, name: "Instagram Followers (1K)" },
+    "ig-5k": { price: 1099, name: "Instagram Followers (5K)" },
   },
 };
 
@@ -53,23 +55,23 @@ const OTTS: Record<string, OTTConfig> = {
    PRICE RESOLVER
 ===================================================== */
 
-async function resolvePrice(
+async function resolveItemData(
   gameSlug: string,
   itemSlug: string,
   userType: string
-): Promise<number> {
+): Promise<{ price: number; itemName: string }> {
   // MEMBERSHIPS
   if (MEMBERSHIPS[gameSlug]) {
-    const price = MEMBERSHIPS[gameSlug].items[itemSlug];
-    if (!price) throw new Error("Invalid membership item");
-    return price;
+    const item = MEMBERSHIPS[gameSlug].items[itemSlug];
+    if (!item) throw new Error("Invalid membership item");
+    return { price: item.price, itemName: item.name };
   }
 
   // OTTS
   if (OTTS[gameSlug]) {
-    const price = OTTS[gameSlug][itemSlug];
-    if (!price) throw new Error("Invalid OTT item");
-    return price;
+    const item = OTTS[gameSlug][itemSlug];
+    if (!item) throw new Error("Invalid OTT item");
+    return { price: item.price, itemName: item.name };
   }
 
   // GAMES
@@ -92,6 +94,7 @@ async function resolvePrice(
   if (!baseItem) throw new Error("Invalid game item");
 
   let price = Number(baseItem.sellingPrice);
+  const itemName = baseItem.itemName;
 
   if (userType !== "owner") {
     await connectDB();
@@ -114,7 +117,7 @@ async function resolvePrice(
     }
   }
 
-  return Math.ceil(price);
+  return { price: Math.ceil(price), itemName };
 }
 
 /* =====================================================
@@ -179,18 +182,18 @@ export async function POST(req: Request) {
       });
     }
 
-    if (!email ) {
+    if (!email) {
       return NextResponse.json({
         success: false,
         message: "Provide email or phone",
       });
     }
 
-    /* ---------- SERVER PRICE ---------- */
-    const price = await resolvePrice(gameSlug, itemSlug, userType);
+    /* ---------- SERVER DATA RESOLVER (SECURE) ---------- */
+    const { price, itemName: resolvedItemName } = await resolveItemData(gameSlug, itemSlug, userType);
 
     /* ---------- ORDER ID ---------- */
-     const orderId =
+    const orderId =
       "TOPUP_" +
       Date.now().toString(36) +
       "_" +
@@ -204,7 +207,7 @@ export async function POST(req: Request) {
       userId,
       gameSlug,
       itemSlug,
-      itemName,
+      itemName: resolvedItemName,
       playerId,
       zoneId,
       paymentMethod,
@@ -217,6 +220,104 @@ export async function POST(req: Request) {
       topupStatus: "pending",
       expiresAt,
     });
+
+    /* ---------- WALLET PAYMENT (SECURE & ATOMIC) ---------- */
+    if (paymentMethod === "wallet") {
+      // 🔒 Atomic Balance Check & Deduction
+      // We find the user AND check their balance in a single MongoDB operation
+      const updatedUser = await User.findOneAndUpdate(
+        {
+          _id: userId,
+          wallet: { $gte: price }
+        },
+        {
+          $inc: { wallet: -price, order: 1 }
+        },
+        {
+          new: false // Return the user state BEFORE deduction for logging
+        }
+      );
+
+      if (!updatedUser) {
+        // Check if user exists at all
+        const userExists = await User.findById(userId);
+        if (!userExists) {
+          return NextResponse.json({ success: false, message: "Security Error: Identity not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({
+          success: false,
+          message: "Transaction Aborted: Insufficient wallet balance or concurrent operation mismatch",
+        });
+      }
+
+      const balanceBefore = updatedUser.wallet || 0;
+
+      // 📝 Log Transaction
+      await WalletTransaction.create({
+        userId: updatedUser._id.toString(),
+        userEmail: updatedUser.email,
+        amount: price,
+        type: "debit",
+        category: "order",
+        description: `Order Payment: ${resolvedItemName} (ID: ${orderId})`,
+        balanceBefore,
+        balanceAfter: balanceBefore - price,
+        executedBy: "system",
+      });
+
+      // Mark order as paid
+      newOrder.paymentStatus = "success";
+
+      /* ---------- AUTOMATIC TOPUP (IDEMPOTENT) ---------- */
+      try {
+        const gameResp = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.API_SECRET_KEY!,
+            },
+            body: JSON.stringify({
+              playerId: String(newOrder.playerId),
+              zoneId: String(newOrder.zoneId),
+              productId: `${newOrder.gameSlug}_${newOrder.itemSlug}`,
+              currency: "USD",
+            }),
+          }
+        );
+
+        const gameData = await gameResp.json();
+        newOrder.externalResponse = gameData;
+
+        const topupSuccess =
+          gameResp.ok &&
+          (gameData?.success === true ||
+            gameData?.status === true ||
+            gameData?.result?.status === "SUCCESS");
+
+        if (topupSuccess) {
+          newOrder.status = "success";
+          newOrder.topupStatus = "success";
+        } else {
+          newOrder.status = "failed"; // Keep as failed for admin review
+          newOrder.topupStatus = "failed";
+        }
+      } catch (topupErr) {
+        console.error("WALLET TOPUP ERROR:", topupErr);
+        newOrder.status = "pending"; // Fallback to manual if API call fails
+        newOrder.topupStatus = "pending";
+      }
+
+      await newOrder.save();
+
+      return NextResponse.json({
+        success: newOrder.status === "success" || newOrder.status === "pending",
+        orderId,
+        message: newOrder.status === "success" ? "Payment verified and processed securely" : "Payment received, topup processing",
+      });
+    }
 
     /* ---------- PAYMENT GATEWAY ---------- */
     const formData = new URLSearchParams();

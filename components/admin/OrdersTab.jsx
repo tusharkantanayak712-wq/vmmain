@@ -137,6 +137,37 @@ export default function OrdersTab() {
     }
   };
 
+  /* ================= REFUND ORDER ================= */
+  const handleRefund = async (orderId) => {
+    if (!confirm("Are you sure you want to refund this order? The amount will be credited back to the user's wallet.")) return;
+
+    try {
+      setUpdating(true);
+      const token = sessionStorage.getItem("token");
+
+      const res = await fetch("/api/admin/orders/refund", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId }),
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        alert(data.message || "Refund failed");
+        return;
+      }
+
+      alert("Refunded successfully!");
+      setSelectedOrder(null);
+      fetchOrders();
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const statusMeta = {
     pending: {
       label: "Pending",
@@ -152,6 +183,11 @@ export default function OrdersTab() {
       label: "Failed",
       class: "bg-rose-500/10 text-rose-500 border-rose-500/20",
       icon: <XCircle size={12} />
+    },
+    refunded: {
+      label: "Refunded",
+      class: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+      icon: <RefreshCcw size={12} />
     },
   };
 
@@ -525,18 +561,20 @@ export default function OrdersTab() {
                     <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Settlement</p>
                     <span className="text-3xl font-black text-emerald-500 tabular-nums">₹{selectedOrder.price}</span>
                   </div>
-                  <StatusDropdown
-                    value={selectedOrder.status}
-                    onChange={(v) => {
-                      updateOrderStatus(selectedOrder.orderId, v);
-                      setSelectedOrder(null);
-                    }}
-                    options={[
-                      { value: "pending", label: "Pending" },
-                      { value: "success", label: "Success" },
-                      { value: "failed", label: "Failed" },
-                    ]}
-                  />
+                  <div className="flex flex-col gap-2">
+                    <StatusDropdown
+                      value={selectedOrder.status}
+                      onChange={(v) => {
+                        updateOrderStatus(selectedOrder.orderId, v);
+                        setSelectedOrder(null);
+                      }}
+                      options={[
+                        { value: "pending", label: "Pending" },
+                        { value: "success", label: "Success" },
+                        { value: "failed", label: "Failed" },
+                      ]}
+                    />
+                  </div>
                 </div>
               </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import AuthGuard from "../../../../../components/AuthGuard";
 import ValidationStep from "./ValidationStep";
@@ -35,11 +36,26 @@ export default function BuyFlowPage() {
   const fallbackName = params.get("name");
   const fallbackImage = params.get("image");
 
-  /* ================= LOAD USER ================= */
+  /* ================= LOAD USER (REAL-TIME) ================= */
   useEffect(() => {
-    setUserEmail(sessionStorage.getItem("email") || "");
-    setUserPhone(sessionStorage.getItem("phone") || "");
-    setWalletBalance(Number(sessionStorage.getItem("walletBalance") || 0));
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+
+    fetch("/api/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setUserEmail(data.user.email);
+          setUserPhone(data.user.phone);
+          setWalletBalance(data.user.wallet || 0);
+
+          // Sync sessionStorage for other parts
+          sessionStorage.setItem("walletBalance", (data.user.wallet || 0).toString());
+        }
+      })
+      .catch((err) => console.error("Failed to fetch user profile", err));
   }, []);
 
   /* ================= FETCH GAME & VERIFY ITEM PRICE ================= */
@@ -126,8 +142,21 @@ export default function BuyFlowPage() {
 
   /* ================= PAYMENT ================= */
   const handlePayment = async () => {
-    // Backend MUST re-verify price again
-    setTimeout(() => setShowSuccess(true), 500);
+    // Re-fetch balance after success
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      fetch("/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setWalletBalance(data.user.wallet || 0);
+            sessionStorage.setItem("walletBalance", (data.user.wallet || 0).toString());
+          }
+        });
+    }
+    setShowSuccess(true);
   };
 
   return (
@@ -142,8 +171,8 @@ export default function BuyFlowPage() {
               style={{
                 width:
                   step === 1 ? "0%" :
-                  step === 2 ? "50%" :
-                  step === 3 ? "100%" : "0%",
+                    step === 2 ? "50%" :
+                      step === 3 ? "100%" : "0%",
               }}
             />
           </div>
@@ -153,8 +182,8 @@ export default function BuyFlowPage() {
               <div
                 className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-semibold text-sm
                 ${step >= num
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-black"
-                  : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-black"
+                    : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
               >
                 {num}
               </div>
@@ -168,9 +197,45 @@ export default function BuyFlowPage() {
 
         {/* ================= SUCCESS ================= */}
         {showSuccess && (
-          <div className="bg-green-600/20 border border-green-600 text-green-500 p-6 rounded-xl text-center shadow-lg">
-            <h2 className="text-xl font-bold">Payment Successful ✔</h2>
-            <p className="text-sm mt-2 opacity-80">Your order has been placed.</p>
+          <div className="relative overflow-hidden group">
+            {/* Background Glow */}
+            <div className="absolute -inset-4 bg-emerald-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+            <div className="relative bg-[var(--card)]/80 backdrop-blur-xl border border-emerald-500/30 p-8 sm:p-12 rounded-[2rem] text-center shadow-2xl overflow-hidden">
+              {/* Shine Effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-transparent pointer-events-none" />
+
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
+                  <svg className="w-10 h-10 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+
+                <h2 className="text-3xl font-black text-[var(--foreground)] tracking-tighter italic uppercase mb-2">Payment Successful</h2>
+                <p className="text-[var(--muted)] text-sm font-medium mb-8">Your game asset has been provisioned and delivered.</p>
+
+                <div className="bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl p-4 mb-8 flex flex-col items-center gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-50">Transaction ID</span>
+                  <span className="text-xs font-mono font-bold text-[var(--accent)]">{sessionStorage.getItem("pending_topup_order") || "VERIFIED_TXN"}</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Link
+                    href="/"
+                    className="flex items-center justify-center h-14 rounded-2xl bg-[var(--accent)] text-black font-black uppercase text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[var(--accent)]/10"
+                  >
+                    Return Home
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center justify-center h-14 rounded-2xl border border-[var(--border)] bg-[var(--foreground)]/[0.03] text-[var(--foreground)] font-black uppercase text-xs tracking-widest hover:bg-[var(--foreground)]/[0.05] transition-all"
+                  >
+                    View Orders
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

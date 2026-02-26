@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";   // ✅ Your correct path
-import User from "@/models/User";            // Make sure this path is correct
+import User from "@/models/User";
+import Order from "@/models/Order";
+import WalletTransaction from "@/models/WalletTransaction";
 
 export async function POST(req: Request) {
   try {
@@ -28,11 +30,27 @@ export async function POST(req: Request) {
     const data = await resp.json();
     console.log("Gateway Response:", data);
 
+    // 👤 Find order in our DB
+    const order = await Order.findOne({ orderId });
+    if (!order) {
+      return NextResponse.json({ success: false, message: "Order not found in records" });
+    }
+
+    // 🔒 Replay Protection
+    if (order.status === "success") {
+      return NextResponse.json({
+        success: true,
+        message: "Already processed",
+        amount: order.price,
+      });
+    }
+
     // 💳 Gateway success logic
+    const txnStatus = data?.result?.txnStatus;
     const gatewaySuccess =
       data?.status == true ||
-      data?.result?.txnStatus == "COMPLETED" ||
-      data?.result?.txnStatus == "SUCCESS";
+      txnStatus == "COMPLETED" ||
+      txnStatus == "SUCCESS";
 
     if (!gatewaySuccess) {
       return NextResponse.json({
@@ -43,33 +61,62 @@ export async function POST(req: Request) {
 
     const amount = Number(data?.result?.amount || 0);
 
-    if (!amount) {
+    // 🔒 Price Check (Critical)
+    if (!amount || amount !== Number(order.price)) {
+      order.status = "failed";
+      order.paymentStatus = "failed";
+      await order.save();
       return NextResponse.json({
         success: false,
-        message: "Invalid amount",
+        message: "Amount mismatch or invalid amount",
       });
     }
 
-    // 💰 Update User Wallet
-    const user = await User.findOne({ userId });
+    // 💰 Update User Wallet (SECURE & ATOMIC)
+    // Note: order.userId stores the MongoDB _id string from create-order/route.ts
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: order.userId },
+      {
+        $inc: { wallet: amount, order: 1 }
+      },
+      { new: true } // Get the new balance after increment
+    );
 
-    if (!user) {
+    if (!updatedUser) {
+      console.error("User not found for ID:", order.userId);
       return NextResponse.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "Security Error: Wallet owner not found" },
         { status: 404 }
       );
     }
 
-    user.wallet = (user.wallet || 0) + amount;
-    user.order = (user.order || 0) + 1;
+    const balanceBefore = updatedUser.wallet - amount;
 
-    await user.save();
+    // Update order status
+    order.status = "success";
+    order.paymentStatus = "success";
+    order.topupStatus = "success";
+    order.gatewayResponse = data;
+    await order.save();
+
+    // 📝 Log Transaction
+    await WalletTransaction.create({
+      userId: order.userId, // Store the internal ID (Hex) for history matching
+      userEmail: updatedUser.email,
+      amount,
+      type: "credit",
+      category: "topup",
+      description: `Wallet top-up via Gateway (Order: ${orderId})`,
+      balanceBefore,
+      balanceAfter: updatedUser.wallet,
+      executedBy: "system",
+    });
 
     return NextResponse.json({
       success: true,
       message: "Payment Successful",
       amount,
-      newWallet: user.wallet,
+      newWallet: updatedUser.wallet,
     });
   } catch (error) {
     console.error("Check-status error:", error);
