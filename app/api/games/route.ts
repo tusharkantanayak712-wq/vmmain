@@ -2,18 +2,18 @@ import { NextResponse } from "next/server";
 
 /* ================= IMAGES ================= */
 const MLBB_MAIN_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/7fd445965237d07c1583c1dfb0ee9517_bp14p4.jpg";
+  "/game-assets/india-mlbb.jpg";
 
 const MLBB_SMALL_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/e5467ac4556c15c54810e9a78c0d7950_1_dvzsmd.jpg";
+  "/game-assets/mlbb-small.jpg";
 const MLBB_MY_SING_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490927/d5fb0a2787575170c5fb9a4ad30b4aac.jpg_r4ci3s.jpg";
+  "/game-assets/11.jpg";
 const MLBB_INDO_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490919/4c2e2e5ef86bc8cb344febb4a87e8823.jpg_hxbpbs.jpg";
+  "/game-assets/12.jpg";
 
 
 const WEEKLY_MONTHLY_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490927/cb4ec20e05bcf396d0a52c4413cfdd98.jpg_asvgds.jpg";
+  "/game-assets/bundle-weekly.jpg";
 
 /* ================= OTT SECTION ================= */
 const OTTS = [
@@ -21,7 +21,7 @@ const OTTS = [
     name: "YouTube Premium",
     slug: "youtube-premium",
     image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+      "/ott/youtube.webp",
     category: "OTT",
     available: true,
   },
@@ -29,7 +29,7 @@ const OTTS = [
     name: "Netflix",
     slug: "netflix",
     image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+      "/ott/netflix.webp",
     category: "OTT",
     available: true,
   },
@@ -40,7 +40,7 @@ const MEMBERSHIPS = [
     name: "Silver Membership",
     slug: "silver-membership",
     image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+      "/membership/silver-m.png",
     type: "silver",
     category: "Membership",
     available: true,
@@ -49,7 +49,7 @@ const MEMBERSHIPS = [
     name: "Reseller Membership",
     slug: "reseller-membership",
     image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/sew_zcz775.png",
+      "/membership/reseller-m.png",
     type: "reseller",
     category: "Membership",
     available: true,
@@ -125,6 +125,8 @@ export async function GET() {
     const excludedGameSlugs = [
       "test-1637",
       "mobile-legends-backup826",
+      "value-pass-ml948",
+      "ph-value-pass588"
     ];
 
     const filteredGames =
