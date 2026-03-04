@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-import { FiPlus, FiHome, FiGlobe, FiGrid, FiBarChart2, FiSettings, FiHelpCircle, FiCpu, FiAward } from "react-icons/fi";
+import { FiPlus, FiHome, FiGlobe, FiGrid, FiBarChart2, FiSettings, FiHelpCircle, FiCpu, FiAward, FiLogOut } from "react-icons/fi";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -179,13 +179,15 @@ export default function Header() {
           <AnimatePresence>
             {userMenuOpen && !loading && (
               <motion.div
-                className="absolute right-0 top-14 w-64 bg-[var(--card)] border border-[var(--border)] rounded-2xl shadow-2xl overflow-hidden z-50"
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
+                className="absolute right-0 top-[3.8rem] w-72 bg-[var(--card)]/98 backdrop-blur-2xl border border-[var(--border)] rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden z-50 origin-[top_right]"
+                initial={{ opacity: 0, y: 15, scale: 0.9, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: 15, scale: 0.9, filter: "blur(10px)" }}
+                transition={{ type: "spring", damping: 25, stiffness: 400 }}
               >
-                <div className="p-4">
+                {/* Top Subtle Border Glow */}
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent" />
+                <div className="p-3">
                   {!user ? (
                     <Link
                       href="/login"
@@ -194,51 +196,48 @@ export default function Header() {
                     </Link>
                   ) : (
                     <>
-                      {/* PROFILE INFO */}
-                      <div className="flex items-center gap-3 bg-gradient-to-br from-[var(--accent)]/10 to-purple-500/10 p-3 rounded-2xl border border-[var(--accent)]/20 mb-3">
-                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--accent)]/30 shrink-0">
-                          {user.avatar ? (
-                            <Image
-                              src={user.avatar}
-                              alt={user.name}
-                              width={48}
-                              height={48}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-[var(--accent)]/20 flex items-center justify-center">
-                              <FaUser className="text-[var(--accent)]" />
-                            </div>
-                          )}
+                      {/* PROFILE SECTION */}
+                      <div className="flex items-center gap-3 px-1 pb-3">
+                        <div className="relative group/avatar">
+                          <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-[var(--accent)]/20 shadow-lg bg-[var(--card)]">
+                            {user.avatar ? (
+                              <Image src={user.avatar} alt={user.name} width={44} height={44} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-[var(--accent)] to-purple-600 flex items-center justify-center">
+                                <FaUser className="text-white text-base" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border border-[var(--card)] rounded-full shadow-lg" />
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-bold text-[var(--foreground)] truncate">
+                          <h4 className="text-sm font-black text-[var(--foreground)] truncate tracking-tight lowercase first-letter:uppercase">
                             {user.name}
-                          </span>
-                          <span className="text-[10px] text-[var(--muted)] truncate">
+                          </h4>
+                          <span className="text-[10px] text-[var(--muted)] truncate opacity-60">
                             {user.email}
                           </span>
                         </div>
                       </div>
 
-                      {/* QUICK BALANCE */}
-                      <Link href="/dashboard" className="block mb-3">
+                      {/* QUICK WALLET CARD */}
+                      <Link href="/dashboard" className="block mb-4 relative group/wallet">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)] to-purple-600 blur-xl opacity-0 group-hover/wallet:opacity-20 transition-opacity duration-500" />
                         <motion.div
-                          className="flex justify-between items-center bg-[var(--background)] px-4 py-2 rounded-xl border border-[var(--border)] group hover:border-[var(--accent)]/50 transition-colors"
-                          whileHover={{ scale: 1.02 }}
+                          className="relative flex justify-between items-center bg-gradient-to-br from-[var(--foreground)]/[0.03] to-transparent p-3 rounded-xl border border-[var(--border)] group-hover/wallet:border-[var(--accent)]/30 transition-all overflow-hidden"
+                          whileHover={{ y: -1 }}
                         >
                           <div className="flex flex-col">
-                            <span className="text-[10px] text-[var(--muted)] uppercase tracking-wider font-semibold">Balance</span>
-                            <span className="text-[var(--accent)] font-bold">
-                              ₹{user.wallet}
-                            </span>
+                            <span className="text-[8px] text-[var(--muted)] uppercase tracking-[0.2em] font-black opacity-30 mb-0.5">Balance</span>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-xl font-black text-[var(--foreground)] tracking-tighter">₹{user.wallet}</span>
+                            </div>
                           </div>
                           <motion.div
-                            className="w-7 h-7 rounded-full bg-[var(--accent)] flex items-center justify-center shadow-lg shadow-[var(--accent)]/20"
-                            whileHover={{ rotate: 90 }}
-                            transition={{ duration: 0.2 }}
+                            className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent)] to-purple-500 flex items-center justify-center shadow-[0_5px_15px_-5px_rgba(var(--accent-rgb),0.3)] text-white"
+                            whileHover={{ scale: 1.05, rotate: 90 }}
                           >
-                            <FiPlus className="text-white" size={14} />
+                            <FiPlus size={16} />
                           </motion.div>
                         </motion.div>
                       </Link>
@@ -246,32 +245,40 @@ export default function Header() {
                       {/* DIVIDER */}
                       <div className="h-px bg-[var(--border)] my-3" />
 
-                      {/* USER MENU */}
+                      {/* NAVIGATION LIST */}
                       <div className="space-y-1">
+                        <h5 className="px-3 pb-2 text-[9px] font-black uppercase tracking-[0.2em] text-[var(--muted)] opacity-30">Menu Navigation</h5>
                         {HEADER_CONFIG.userMenu.map(
                           (item) =>
                             item.auth && (
                               <Link
                                 key={item.label}
                                 href={item.href}
-                                className="flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all text-sm group"
+                                className="flex items-center gap-3.5 py-2.5 px-3 rounded-xl hover:bg-[var(--foreground)]/[0.03] text-[var(--muted)] hover:text-[var(--foreground)] transition-all text-sm font-bold group"
                               >
-                                <span className="text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors">
+                                <span className="p-1.5 rounded-lg bg-[var(--foreground)]/[0.03] text-[var(--muted)]/60 group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)] transition-all">
                                   {item.icon}
                                 </span>
-                                <span className="font-medium">{item.label}</span>
+                                {item.label}
+                                <FiPlus className="ml-auto opacity-0 group-hover:opacity-20 transition-opacity" size={10} />
                               </Link>
                             )
                         )}
 
-                        {/* ROLE MENU */}
+                        {/* PRIVILEGED ACCESS */}
                         {HEADER_CONFIG.roleMenu[user.userType]?.map((item) => (
                           <Link
                             key={item.label}
                             href={item.href}
-                            className="block py-2 px-3 rounded-lg hover:bg-[var(--background)] hover:text-[var(--accent)] transition-all text-sm font-semibold"
+                            className="mt-2 flex items-center justify-between p-3 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-600/10 border border-indigo-500/20 text-indigo-500 hover:from-indigo-500/20 hover:to-purple-600/20 transition-all shadow-sm group"
                           >
-                            {item.label}
+                            <div className="flex items-center gap-2">
+                              <div className="p-1.5 rounded-lg bg-indigo-500 text-white">
+                                <FiCpu size={12} />
+                              </div>
+                              <span className="text-xs font-black uppercase tracking-tight italic">{item.label}</span>
+                            </div>
+                            <FiPlus className="rotate-45 opacity-40 group-hover:rotate-0 transition-transform duration-500" size={14} />
                           </Link>
                         ))}
                       </div>
@@ -281,11 +288,14 @@ export default function Header() {
 
                       <motion.button
                         onClick={handleLogout}
-                        className="w-full text-center py-2 px-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all text-sm font-semibold"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        className="w-full mt-4 py-2.5 px-4 rounded-xl bg-red-500/[0.06] text-red-500 hover:bg-red-500 hover:text-white hover:shadow-[0_5px_15px_-5px_rgba(239,68,68,0.3)] transition-all text-[10px] font-black uppercase tracking-[0.2em] relative overflow-hidden group/logout"
+                        whileHover={{ y: -1 }}
                       >
-                        Logout
+                        <div className="relative z-10 flex items-center justify-center gap-2 transition-colors uppercase">
+                          <span>Secure Logout</span>
+                          <FiLogOut size={14} />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-600 opacity-0 group-hover/logout:opacity-100 transition-opacity" />
                       </motion.button>
                     </>
                   )}

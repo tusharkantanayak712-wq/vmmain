@@ -155,9 +155,9 @@ export default function UsersTab() {
       {/* ================= HEADER ================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">User Management</h2>
+          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">All Users</h2>
           <p className="text-sm text-[var(--muted)] mt-1">
-            Browse and manage all registered users and their roles.
+            Browse and manage all registered accounts and their roles.
           </p>
         </div>
 
@@ -280,11 +280,11 @@ export default function UsersTab() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-[var(--foreground)]/[0.03] border-b border-[var(--border)] text-[var(--muted)]">
                   <tr className="text-xs font-semibold">
-                    <th className="px-6 py-4">User</th>
-                    <th className="px-6 py-4">Contact</th>
-                    <th className="px-6 py-4">Role</th>
+                    <th className="px-6 py-4">User Details</th>
+                    <th className="px-6 py-4">Email & Phone</th>
+                    <th className="px-6 py-4">Account Type</th>
                     <th className="px-6 py-4">Joined Date</th>
-                    <th className="px-6 py-4">Activity</th>
+                    <th className="px-6 py-4">Last Activity</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -491,15 +491,15 @@ export default function UsersTab() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 space-y-10">
-                <DrawerSection icon={<IdCard size={18} />} title="Basic Information">
+                <DrawerSection icon={<IdCard size={18} />} title="Account Info">
                   <DrawerDetail label="Full Name" value={selectedUser.name} />
                   <DrawerDetail label="User ID" value={selectedUser.userId} />
-                  <DrawerDetail label="Member Since" value={new Date(selectedUser.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })} />
+                  <DrawerDetail label="Joined On" value={new Date(selectedUser.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })} />
                   <DrawerDetail label="Last Login" value={selectedUser.lastLogin ? new Date(selectedUser.lastLogin).toLocaleString() : 'Never'} />
                   <DrawerDetail label="Last IP Address" value={selectedUser.lastIp || 'N/A'} />
                 </DrawerSection>
 
-                <DrawerSection icon={<Mail size={18} />} title="Contact Details">
+                <DrawerSection icon={<Mail size={18} />} title="Contact Info">
                   <DrawerDetail label="Email Address" value={selectedUser.email} />
                   <DrawerDetail label="Phone Number" value={selectedUser.phone || "Not provided"} />
                 </DrawerSection>
@@ -706,6 +706,8 @@ function RoleDropdown({ value, onChange, disabled, compact }) {
 
 /* ================= AVATAR ================= */
 function Avatar({ user, size = "md" }) {
+  const [imgError, setImgError] = useState(false);
+
   const sizeClasses = {
     sm: "h-8 w-8",
     md: "h-10 w-10",
@@ -717,11 +719,12 @@ function Avatar({ user, size = "md" }) {
     .slice(0, 2)
     .toUpperCase() || "U";
 
-  if (user.avatar) {
+  if (user.avatar && !imgError) {
     return (
       <img
         src={user.avatar}
         alt={user.name}
+        onError={() => setImgError(true)}
         className={`${sizeClasses[size]} rounded-2xl object-cover border-2 border-[var(--border)] shadow-inner`}
       />
     );

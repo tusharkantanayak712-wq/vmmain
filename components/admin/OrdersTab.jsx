@@ -196,9 +196,9 @@ export default function OrdersTab() {
       {/* ================= HEADER ================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">Active Deployments</h2>
+          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">All Orders</h2>
           <p className="text-xs text-[var(--muted)] font-medium mt-1">
-            Analyze, verify, and fulfill customer order packets
+            View, verify, and manage customer orders
           </p>
         </div>
 
@@ -206,7 +206,7 @@ export default function OrdersTab() {
           <div className="px-3 py-1.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
             <span className="text-[10px] font-bold text-[var(--muted)] uppercase">
-              {pagination.total} Processed
+              {pagination.total} Orders
             </span>
           </div>
           <button
@@ -347,7 +347,7 @@ export default function OrdersTab() {
             }}
             className="h-10 rounded-lg border border-[var(--border)] bg-[var(--foreground)]/[0.02] text-[var(--foreground)] text-[10px] font-black uppercase tracking-widest hover:bg-[var(--foreground)]/[0.05] transition-all"
           >
-            Reset Matrix
+            Reset Filters
           </button>
         </div>
       </div>
@@ -362,7 +362,7 @@ export default function OrdersTab() {
             className="py-32 flex flex-col items-center justify-center space-y-4"
           >
             <Loader2 className="animate-spin text-[var(--accent)]" size={32} />
-            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">Syncing Order Records</p>
+            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em]">Loading Orders...</p>
           </motion.div>
         ) : (
           <motion.div
@@ -375,11 +375,11 @@ export default function OrdersTab() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-[var(--foreground)]/[0.03] border-b border-[var(--border)]">
                   <tr className="text-[10px] uppercase font-bold tracking-widest text-[var(--muted)]">
-                    <th className="px-6 py-4">Protocol</th>
-                    <th className="px-6 py-4">Timeline</th>
-                    <th className="px-6 py-4">Target Item</th>
-                    <th className="px-6 py-4">Value</th>
-                    <th className="px-6 py-4">Status Command</th>
+                    <th className="px-6 py-4">Game</th>
+                    <th className="px-6 py-4">Date & Time</th>
+                    <th className="px-6 py-4">Item Name</th>
+                    <th className="px-6 py-4">Price</th>
+                    <th className="px-6 py-4">Order Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
@@ -492,7 +492,7 @@ export default function OrdersTab() {
             {!orders.length && (
               <div className="py-20 text-center border border-dashed border-[var(--border)] rounded-[2rem]">
                 <ShoppingBag className="mx-auto text-[var(--muted)]/20 mb-4" size={48} />
-                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">Deployment Queue Clear</p>
+                <p className="text-[10px] font-bold text-[var(--muted)]/40 uppercase tracking-[0.2em]">No orders found</p>
               </div>
             )}
 
@@ -508,14 +508,14 @@ export default function OrdersTab() {
                     disabled={page === 1}
                     className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[10px] font-bold uppercase text-[var(--muted)]/60 hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.05] disabled:opacity-20 transition-all font-mono"
                   >
-                    RETRIEVE PREV
+                    Previous
                   </button>
                   <button
                     onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
                     disabled={page === pagination.totalPages}
                     className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[10px] font-bold uppercase text-[var(--muted)]/60 hover:text-[var(--foreground)] hover:bg-[var(--foreground)]/[0.05] disabled:opacity-20 transition-all font-mono"
                   >
-                    RETRIEVE NEXT
+                    Next
                   </button>
                 </div>
               </div>
@@ -542,24 +542,24 @@ export default function OrdersTab() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-lg bg-[var(--background)] border-l border-[var(--border)] shadow-2xl z-[1110] flex flex-col"
             >
-              <div className="p-8 border-b border-[var(--border)] bg-gradient-to-r from-[var(--foreground)]/[0.02] to-transparent">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">Order Verification</p>
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Mission Brief</h3>
+              <div className="p-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--foreground)]/[0.02] to-transparent">
+                <div className="flex items-start justify-between mb-5">
+                  <div className="space-y-0.5">
+                    <p className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-widest">Order Verification</p>
+                    <h3 className="text-xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Order Details</h3>
                   </div>
                   <button
                     onClick={() => setSelectedOrder(null)}
-                    className="w-10 h-10 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]/40 hover:text-[var(--foreground)] hover:bg-red-500/20 transition-all"
+                    className="w-8 h-8 rounded-full bg-[var(--foreground)]/[0.05] flex items-center justify-center text-[var(--muted)]/40 hover:text-[var(--foreground)] hover:bg-red-500/20 transition-all"
                   >
-                    <X size={20} />
+                    <X size={16} />
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-6 rounded-3xl bg-[var(--foreground)]/[0.02] border border-[var(--border)]">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--foreground)]/[0.02] border border-[var(--border)]">
                   <div>
-                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Settlement</p>
-                    <span className="text-3xl font-black text-emerald-500 tabular-nums">₹{selectedOrder.price}</span>
+                    <p className="text-[9px] font-bold text-[var(--muted)] uppercase tracking-widest mb-0.5">Total Amount</p>
+                    <span className="text-2xl font-black text-emerald-500 tabular-nums">₹{selectedOrder.price}</span>
                   </div>
                   <div className="flex flex-col gap-2">
                     <StatusDropdown
@@ -579,27 +579,27 @@ export default function OrdersTab() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 space-y-10">
-                <DrawerSection icon={<Gamepad2 size={16} />} title="Service Objective">
-                  <DrawerDetail label="Platform" value={selectedOrder.gameSlug} emphasize />
-                  <DrawerDetail label="Asset Identity" value={selectedOrder.itemName} />
-                  <DrawerDetail label="Registry Slug" value={selectedOrder.itemSlug} />
+                <DrawerSection icon={<Gamepad2 size={16} />} title="Service Information">
+                  <DrawerDetail label="Game" value={selectedOrder.gameSlug} emphasize />
+                  <DrawerDetail label="Item Name" value={selectedOrder.itemName} />
+                  <DrawerDetail label="Item Slug" value={selectedOrder.itemSlug} />
                 </DrawerSection>
 
-                <DrawerSection icon={<Smartphone size={16} />} title="Terminal Link">
-                  <DrawerDetail label="User Protocol ID" value={selectedOrder.playerId} emphasize />
-                  <DrawerDetail label="Zone Sector" value={selectedOrder.zoneId || "GLOBAL"} />
+                <DrawerSection icon={<Smartphone size={16} />} title="Account IDs">
+                  <DrawerDetail label="Player ID" value={selectedOrder.playerId} emphasize />
+                  <DrawerDetail label="Zone ID" value={selectedOrder.zoneId || "GLOBAL"} />
                 </DrawerSection>
 
-                <DrawerSection icon={<CreditCard size={16} />} title="Financial Protocol">
-                  <DrawerDetail label="Gateway Path" value={selectedOrder.paymentMethod} />
-                  <DrawerDetail label="Fund Status" value={selectedOrder.paymentStatus} emphasize />
-                  <DrawerDetail label="Provision Status" value={selectedOrder.topupStatus} />
+                <DrawerSection icon={<CreditCard size={16} />} title="Payment Details">
+                  <DrawerDetail label="Method" value={selectedOrder.paymentMethod} />
+                  <DrawerDetail label="Payment Status" value={selectedOrder.paymentStatus} emphasize />
+                  <DrawerDetail label="Topup Status" value={selectedOrder.topupStatus} />
                 </DrawerSection>
 
-                <DrawerSection icon={<User size={16} />} title="Authorized Entity">
-                  <DrawerDetail label="Comm Signal" value={selectedOrder.email || "GUEST"} />
-                  <DrawerDetail label="Phone Link" value={selectedOrder.phone || "N/A"} />
-                  <DrawerDetail label="Timestamp" value={new Date(selectedOrder.createdAt).toLocaleString()} />
+                <DrawerSection icon={<User size={16} />} title="User Contact">
+                  <DrawerDetail label="Email Address" value={selectedOrder.email || "GUEST"} />
+                  <DrawerDetail label="Phone Number" value={selectedOrder.phone || "N/A"} />
+                  <DrawerDetail label="Order Date" value={new Date(selectedOrder.createdAt).toLocaleString()} />
                 </DrawerSection>
 
                 <div className="pt-6 border-t border-[var(--border)] opacity-20">

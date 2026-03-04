@@ -11,6 +11,7 @@ import MLBBPurchaseGuide from "../HelpImage/MLBBPurchaseGuide";
 import TopNoticeBanner from "./TopNoticeBanner";
 import ScrollingNoticeBand from "./ScrollingNoticeBand";
 import HomeQuickAction from "./HomeQuickAction";
+import FlashSale from "./FlashSale";
 
 export default function HeroSection() {
   const [search, setSearch] = useState("");
@@ -31,6 +32,8 @@ export default function HeroSection() {
       <TopNoticeBanner />
       <GameBannerCarousel />
       <HomeQuickAction />
+      <FlashSale />
+
       <ScrollingNoticeBand />
       <GamesPage />
       <ScrollingNoticeBand />
