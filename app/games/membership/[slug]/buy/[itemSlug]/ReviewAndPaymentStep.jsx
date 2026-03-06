@@ -86,7 +86,7 @@ export default function ReviewAndPaymentStep({
       sessionStorage.setItem("pending_topup_order", data.orderId);
 
       if (paymentMethod === "wallet") {
-        onPaymentComplete();
+        window.location.href = "/payment/topup-complete";
         return;
       }
 

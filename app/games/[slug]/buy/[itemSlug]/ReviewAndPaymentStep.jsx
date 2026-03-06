@@ -90,7 +90,7 @@ export default function ReviewAndPaymentStep({
 
       // 🚀 redirect
       if (paymentMethod === "wallet") {
-        onPaymentComplete(); // This should set showSuccess to true in the parent
+        window.location.href = "/payment/topup-complete";
         return;
       }
       window.location.href = data.paymentUrl;
