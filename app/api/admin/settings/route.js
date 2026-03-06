@@ -34,13 +34,15 @@ export async function PATCH(req) {
         }
 
         await connectDB();
-        const { maintenanceMode } = await req.json();
+        const updateData = await req.json();
 
         let settings = await SystemSettings.findOne();
         if (!settings) {
-            settings = new SystemSettings({ maintenanceMode });
+            settings = new SystemSettings(updateData);
         } else {
-            settings.maintenanceMode = maintenanceMode;
+            Object.keys(updateData).forEach(key => {
+                settings[key] = updateData[key];
+            });
         }
         await settings.save();
 
