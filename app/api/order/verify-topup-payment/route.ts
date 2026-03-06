@@ -79,9 +79,9 @@ export async function POST(req: Request) {
     }
 
     /* =====================================================
-       EXPIRE CHECK
+       EXPIRE CHECK (Skip if already paid)
     ===================================================== */
-    if (order.expiresAt && Date.now() > order.expiresAt.getTime()) {
+    if (order.paymentStatus !== "success" && order.expiresAt && Date.now() > order.expiresAt.getTime()) {
       order.status = "failed";
       order.paymentStatus = "failed";
       await order.save();
@@ -167,6 +167,14 @@ export async function POST(req: Request) {
       await order.save();
     }
 
+    if (order.paymentStatus !== "success") {
+      return NextResponse.json({
+        success: false,
+        message: "Payment not verified, cannot fulfill",
+        paymentStatus: order.paymentStatus,
+      });
+    }
+
     /* =====================================================
        TOPUP (IDEMPOTENT)
     ===================================================== */
@@ -205,6 +213,7 @@ export async function POST(req: Request) {
         gameData?.result?.status === "SUCCESS");
 
     if (topupSuccess) {
+      console.log(`Fulfilled order ${orderId} successfully.`);
       order.status = "success";
       order.topupStatus = "success";
       await order.save();

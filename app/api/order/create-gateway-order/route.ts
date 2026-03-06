@@ -276,54 +276,12 @@ export async function POST(req: Request) {
 
       // Mark order as paid
       newOrder.paymentStatus = "success";
-
-      /* ---------- AUTOMATIC TOPUP (IDEMPOTENT) ---------- */
-      try {
-        const gameResp = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/api-service/order`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": process.env.API_SECRET_KEY!,
-            },
-            body: JSON.stringify({
-              playerId: String(newOrder.playerId),
-              zoneId: String(newOrder.zoneId),
-              productId: `${newOrder.gameSlug}_${newOrder.itemSlug}`,
-              currency: "USD",
-            }),
-          }
-        );
-
-        const gameData = await gameResp.json();
-        newOrder.externalResponse = gameData;
-
-        const topupSuccess =
-          gameResp.ok &&
-          (gameData?.success === true ||
-            gameData?.status === true ||
-            gameData?.result?.status === "SUCCESS");
-
-        if (topupSuccess) {
-          newOrder.status = "success";
-          newOrder.topupStatus = "success";
-        } else {
-          newOrder.status = "failed"; // Keep as failed for admin review
-          newOrder.topupStatus = "failed";
-        }
-      } catch (topupErr) {
-        console.error("WALLET TOPUP ERROR:", topupErr);
-        newOrder.status = "pending"; // Fallback to manual if API call fails
-        newOrder.topupStatus = "pending";
-      }
-
       await newOrder.save();
 
       return NextResponse.json({
-        success: newOrder.status === "success" || newOrder.status === "pending",
+        success: true,
         orderId,
-        message: newOrder.status === "success" ? "Payment verified and processed securely" : "Payment received, topup processing",
+        message: "Payment verified and recorded. Processing top-up...",
       });
     }
 
