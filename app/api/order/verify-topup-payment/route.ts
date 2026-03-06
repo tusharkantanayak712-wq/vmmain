@@ -93,8 +93,19 @@ export async function POST(req: Request) {
     }
 
     /* =====================================================
-       CHECK GATEWAY STATUS
+       CHECK GATEWAY STATUS OR WALLET
     ===================================================== */
+    if (order.paymentMethod === "wallet") {
+      // Wallet orders are processed atomically at creation time
+      // We only need to check the current order status
+      return NextResponse.json({
+        success: order.status === "success" || order.status === "pending",
+        message: order.status === "success" ? "Order processed successfully" : "Order is being processed",
+        paymentStatus: order.paymentStatus,
+        topupStatus: order.topupStatus,
+      });
+    }
+
     const formData = new URLSearchParams();
     formData.append("user_token", process.env.XTRA_USER_TOKEN!);
     formData.append("order_id", orderId);
@@ -211,7 +222,7 @@ export async function POST(req: Request) {
       try {
         const user = await User.findOne({ userId: order.userId });
         // send mail if needed
-      } catch {}
+      } catch { }
     } else {
       order.status = "failed";
       order.topupStatus = "failed";

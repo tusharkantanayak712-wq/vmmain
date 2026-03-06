@@ -66,13 +66,13 @@ export default function ReviewAndPaymentStep({
         currency: "INR",
         zoneId: "N/A", // BGMI has no zone
       };
-const token = sessionStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const res = await fetch("/api/order/create-gateway-order", {
         method: "POST",
-   headers: {
-        Authorization: `Bearer ${token}`,
-      },        body: JSON.stringify(orderPayload),
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }, body: JSON.stringify(orderPayload),
       });
 
       const data = await res.json();
@@ -85,8 +85,16 @@ const token = sessionStorage.getItem("token");
 
       sessionStorage.setItem("pending_topup_order", data.orderId);
 
-      window.location.href = data.paymentUrl;
-    } catch {
+      if (paymentMethod === "wallet") {
+        onPaymentComplete();
+        return;
+      }
+
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      }
+    } catch (error) {
+      console.error("Order error:", error);
       alert("Something went wrong. Please try again.");
       setIsRedirecting(false);
     }
@@ -102,23 +110,36 @@ const token = sessionStorage.getItem("token");
             <h3 className="text-lg font-semibold mb-4">Payment Method</h3>
 
             <div className="space-y-3">
-              {/* Wallet (disabled) */}
+              {/* Wallet Button */}
               <button
-                disabled
-                className="w-full p-4 rounded-xl border border-gray-700 opacity-50 cursor-not-allowed flex justify-between"
+                type="button"
+                onClick={() => {
+                  if (walletBalance >= totalPrice) {
+                    setPaymentMethod("wallet");
+                  }
+                }}
+                className={`w-full p-4 rounded-xl border transition-all flex justify-between
+                  ${paymentMethod === "wallet"
+                    ? "border-[var(--accent)] bg-[var(--accent)]/15"
+                    : "border-gray-700 hover:border-gray-500"
+                  } ${walletBalance < totalPrice ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                <span className="font-medium">Wallet</span>
-                <span className="text-sm">₹{walletBalance}</span>
+                <div className="flex flex-col items-start">
+                  <span className="font-medium">Wallet Balance</span>
+                  <span className="text-xs text-gray-400">Available: ₹{walletBalance}</span>
+                </div>
+                {walletBalance < totalPrice && (
+                  <span className="text-xs text-red-500 self-center">Insufficient Balance</span>
+                )}
               </button>
 
               {/* UPI */}
               <button
                 onClick={handleUPI}
                 className={`w-full p-4 rounded-xl border transition-all flex justify-between
-                  ${
-                    paymentMethod === "upi"
-                      ? "border-[var(--accent)] bg-[var(--accent)]/15"
-                      : "border-gray-700 hover:border-gray-500"
+                  ${paymentMethod === "upi"
+                    ? "border-[var(--accent)] bg-[var(--accent)]/15"
+                    : "border-gray-700 hover:border-gray-500"
                   }`}
               >
                 <span className="font-medium">UPI / QR Payment</span>

@@ -162,30 +162,33 @@ export default function ReviewAndPaymentStep({
 
             {/* Wallet Button */}
             <button
+              type="button"
               onClick={() => {
-                if (walletBalance < totalPrice) return;
-                setPaymentMethod("wallet");
+                if (walletBalance >= totalPrice) {
+                  setPaymentMethod("wallet");
+                }
               }}
-              className={`w-full p-3 rounded-lg border text-left ${paymentMethod === "wallet"
-                  ? "border-[var(--accent)] bg-[var(--accent)]/20"
-                  : "border-gray-700"
+              className={`w-full p-4 rounded-xl border transition-all flex justify-between
+                ${paymentMethod === "wallet"
+                  ? "border-[var(--accent)] bg-[var(--accent)]/15"
+                  : "border-gray-700 hover:border-gray-500"
                 } ${walletBalance < totalPrice ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              Wallet (₹{walletBalance})
+              <div className="flex flex-col items-start">
+                <span className="font-medium">Wallet Balance</span>
+                <span className="text-xs text-gray-400">Available: ₹{walletBalance}</span>
+              </div>
+              {walletBalance < totalPrice && (
+                <span className="text-xs text-red-500 self-center">Insufficient Balance</span>
+              )}
             </button>
-
-            {walletBalance < totalPrice && (
-              <p className="text-red-400 text-xs mt-1">
-                Not enough balance. You need ₹{totalPrice}.
-              </p>
-            )}
 
             {/* UPI Button */}
             <button
               onClick={handleUPI}
               className={`w-full mt-3 p-3 rounded-lg border text-left ${paymentMethod === "upi"
-                  ? "border-[var(--accent)] bg-[var(--accent)]/20"
-                  : "border-gray-700"
+                ? "border-[var(--accent)] bg-[var(--accent)]/20"
+                : "border-gray-700"
                 }`}
             >
               UPI Payment
