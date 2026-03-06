@@ -73,8 +73,13 @@ export default function WalletTab({
       }),
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({ success: false, message: "Response body corrupted" }));
     setLoading(false);
+
+    if (!res.ok) {
+      alert(data.message || "Server error occurred");
+      return;
+    }
 
     if (!data.success) {
       alert(data.message);
