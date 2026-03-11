@@ -1,7 +1,6 @@
 // app/page.tsx
 import HomeSection from "@/components/Home/Home";
-import MaintenancePage from "./maintenance/page";
-import SocialFloat from "@/components/SocialFloat/SocialFloat";
+// import MaintenancePage from "./maintenance/page";
 
 export const metadata = {
   title: "Vampettic – MLBB Diamond Top Up | Instant & Secure",
@@ -21,7 +20,8 @@ export default function Page() {
     <main>
       <HomeSection />
       {/* <MaintenancePage /> */}
-      <SocialFloat />
     </main>
   );
 }
+
+

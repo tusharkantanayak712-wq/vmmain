@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import ThemeToggle from "../ThemeToggle/ThemeToggle";
+import dynamic from "next/dynamic";
 import { FiPlus, FiHome, FiGlobe, FiGrid, FiBarChart2, FiSettings, FiHelpCircle, FiCpu, FiAward, FiLogOut } from "react-icons/fi";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
 import logo from "@/public/logo.png";
+
+const ThemeToggle = dynamic(() => import("../ThemeToggle/ThemeToggle"), { ssr: false });
+
 
 /* =====================================================
    HEADER CONFIG (SINGLE SOURCE OF TRUTH)

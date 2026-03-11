@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
+
+const Footer = dynamic(() => import("@/components/Footer/Footer"), {
+  loading: () => <div className="h-20 bg-black" />, // Placeholder
+  ssr: true, // Keep SSR if needed, but load chunk separately
+});
 
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -34,3 +39,4 @@ export default function RootLayout({
     </html>
   );
 }
+

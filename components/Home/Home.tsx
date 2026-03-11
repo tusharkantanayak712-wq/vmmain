@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import HeroSection from "./HeroSection";
 import Maintenance from "@/components/Maintenance/Maintenance";
 import { FEATURE_FLAGS } from "@/lib/config";
+
+const SocialFloat = dynamic(() => import("@/components/SocialFloat/SocialFloat"), {
+  ssr: false, // Client side only component
+});
 
 export default function HomeSection() {
   const [isMaintenance, setIsMaintenance] = useState(FEATURE_FLAGS.MAINTENANCE_MODE);
@@ -49,8 +54,11 @@ export default function HomeSection() {
       <HeroSection />
       {/* <HomeContent /> */}
 
+      <SocialFloat />
+
       {/* Maintenance Mode Overlay (Bypassed if user is owner) */}
       {(isMaintenance && !isOwner) && <Maintenance />}
     </main>
   );
 }
+

@@ -4,13 +4,18 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import {
   FiFilter, FiX, FiSearch, FiZap, FiBox, FiShoppingBag,
   FiGlobe, FiGrid, FiList, FiChevronRight, FiTv, FiPackage,
   FiStar, FiTrendingUp, FiAward
 } from "react-icons/fi";
 import logo from "@/public/logo.png";
-import GamesFilterModal from "@/components/Games/GamesFilterModal";
+
+const GamesFilterModal = dynamic(() => import("@/components/Games/GamesFilterModal"), {
+  ssr: false,
+});
+
 
 /* ─────────────────────────────────────────────────────── */
 /*  SKELETON CARD                                          */
@@ -154,8 +159,8 @@ export default function GamesPage() {
         <Link
           href={disabled ? "#" : `/games/${game.gameSlug}`}
           className={`relative flex items-center gap-4 sm:gap-5 p-3.5 sm:p-4 rounded-2xl overflow-hidden border transition-all duration-400 block ${disabled
-              ? "opacity-40 cursor-not-allowed border-[var(--border)]/50 bg-[var(--card)]/50"
-              : "border-[var(--border)] hover:border-[var(--accent)]/40 bg-[var(--card)] hover:bg-[var(--card)]/80 shadow-md hover:shadow-[0_8px_32px_rgba(0,0,0,0.25)]"
+            ? "opacity-40 cursor-not-allowed border-[var(--border)]/50 bg-[var(--card)]/50"
+            : "border-[var(--border)] hover:border-[var(--accent)]/40 bg-[var(--card)] hover:bg-[var(--card)]/80 shadow-md hover:shadow-[0_8px_32px_rgba(0,0,0,0.25)]"
             }`}
         >
           {/* IMAGE */}
@@ -184,8 +189,8 @@ export default function GamesPage() {
             <div className="flex items-center flex-wrap gap-1.5">
               {/* Region */}
               <span className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider ${isIndia
-                  ? "bg-orange-500/10 border-orange-500/20 text-orange-400"
-                  : "bg-blue-500/10 border-blue-500/20 text-blue-400"
+                ? "bg-orange-500/10 border-orange-500/20 text-orange-400"
+                : "bg-blue-500/10 border-blue-500/20 text-blue-400"
                 }`}>
                 <FiGlobe size={9} />
                 {region}
@@ -248,8 +253,8 @@ export default function GamesPage() {
         <Link
           href={disabled ? "#" : `/games/${game.gameSlug}`}
           className={`relative flex flex-col rounded-2xl overflow-hidden border transition-all duration-400 block ${disabled
-              ? "opacity-40 cursor-not-allowed border-[var(--border)]/50 bg-[var(--card)]/50"
-              : "border-[var(--border)] hover:border-[var(--accent)]/40 bg-[var(--card)] shadow-md hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
+            ? "opacity-40 cursor-not-allowed border-[var(--border)]/50 bg-[var(--card)]/50"
+            : "border-[var(--border)] hover:border-[var(--accent)]/40 bg-[var(--card)] shadow-md hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
             }`}
         >
           {/* IMAGE */}
@@ -271,8 +276,8 @@ export default function GamesPage() {
             {/* Region badge */}
             <div className="absolute top-2 left-2">
               <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider backdrop-blur-sm ${region.toLowerCase().includes("india") || region.toLowerCase().includes("in")
-                  ? "bg-orange-500/20 border border-orange-500/30 text-orange-300"
-                  : "bg-blue-500/20 border border-blue-500/30 text-blue-300"
+                ? "bg-orange-500/20 border border-orange-500/30 text-orange-300"
+                : "bg-blue-500/20 border border-blue-500/30 text-blue-300"
                 }`}>
                 <FiGlobe size={7} />
                 {region}
@@ -416,8 +421,8 @@ export default function GamesPage() {
               <button
                 onClick={() => setViewMode("list")}
                 className={`w-8 h-8 rounded-md flex items-center justify-center transition-all ${viewMode === "list"
-                    ? "bg-[var(--accent)] text-black shadow-md"
-                    : "text-[var(--foreground)]/40 hover:text-[var(--foreground)]"
+                  ? "bg-[var(--accent)] text-black shadow-md"
+                  : "text-[var(--foreground)]/40 hover:text-[var(--foreground)]"
                   }`}
               >
                 <FiList size={14} />
@@ -425,8 +430,8 @@ export default function GamesPage() {
               <button
                 onClick={() => setViewMode("grid")}
                 className={`w-8 h-8 rounded-md flex items-center justify-center transition-all ${viewMode === "grid"
-                    ? "bg-[var(--accent)] text-black shadow-md"
-                    : "text-[var(--foreground)]/40 hover:text-[var(--foreground)]"
+                  ? "bg-[var(--accent)] text-black shadow-md"
+                  : "text-[var(--foreground)]/40 hover:text-[var(--foreground)]"
                   }`}
               >
                 <FiGrid size={14} />
@@ -437,8 +442,8 @@ export default function GamesPage() {
             <button
               onClick={() => setShowFilter(true)}
               className={`h-9 sm:h-10 px-3 sm:px-4 flex items-center gap-1.5 rounded-lg border font-bold text-[11px] uppercase tracking-wider transition-all ${activeFilterCount > 0
-                  ? "bg-[var(--accent)] text-black border-[var(--accent)]"
-                  : "bg-white/[0.04] border-white/[0.08] text-[var(--foreground)]/50 hover:text-[var(--foreground)] hover:border-white/20"
+                ? "bg-[var(--accent)] text-black border-[var(--accent)]"
+                : "bg-white/[0.04] border-white/[0.08] text-[var(--foreground)]/50 hover:text-[var(--foreground)] hover:border-white/20"
                 }`}
             >
               <FiFilter size={13} className={activeFilterCount > 0 ? "animate-pulse" : ""} />
@@ -461,8 +466,8 @@ export default function GamesPage() {
                   key={tab.id}
                   onClick={() => setActiveCategory(tab.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all flex-shrink-0 ${activeCategory === tab.id
-                      ? "bg-[var(--accent)] text-black border-[var(--accent)] shadow-md shadow-[var(--accent)]/20"
-                      : "bg-[var(--card)] border-[var(--border)] text-[var(--foreground)]/50 hover:text-[var(--foreground)] hover:border-[var(--accent)]/30"
+                    ? "bg-[var(--accent)] text-black border-[var(--accent)] shadow-md shadow-[var(--accent)]/20"
+                    : "bg-[var(--card)] border-[var(--border)] text-[var(--foreground)]/50 hover:text-[var(--foreground)] hover:border-[var(--accent)]/30"
                     }`}
                 >
                   {tab.icon}
