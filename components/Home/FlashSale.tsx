@@ -9,6 +9,16 @@ import { useEffect, useState } from "react";
 const flashSaleData = [
     {
         id: 1,
+        name: "5 diamonds",
+        game: "MLBB",
+        image: "/game-assets/13.jpg",
+        price: "₹9",
+        originalPrice: "₹15",
+        slug: "mlbb-smallphp980",
+        badge: "Hot"
+    },
+    {
+        id: 2,
         name: "Weekly Pass",
         game: "MLBB",
         image: "/game-assets/11.jpg",
