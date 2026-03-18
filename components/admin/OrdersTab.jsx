@@ -60,7 +60,7 @@ export default function OrdersTab() {
   const fetchStats = async () => {
     try {
       setLoadingStats(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const res = await fetch("/api/admin/orders/stats", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -79,7 +79,7 @@ export default function OrdersTab() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const params = new URLSearchParams({
         page,
@@ -114,7 +114,7 @@ export default function OrdersTab() {
   const updateOrderStatus = async (orderId, status) => {
     try {
       setUpdating(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("/api/admin/orders", {
         method: "PATCH",
@@ -143,7 +143,7 @@ export default function OrdersTab() {
 
     try {
       setUpdating(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("/api/admin/orders/refund", {
         method: "POST",

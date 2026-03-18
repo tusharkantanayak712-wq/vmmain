@@ -54,7 +54,7 @@ export default function Header() {
 
   /* ================= AUTH ================= */
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       setLoading(false);
       return;
@@ -66,13 +66,13 @@ export default function Header() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setUser(data.user);
-        else sessionStorage.removeItem("token");
+        else localStorage.removeItem("token");
       })
       .finally(() => setLoading(false));
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
     setUser(null);
     window.location.href = "/";
   };

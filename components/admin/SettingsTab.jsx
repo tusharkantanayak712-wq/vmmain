@@ -31,7 +31,7 @@ export default function SettingsTab() {
     const updateSettings = async (updatedSettings) => {
         try {
             setSaving(true);
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
             const res = await fetch("/api/admin/settings", {
                 method: "PATCH",
                 headers: {

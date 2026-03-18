@@ -29,7 +29,7 @@ export default function WalletTab() {
     const handleExport = async () => {
         try {
             setIsExporting(true);
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
             const res = await fetch("/api/admin/wallet/export", {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -81,7 +81,7 @@ export default function WalletTab() {
     const fetchStats = async () => {
         try {
             setLoadingStats(true);
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
             const res = await fetch("/api/admin/wallet/stats", {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -97,7 +97,7 @@ export default function WalletTab() {
     const fetchUsers = async () => {
         try {
             setLoadingUsers(true);
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
             const res = await fetch(`/api/admin/users?page=${userPage}&limit=10&search=${userSearch}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -116,7 +116,7 @@ export default function WalletTab() {
     const fetchHistory = async () => {
         try {
             setLoadingTx(true);
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
             const res = await fetch(`/api/admin/wallet/transactions?page=${txPage}&limit=10&search=${txSearch}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -140,7 +140,7 @@ export default function WalletTab() {
 
         try {
             setIsUpdating(true);
-            const token = sessionStorage.getItem("token");
+            const token = localStorage.getItem("token");
             const res = await fetch("/api/admin/wallet/update", {
                 method: "POST",
                 headers: {

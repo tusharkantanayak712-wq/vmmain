@@ -43,7 +43,7 @@ export default function GameDetailPage() {
       try {
         setLoading(true);
         setError(false);
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         const res = await fetch(`/api/games/${slug}`, {
           headers: {

@@ -30,7 +30,7 @@ export default function AdminPanalPage() {
 
   /* ================= ROLE CHECK ================= */
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "/login";
       return;
@@ -90,7 +90,7 @@ export default function AdminPanalPage() {
 
 
   const fetchBanners = async () => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const res = await fetch("/api/admin/banners/game-banners", {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -103,7 +103,7 @@ export default function AdminPanalPage() {
 
   /* ================= FETCH PRICING ================= */
   const fetchPricing = async (type) => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const res = await fetch(`/api/admin/pricing?userType=${type}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -123,7 +123,7 @@ export default function AdminPanalPage() {
   const savePricing = async () => {
     try {
       setSavingPricing(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("/api/admin/pricing", {
         method: "PATCH",

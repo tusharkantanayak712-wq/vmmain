@@ -30,7 +30,7 @@ export default function HomeSection() {
 
     // 2. Check if current user is owner (to bypass maintenance)
     const checkRole = async () => {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (!token) return;
       try {
         const res = await fetch("/api/auth/me", {

@@ -60,7 +60,7 @@ export default function UsersTab() {
   const fetchStats = async () => {
     try {
       setLoadingStats(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const res = await fetch("/api/admin/users/stats", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -78,7 +78,7 @@ export default function UsersTab() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const params = new URLSearchParams({
         page,
@@ -109,7 +109,7 @@ export default function UsersTab() {
   const changeUserRole = async (userId, newUserType) => {
     try {
       setUpdatingUserId(userId);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("/api/admin/users/change-role", {
         method: "PATCH",

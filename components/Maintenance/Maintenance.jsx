@@ -17,7 +17,7 @@ export default function Maintenance() {
         setIsLoggingOut(true);
 
         const keysToRemove = ["token", "userName", "email", "userId", "phone", "pending_topup_order", "avatar"];
-        keysToRemove.forEach(key => sessionStorage.removeItem(key));
+        keysToRemove.forEach(key => localStorage.removeItem(key));
         localStorage.removeItem("mlbb_verified_players");
 
         setTimeout(() => {

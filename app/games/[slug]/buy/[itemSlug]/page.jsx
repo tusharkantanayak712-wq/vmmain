@@ -38,7 +38,7 @@ export default function BuyFlowPage() {
 
   /* ================= LOAD USER (REAL-TIME) ================= */
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     fetch("/api/auth/me", {
@@ -51,8 +51,8 @@ export default function BuyFlowPage() {
           setUserPhone(data.user.phone);
           setWalletBalance(data.user.wallet || 0);
 
-          // Sync sessionStorage for other parts
-          sessionStorage.setItem("walletBalance", (data.user.wallet || 0).toString());
+          // Sync localStorage for other parts
+          localStorage.setItem("walletBalance", (data.user.wallet || 0).toString());
         }
       })
       .catch((err) => console.error("Failed to fetch user profile", err));
@@ -62,7 +62,7 @@ export default function BuyFlowPage() {
   useEffect(() => {
     if (!slug || !itemSlug) return;
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     fetch(`/api/games/${slug}`, {
       headers: {
@@ -143,7 +143,7 @@ export default function BuyFlowPage() {
   /* ================= PAYMENT ================= */
   const handlePayment = async () => {
     // Re-fetch balance after success
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       fetch("/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -152,7 +152,7 @@ export default function BuyFlowPage() {
         .then((data) => {
           if (data.success) {
             setWalletBalance(data.user.wallet || 0);
-            sessionStorage.setItem("walletBalance", (data.user.wallet || 0).toString());
+            localStorage.setItem("walletBalance", (data.user.wallet || 0).toString());
           }
         });
     }
@@ -217,7 +217,7 @@ export default function BuyFlowPage() {
 
                 <div className="bg-[var(--background)]/50 border border-[var(--border)] rounded-2xl p-4 mb-8 flex flex-col items-center gap-1">
                   <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--muted)] opacity-50">Transaction ID</span>
-                  <span className="text-xs font-mono font-bold text-[var(--accent)]">{sessionStorage.getItem("pending_topup_order") || "VERIFIED_TXN"}</span>
+                  <span className="text-xs font-mono font-bold text-[var(--accent)]">{localStorage.getItem("pending_topup_order") || "VERIFIED_TXN"}</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

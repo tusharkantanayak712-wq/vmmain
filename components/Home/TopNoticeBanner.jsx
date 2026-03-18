@@ -13,13 +13,13 @@ export default function TopNoticeBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const hidden = sessionStorage.getItem(STORAGE_KEY);
+    const hidden = localStorage.getItem(STORAGE_KEY);
     if (!hidden && WHATSAPP_CHANNEL_URL) setVisible(true);
   }, []);
 
   const handleClose = (e) => {
     e.stopPropagation();
-    sessionStorage.setItem(STORAGE_KEY, "true");
+    localStorage.setItem(STORAGE_KEY, "true");
     setVisible(false);
   };
 

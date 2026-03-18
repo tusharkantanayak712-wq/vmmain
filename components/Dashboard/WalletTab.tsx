@@ -24,7 +24,7 @@ export default function WalletTab({
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const phone = sessionStorage.getItem("phone");
+    const phone = localStorage.getItem("phone");
     if (phone) setStoredPhone(phone);
     fetchHistory();
   }, [page]);
@@ -32,7 +32,7 @@ export default function WalletTab({
   const fetchHistory = async () => {
     try {
       setLoadingHistory(true);
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const res = await fetch(`/api/wallet/transactions?page=${page}&limit=5`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -60,7 +60,7 @@ export default function WalletTab({
     }
 
     setLoading(true);
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const res = await fetch("/api/wallet/create-order", {
       method: "POST",
       headers: {
@@ -86,7 +86,7 @@ export default function WalletTab({
       return;
     }
 
-    sessionStorage.setItem("pending_order", data.orderId);
+    localStorage.setItem("pending_order", data.orderId);
     window.location.href = data.paymentUrl;
   };
 
